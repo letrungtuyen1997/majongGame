@@ -4,21 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.ss.commons.BitmapFontC;
-import com.ss.commons.TextureAtlasC;
 import com.ss.commons.Tweens;
 import com.ss.core.action.exAction.GSimpleAction;
 import com.ss.core.util.GLayer;
 import com.ss.core.util.GStage;
-import com.ss.core.util.GUI;
 import com.ss.gameLogic.config.Config;
 import com.ss.scenes.gameScene;
 import com.ss.utils.Utils;
@@ -36,69 +31,34 @@ public class Board {
   private int                         s;
   private gameScene                   gameScene;
   private int                         count              = 0;
+  private int                         Level              = 0;
 
-  public Board(JsonValue Arrjv, gameScene gameScene){
+  public Board(int lv, String Lv[], gameScene gameScene){
     this.gameScene = gameScene;
+    this.Level     = lv;
     GStage.addToLayer(GLayer.map,group);
-    createBoard(Arrjv);
+    group.setSize(Config.TileW*8,Config.TileH*10);
+    group.setPosition(GStage.getWorldWidth()/2-group.getWidth()/2,GStage.getWorldHeight()/2-group.getHeight()/2);
+//    group.debug();
+    createBoard(Utils.GetJsV(Lv[lv]));
     setLockTile();
+    shuffleBoard("begin",()->{
+      System.out.println("begin done!");
+    });
     showfps();
-    Image btnShuffle = GUI.createImage(TextureAtlasC.uiAtlas,"btnShuffle");
-    btnShuffle.setPosition(GStage.getWorldWidth()/2+btnShuffle.getWidth(),btnShuffle.getHeight()/2, Align.center);
-    group.addActor(btnShuffle);
-    btnShuffle.addListener(new ClickListener(){
-      @Override
-      public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        createlbShuffle();
-        SkipHint();
-        shuffleBoard(()->{
-          System.out.println("shuffle done");
-        });
-        return super.touchDown(event, x, y, pointer, button);
-      }
-    });
 
-    Image btnHint = GUI.createImage(TextureAtlasC.uiAtlas,"btnHint");
-    btnHint.setPosition(GStage.getWorldWidth()/2-btnHint.getWidth(),btnHint.getHeight()/2, Align.center);
-    group.addActor(btnHint);
-    btnHint.addListener(new ClickListener(){
-      @Override
-      public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-//        hintBoard();
-        createlbShuffle();
-        autoMatch();
-        return super.touchDown(event, x, y, pointer, button);
-      }
-    });
-
-    Image btnBack = GUI.createImage(TextureAtlasC.uiAtlas,"btnReplay");
-    btnBack.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()-btnBack.getHeight()/2,Align.center);
-    group.addActor(btnBack);
-    btnBack.addListener(new ClickListener(){
-      @Override
-      public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        group.clear();
-        group.remove();
-        gameScene.setScreen(new gameScene());
-        return super.touchDown(event, x, y, pointer, button);
-      }
-    });
 
   }
   private void createBoard(JsonValue Arrjv ){
-//    String StrLv = Gdx.files.internal("data/data.txt").readString();
-//    String ArrStrLv[] = StrLv.split("\n");
-////      String getLv[]    = ArrStrLv[lv-1].split();
-//
-//    JsonValue Arrjv = Utils.GetJsV(ArrStrLv[(lv-1)]);
-//      System.out.println("test: "+jv);
+    int index=0;
     for (JsonValue jv : Arrjv){
       Tile t = new Tile(group,this);
       t.setRowCol(jv.get("row").asInt(),jv.get("col").asInt());
       t.setLayer2(jv.get("layer").asInt());
-      t.setPos(jv.get("x").asFloat(),jv.get("y").asFloat(),jv.get("kind").asInt(),false);
+      t.setPos(jv.get("x").asFloat(),jv.get("y").asFloat(),jv.get("kind").asInt(),true,index);
       t.createID(jv.get("id").asInt());
       arrTileBoard.add(t);
+      index++;
     }
   }
   public void setLockTile(){
@@ -509,7 +469,9 @@ public class Board {
       int kind  = (int)arrCompare.get(0).getKind();
       if(row==(int)t.getRowCol().x && col == (int)t.getRowCol().y && id == t.getId() && kind== t.getKind()){
         System.out.println("trùng ");
-        arrCompare.get(0).select(false);
+        if(com.ss.scenes.gameScene.effect!=null)
+          com.ss.scenes.gameScene.effect.FreeAllEfSelect();
+//        arrCompare.get(0).select(false);
         arrCompare.clear();
       }else {
         System.out.println("them tile mới!!");
@@ -522,29 +484,18 @@ public class Board {
       if(arrCompare.get(0).getId()==arrCompare.get(1).getId()){
         Tile t1 = arrCompare.get(0);
         Tile t2 = arrCompare.get(1);
-//        removeTile((int)t1.getRowCol().x,(int)t1.getRowCol().y,t1.getKind(),t1.getId(),t1.getLayer());
-//        removeTile((int)t2.getRowCol().x,(int)t2.getRowCol().y,t2.getKind(),t2.getId(),t2.getLayer());
-//        System.out.println("arr board tile when match: "+arrTileBoard.size );
-//        arrCompare.clear();
-//        t1.dispose();
-//        t2.dispose();
-//        setDefault();
-//        setLockTile();
         matchTile(t1,t2);
-
-
-
-
-
-
       }else {
         arrCompare.get(0).select(false);
-        arrCompare.get(1).select(false);
-        arrCompare.clear();
+        arrCompare.removeIndex(0);
+//        arrCompare.get(1).select(false);
+//        arrCompare.clear();
       }
     }
   }
   private void matchTile(Tile t1, Tile t2){
+    if(com.ss.scenes.gameScene.effect!=null)
+      com.ss.scenes.gameScene.effect.FreeAllEfSelect();
     float x1 = t1.getXY().x+t1.gr.getWidth()/2;
     float y1 = t1.getXY().y+t1.gr.getHeight()/2;
     float x2 = t2.getXY().x+t2.gr.getWidth()/2;
@@ -578,30 +529,42 @@ public class Board {
     t1.setZindex(1000);
     t2.setZindex(1000);
     t1.gr.addAction(Actions.sequence(
-            Actions.moveBy(moveX1,moveY1,0.2f),
+            Actions.moveBy(moveX1,moveY1,0.2f,Interpolation.circleOut),
             Actions.moveBy(-(moveX1+moveOutX1),0,0.2f,Interpolation.swingOut),
             Actions.run(()->{
               t1.dispose();
             })
     ));
     t2.gr.addAction(Actions.sequence(
-            Actions.moveBy(moveX2,moveY2,0.2f),
-            Actions.moveBy(-(moveX2+moveOutX2),0,0.2f, Interpolation.swingOut),
+            Actions.moveBy(moveX2,moveY2,0.2f,Interpolation.circleOut),
+            Actions.moveBy(-(moveX2+moveOutX2),0,0.2f,Interpolation.swingOut),
             Actions.run(()->{
               t2.dispose();
             })
     ));
+    hintBoard("check before match");
+    if(arrTileHint.size<2 ){
+      if(arrTileBoard.size>2){
+        shuffleBoard("shuffle before match",()->{
+          System.out.println("finish!!");
+        });
+      }else if(arrTileBoard.size==2){
+        System.out.println("out of move!!!");
+      }else {
+        System.out.println("win game!!");
+      }
 
-
+    }
   }
-  private void autoMatch(){
+
+  public void autoMatch(){
     count++;
     if(count> Config.quanAutomatch){
       count=0;
       return;
     }
     SkipHint();
-    shuffleBoard(()->{
+    shuffleBoard("automatch",()->{
       if(arrTileHint.size>=2){
         Tile t1= arrTileHint.get(0);
         Tile t2= arrTileHint.get(1);
@@ -620,7 +583,6 @@ public class Board {
   private void removeTile(int row, int col,int kind,int id,int layer){
     for (Tile t : arrTileBoard){
       if(t.getRowCol().x==row && t.getRowCol().y==col && t.getKind()==kind && t.getId()==id && t.getLayer() == layer){
-//        t.dispose();
         arrTileBoard.removeIndex(arrTileBoard.indexOf(t,true));
       }
     }
@@ -638,7 +600,7 @@ public class Board {
   }
 
 
-  public void hintBoard(){
+  public void hintBoard(String type){
     arrTileHint.clear();
     arrTileCanHint.clear();
     for (Tile t : arrTileBoard){
@@ -667,9 +629,13 @@ public class Board {
       hint++;
       if(hint>2)
         return;
-      t.select(true);
-      t.ActionHint();
+      if(type.equals("hint")){
+        t.select(true);
+        t.ActionHint();
+      }
+
     }
+
   }
   public void SkipHint(){
     for (Tile t : arrTileHint)
@@ -680,7 +646,7 @@ public class Board {
     lbShuffle.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2, Align.center);
     group.addActor(lbShuffle);
   }
-  public void shuffleBoard(Runnable runnable){
+  public void shuffleBoard(String type,Runnable runnable){
     arrTileShuffle.clear();
     for (Tile t : arrTileBoard){
       arrTileShuffle.add(t.getId());
@@ -690,22 +656,28 @@ public class Board {
       for (Tile t : arrTileBoard){
         t.changeId(arrTileShuffle.get(arrTileBoard.indexOf(t,true)));
       }
+      setLockTile();
     }
-    hintBoard();
+    hintBoard(type);
     if(arrTileHint.size>=2){
-      lbShuffle.remove();
+//      lbShuffle.remove();
       group.addAction(Actions.run(runnable));
       return;
     }else {
-      shuffleBoard(runnable);
+      shuffleBoard(type,runnable);
     }
 
+  }
+  public void dispose(){
+    group.clear();
+    group.remove();
   }
 
   private void showfps(){
     s= Gdx.graphics.getFramesPerSecond();
     Label fps = new Label("fps: "+s,new Label.LabelStyle(BitmapFontC.font_white,null));
-    fps.setPosition(100,100);
+    fps.setFontScale(0.5f);
+    fps.setPosition(100,GStage.getWorldHeight()-100);
     group.addActor(fps);
     group.addAction(GSimpleAction.simpleAction((d, a)->{
       s= Gdx.graphics.getFramesPerSecond();

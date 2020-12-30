@@ -1,104 +1,237 @@
 
 ui.png
-size: 2048,1024
+size: 1024,2048
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 1star
   rotate: false
-  xy: 440, 234
+  xy: 546, 296
   size: 96, 42
   orig: 96, 42
   offset: 0, 0
   index: -1
 2star
   rotate: false
-  xy: 1623, 956
+  xy: 448, 296
   size: 96, 42
   orig: 96, 42
   offset: 0, 0
   index: -1
 3star
   rotate: false
-  xy: 342, 233
+  xy: 751, 546
   size: 96, 43
   orig: 96, 43
   offset: 0, 0
   index: -1
 TileLv
   rotate: false
-  xy: 1379, 804
+  xy: 724, 1176
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
   index: -1
 bg
   rotate: false
-  xy: 2, 278
-  size: 1280, 720
-  orig: 1280, 720
+  xy: 2, 766
+  size: 720, 1280
+  orig: 720, 1280
+  offset: 0, 0
+  index: -1
+btnGreen
+  rotate: false
+  xy: 724, 1802
+  size: 210, 75
+  orig: 210, 75
   offset: 0, 0
   index: -1
 btnHint
   rotate: false
-  xy: 262, 190
+  xy: 819, 1650
   size: 78, 86
   orig: 78, 86
   offset: 0, 0
   index: -1
+btnPause
+  rotate: false
+  xy: 819, 1562
+  size: 77, 86
+  orig: 77, 86
+  offset: 0, 0
+  index: -1
 btnPlay
   rotate: false
-  xy: 2, 188
+  xy: 724, 1958
   size: 258, 88
   orig: 258, 88
   offset: 0, 0
   index: -1
 btnReplay
   rotate: false
-  xy: 1284, 910
+  xy: 448, 423
   size: 258, 88
   orig: 258, 88
   offset: 0, 0
   index: -1
 btnShuffle
   rotate: false
-  xy: 1544, 912
+  xy: 471, 208
   size: 77, 86
   orig: 77, 86
   offset: 0, 0
   index: -1
+btnWatchAds
+  rotate: false
+  xy: 448, 340
+  size: 210, 81
+  orig: 210, 81
+  offset: 0, 0
+  index: -1
 btnYellow
   rotate: false
-  xy: 2, 124
+  xy: 724, 1738
   size: 182, 62
   orig: 182, 62
   offset: 0, 0
   index: -1
 cucxilau
   rotate: false
-  xy: 2, 2
+  xy: 724, 1494
   size: 93, 120
   orig: 93, 120
+  offset: 0, 0
+  index: -1
+exit
+  rotate: false
+  xy: 471, 153
+  size: 47, 53
+  orig: 47, 53
+  offset: 0, 0
+  index: -1
+fail
+  rotate: false
+  xy: 724, 1879
+  size: 257, 77
+  orig: 257, 77
+  offset: 0, 0
+  index: -1
+frmLevel
+  rotate: false
+  xy: 724, 766
+  size: 90, 90
+  orig: 90, 90
+  offset: 0, 0
+  index: -1
+frmScl
+  rotate: false
+  xy: 2, 76
+  size: 593, 43
+  orig: 593, 43
+  offset: 0, 0
+  index: -1
+home
+  rotate: false
+  xy: 724, 1070
+  size: 96, 104
+  orig: 96, 104
   offset: 0, 0
   index: -1
 iconlock
   rotate: false
-  xy: 186, 126
+  xy: 660, 361
   size: 45, 60
   orig: 45, 60
   offset: 0, 0
   index: -1
+offMusic
+  rotate: false
+  xy: 724, 858
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+offSound
+  rotate: false
+  xy: 724, 1282
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+onMusic
+  rotate: false
+  xy: 724, 1388
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+onSound
+  rotate: false
+  xy: 724, 964
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+popup
+  rotate: false
+  xy: 2, 296
+  size: 444, 468
+  orig: 444, 468
+  offset: 0, 0
+  index: -1
+ribonFail
+  rotate: false
+  xy: 2, 121
+  size: 467, 173
+  orig: 467, 173
+  offset: 0, 0
+  index: -1
+ribonWin
+  rotate: false
+  xy: 448, 591
+  size: 467, 173
+  orig: 467, 173
+  offset: 0, 0
+  index: -1
+scl
+  rotate: false
+  xy: 331, 42
+  size: 592, 32
+  orig: 592, 32
+  offset: 0, 0
+  index: -1
+star
+  rotate: false
+  xy: 819, 1510
+  size: 52, 50
+  orig: 52, 50
+  offset: 0, 0
+  index: -1
 starOff
   rotate: false
-  xy: 1623, 912
+  xy: 550, 252
   size: 96, 42
   orig: 96, 42
   offset: 0, 0
   index: -1
+titlePause
+  rotate: false
+  xy: 2, 2
+  size: 327, 72
+  orig: 327, 72
+  offset: 0, 0
+  index: -1
 titlebg
   rotate: false
-  xy: 1284, 788
+  xy: 724, 1616
   size: 93, 120
   orig: 93, 120
+  offset: 0, 0
+  index: -1
+victory
+  rotate: false
+  xy: 448, 513
+  size: 301, 76
+  orig: 301, 76
   offset: 0, 0
   index: -1

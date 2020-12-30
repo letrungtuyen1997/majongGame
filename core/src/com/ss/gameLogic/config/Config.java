@@ -13,16 +13,18 @@ public class Config {
     public static String        uri                 = Gdx.files.internal("uri/uri.txt").readString();
     public static boolean       remoteEffect        = Boolean.parseBoolean(Gdx.files.internal("uri/effect.txt").readString());
     public static int           condi_merge         = Integer.parseInt(Gdx.files.internal("uri/condi_merge.txt").readString());
-    public static int           row                 = 8;
-    public static int           col                 = 8;
+    public static int           row                 = 10;
+    public static int           col                 = 10;
     public static float         paddingX            = 3;
     public static float         paddingY            = 3;
-    public static float         duraMove            = 1;
+    public static float         duraMove            = 0.5f;
     public static float         ShakeX              =5;
     public static float         duraShake           =0.2f;
     public static float         duraHint            =0.2f;
     public static float         duraSelect          =0.1f;
     public static int           quanAutomatch       = 5;
+    public static float         TileW               = 93;
+    public static float         TileH               = 120;
 
     public static int           quanLayer           = 10;
     public static int           quanAni             = 40;

@@ -16,14 +16,15 @@ import com.ss.commons.TextureAtlasC;
 
 public class effectWin extends Actor{
     ////////// file handel/////
-    FileHandle light = Gdx.files.internal("particle/light");
-    FileHandle lightyelow = Gdx.files.internal("particle/lightYellow");
-    FileHandle tree = Gdx.files.internal("particle/tree");
-    FileHandle merge = Gdx.files.internal("particle/merge");
-    FileHandle test = Gdx.files.internal("particle2/cu-lu");
+    FileHandle match = Gdx.files.internal("particle/match");
+    FileHandle select = Gdx.files.internal("particle/select");
+//    FileHandle lightyelow = Gdx.files.internal("particle/lightYellow");
+//    FileHandle tree = Gdx.files.internal("particle/tree");
+//    FileHandle merge = Gdx.files.internal("particle/merge");
+//    FileHandle test = Gdx.files.internal("particle2/cu-lu");
     //////// index handel ///////
-    public static int Light = 1;
-    public static int Lightyellow = 2;
+    public static int Match = 1;
+    public static int Select = 2;
     public static int Tree = 3;
     public static int Merge = 4;
     public ParticleEffect effect;
@@ -42,45 +43,20 @@ public class effectWin extends Actor{
         this.pooledEffect = effectPool.obtain();
         setX(f);
         setY(f2);
-            if(id==1){
-                this.effect.load(test,Gdx.files.internal("particle2"));
+            if(id==Match) {
+                this.effect.load(match, TextureAtlasC.effectAtlas);
                 for (int i = 0; i < this.effect.getEmitters().size; i++) {
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
-                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true,false);
+                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
-                arrSprite.addAll(this.effect.getEmitters().get(0).getSprites());
-//                System.out.println("check2: "+this.effect.getEmitters().get(0).getSprites().size);
-//                System.out.println("check3: "+arrSprite.size);
-//                this.effect.getEmitters().get(0).getSprites().swap(0,(id2-1));
-                this.effect.scaleEffect(2f);
-
-            }else if(id==Light){
-
-//                this.effect.load(light, TextureAtlasC.effectAtlas);
+                this.effect.scaleEffect(1f);
+            }else if(id==Select) {
+                this.effect.load(select, TextureAtlasC.effectAtlas);
                 for (int i = 0; i < this.effect.getEmitters().size; i++) {
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
-                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true,false);
+                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
-//                this.effect.getEmitters().get(0).getSprites().swap(0,(id2-1));
-                this.effect.scaleEffect(3f);
-
-            }else if(id==Tree){
-//                this.effect.load(tree, TextureAtlasC.effectAtlas);
-                for (int i = 0; i < this.effect.getEmitters().size; i++) {
-                    ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
-                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true,false);
-                }
-//                this.effect.getEmitters().get(0).getSprites().swap(0,(id2-1));
-                this.effect.scaleEffect(2.5f);
-            }
-            else if(id==Merge){
-//                this.effect.load(merge, TextureAtlasC.effectAtlas);
-                for (int i = 0; i < this.effect.getEmitters().size; i++) {
-                    ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
-                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true,false);
-                }
-//                this.effect.getEmitters().get(0).getSprites().swap(0,(id2-1));
-                this.effect.scaleEffect(4f);
+                this.effect.scaleEffect(1f);
             }
         this.effect.setPosition(f, f2);
     }

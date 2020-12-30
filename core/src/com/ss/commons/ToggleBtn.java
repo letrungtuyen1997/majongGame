@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.ss.core.util.GLayerGroup;
 import com.ss.core.util.GUI;
 import com.ss.effects.SoundEffect;
@@ -80,9 +81,9 @@ public class ToggleBtn {
     return value;
   }
 
-  public void setPosition(float x, float y){
-    shapeOff.setPosition(x, y);
-    shapeOn.setPosition(x, y);
+  public void setPosition(float x, float y, int set){
+    shapeOff.setPosition(x, y,set);
+    shapeOn.setPosition(x, y,set);
   }
 
   public void setActive(boolean isActive){

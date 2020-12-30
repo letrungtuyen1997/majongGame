@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -80,7 +81,7 @@ public class ButtonC {
     bitmapFont = font;
   }
 
-  public void addText(String text){
+  public void addText(String text,float scl){
     this.text = text;
     if(label != null){
       label.setText(this.text);
@@ -88,9 +89,11 @@ public class ButtonC {
     else{
       if(bitmapFont != null){
         label = new LabelC(this.text, new Label.LabelStyle(bitmapFont, null));
+        label.setFontScale(scl);
+        label.setAlignment(Align.center);
         gshape = new GShapeSprite();
         gshape.createRectangle(true, 0, 0, group.getWidth(), group.getHeight());
-        gshape.setColor(0, 0, 0, 0.3f);
+        gshape.setColor(0, 0, 0, 0.0f);
         group.addActor(label);
         group.addActor(gshape);
 
@@ -103,8 +106,12 @@ public class ButtonC {
     }
   }
 
-  public void setPosition(float x, float y){
-    group.setPosition(x, y);
+  public void setPosition(float x, float y,int Align){
+    group.setPosition(x, y,Align);
+  }
+  public void setScale(float sclX, float sclY){
+    group.setScale(sclX,sclY);
+    group.setOrigin(Align.center);
   }
 
   public void addTouchDown(Runnable runnable){
@@ -167,5 +174,11 @@ public class ButtonC {
 
   public void setColor(float r, float g, float b, float a){
     image.setColor(r, g, b, a);
+  }
+  public Vector2 getSize(){
+    return new Vector2(group.getWidth(),group.getHeight());
+  }
+  public Vector2 getXY(){
+    return new Vector2(group.getX(),group.getY());
   }
 }

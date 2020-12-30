@@ -21,23 +21,27 @@ import com.ss.core.action.exAction.GShakeAction;
 import com.ss.core.action.exAction.GSimpleAction;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
+import com.ss.effects.effectWin;
 import com.ss.gameLogic.config.Config;
+import com.ss.scenes.gameScene;
 
 public class Tile {
   public Image            block,OverLay;
-  private Board board;
-  private float           SclW        = 0.4f;
-  private float           SclH        = 0.4f;
+  private Board           board;
   private int             Layer       = 0;
   private int             row,col;
   public  float           x,y;
   public  int             id;
   public  int             kind;
-  private Label           IdLb;
-  public Group           gr = new Group();
+  private Image           IdAni;
+  public Group            gr = new Group();
   private Array<Integer>  arrActionShark = new Array<>();
+  private Group           group;
+  private int             idEff   =0;
+
   public Tile(Group group, Board board){
     this.board  = board;
+    this.group  = group;
     gr.setOrigin(Align.center);
     group.addActor(gr);
     arrActionShark.add(1);
@@ -50,30 +54,27 @@ public class Tile {
   }
   public void createID(int Id){
     this.id = Id;
-    IdLb = new Label(""+id,new Label.LabelStyle(BitmapFontC.font_white, Color.BLUE));
-    IdLb.setFontScale(0.6f);
-    IdLb.setAlignment(Align.center);
-    IdLb.setPosition(block.getX(Align.center),block.getY(Align.center),Align.center);
-    gr.addActor(IdLb);
-    OverLay = GUI.createImage(TextureAtlasC.uiAtlas,"titlebg");
-    OverLay.setPosition(block.getX(),block.getY());
-    gr.addActor(OverLay);
-    select(false);
-
+    IdAni = GUI.createImage(TextureAtlasC.AnimalsAtlas,""+id);
+    IdAni.setPosition(block.getX(Align.center),block.getY(Align.center),Align.center);
+    gr.addActor(IdAni);
+//    OverLay = GUI.createImage(TextureAtlasC.uiAtlas,"titlebg");
+//    OverLay.setPosition(block.getX(),block.getY());
+//    gr.addActor(OverLay);
+//    select(false);
   }
 
-  public void setPos(float x ,float y,int kind,boolean move){
+  public void setPos(float x ,float y,int kind,boolean move,int index){
     block = GUI.createImage(TextureAtlasC.uiAtlas,"cucxilau");
-//    block.setPosition();
     System.out.println("get Layer: "+getLayer());
     gr.setSize(block.getWidth(),block.getHeight());
     gr.setOrigin(Align.center);
     gr.addActor(block);
     this.kind = kind;
     if(move==true){
-      gr.setPosition(GStage.getWorldWidth()/2,-100);
+      gr.setPosition(GStage.getWorldWidth()/2,-GStage.getWorldHeight()/2-group.getHeight()/2);
       gr.addAction(Actions.sequence(
-              Actions.moveTo(x-block.getWidth()/2-((Layer-1)* Config.paddingX)+gr.getWidth()/2,y-block.getHeight()/2-((Layer-1)* Config.paddingY),Config.duraMove,Interpolation.swingOut),
+              Actions.delay(0.01f*index),
+              Actions.moveTo(x-block.getWidth()-((Layer-1)* Config.paddingX)+gr.getWidth()/2,y-block.getHeight()/2-((Layer-1)* Config.paddingY),Config.duraMove,Interpolation.swingOut),
               GSimpleAction.simpleAction((d,a)->{
                 this.x=gr.getX();
                 this.y=gr.getY();
@@ -81,10 +82,11 @@ public class Tile {
               })
       ));
     }else {
-      gr.setPosition(x-block.getWidth()*0.4f,y-block.getHeight()/2);
+      gr.setPosition(x-block.getWidth()*0.6f,y-block.getHeight()/2);
       this.x=gr.getX();
       this.y=gr.getY();
       this.kind = kind;
+//      gr.debug();
     }
 
   }
@@ -120,9 +122,17 @@ public class Tile {
   public int getId(){return id;}
   public void setColor(Color set){
     block.setColor(set);
+    IdAni.setColor(set);
   }
   public void select(boolean set){
-    OverLay.setVisible(set);
+    if(set==true){
+      if(gameScene.effect!=null)
+        idEff = gameScene.effect.StartEffSelect(effPos().x-2,effPos().y);
+    }else {
+      if(gameScene.effect!=null)
+        gameScene.effect.FreeEfSelect(idEff);
+    }
+//    OverLay.setVisible(set);
   }
   public boolean checkLock(){
     if(block.getColor()==Color.DARK_GRAY)
@@ -132,13 +142,6 @@ public class Tile {
   public void ActionSelectLock(int s){
     gr.addAction(Actions.sequence(
             GScreenShakeAction.screenShake1(Config.duraShake,5,gr)
-//            Actions.moveBy(Config.ShakeX*s,-Config.ShakeX*s,Config.duraShake),
-//            Actions.moveBy(-Config.ShakeX*2*s,Config.ShakeX*2*s,Config.duraShake),
-//            Actions.moveBy(Config.ShakeX*2*s,-Config.ShakeX*2*s,Config.duraShake),
-//            Actions.moveBy(-Config.ShakeX*2*s,Config.ShakeX*2*s,Config.duraShake),
-//            Actions.moveBy(Config.ShakeX*2*s,-Config.ShakeX*2*s,Config.duraShake),
-//            Actions.moveBy(-Config.ShakeX*2*s,Config.ShakeX*2*s,Config.duraShake),
-//            Actions.moveBy(Config.ShakeX*s,-Config.ShakeX*s,Config.duraShake)
     ));
   }
   private void ActionSelect(){
@@ -153,43 +156,55 @@ public class Tile {
             Actions.rotateBy(10,Config.duraHint)
     ));
   }
+  private Vector2 effPos(){
+    return new Vector2(gr.getParent().localToStageCoordinates(new Vector2(gr.getX(Align.center),gr.getY(Align.center))));
+  }
   public void dispose(){
-
+    if(gameScene.effect!=null){
+      gameScene.effect.StartEff(effPos().x,effPos().y);
+    }
     gr.clear();
     gr.remove();
   }
   public void changeId(int Id){
-//    gr.addAction(Actions.sequence(
-//            Actions.moveTo(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2,0.5f),
-//            GSimpleAction.simpleAction((d,a)->{
-//              this.id = Id;
-//              IdLb.setText(""+id);
-//              return true;
-//            }),
-//            Actions.moveTo(x,y,0.5f)
-//    ));
-    this.id = Id;
-    IdLb.setText(""+id);
-
+    IdAni.clear();
+    IdAni.remove();
+    createID(Id);
+////    gr.addAction(Actions.sequence(
+////            Actions.moveTo(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2,0.5f),
+////            GSimpleAction.simpleAction((d,a)->{
+////              this.id = Id;
+////              IdLb.setText(""+id);
+////              return true;
+////            }),
+////            Actions.moveTo(x,y,0.5f)
+////    ));
+//    this.id = Id;
+//    IdLb.setText(""+id);
   }
 
   private void addevent(){
     gr.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+//        if(gameScene.effect!=null)
+//          idEff = gameScene.effect.StartEffSelect(gr.getX(Align.right)-5,gr.getY(Align.top));
+        select(true);
         System.out.println("check tile click: "+getRowCol().x+"__"+getRowCol().y+"__"+getKind()+"__"+getLayer());
         Array<Tile> arrTile = board.getLock(Tile.this);
         Array<Tile> arrTile2 = board.getLockLayer(Tile.this);
-        if(arrTile!=null){
+        if(arrTile!=null && arrTile.size!=0){
+//          if(gameScene.effect!=null)
+//            gameScene.effect.FreeEfSelect(idEff);
+          select(false);
           for (Tile t : arrTile){
-//            Tweens.setTimeout(gr,0.1f*arrTile.indexOf(t,true),()->{
               t.ActionSelectLock(arrActionShark.get((int)(Math.random()*arrActionShark.size)));
-
-//            });
           }
 
         }else if(board.checkLayer(Tile.this)==1) {
-//          ActionSelect();
+//          if(gameScene.effect!=null)
+//            gameScene.effect.FreeEfSelect(idEff);
+          select(false);
           Array<Tile> arr = new Array<>();
           System.out.println("check size arrTile2: "+arrTile2.size);
           System.out.println("check this tile: "+getRowCol().x+"_"+getRowCol().y+"_"+getKind()+"_"+getLayer());
@@ -203,15 +218,11 @@ public class Tile {
           if(arr.size>=2){
             for (Tile t : arr){
               System.out.println("tile orthe layer: "+t.getRowCol().x+"_"+t.getRowCol().y+"_"+t.getKind()+"_"+t.getLayer());
-//              Tweens.setTimeout(gr,0.1f*arr.indexOf(t,true),()->{
                 t.ActionSelectLock(arrActionShark.get((int)(Math.random()*arrActionShark.size)));
-//              });
             }
           }
-
         }else {
           ActionSelect();
-          select(true);
           board.checkMatch(Tile.this);
         }
         return super.touchDown(event, x, y, pointer, button);

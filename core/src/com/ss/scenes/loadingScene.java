@@ -35,8 +35,8 @@ public class loadingScene extends GScreen {
         new PaticleConvert();
         BitmapFontC.initBitmapFont();
         SoundEffect.initSound();
-        if(Config.remoteEffect)
-            LoadParticle.init();
+//        if(Config.remoteEffect)
+//            LoadParticle.init();
 //        C.init();
 
     }
@@ -50,7 +50,7 @@ public class loadingScene extends GScreen {
             }
     }
 
-    float waitTime = 1f;
+    float waitTime = 3f;
     @Override
     public void run() {
          System.out.println("run");
