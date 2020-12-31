@@ -1,24 +1,32 @@
 package com.ss.gameLogic.objects;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.ss.commons.BitmapFontC;
 import com.ss.commons.ButtonC;
 import com.ss.commons.TextureAtlasC;
+import com.ss.commons.Tweens;
+import com.ss.core.action.exAction.GScreenShakeAction;
+import com.ss.core.action.exAction.GSimpleAction;
 import com.ss.core.exSprite.GShapeSprite;
 import com.ss.core.util.GLayer;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
+import com.ss.gameLogic.config.Config;
 
 public class EndGame {
   private Group    group       = new Group();
   private String   ribon,title;
-  public EndGame(boolean isWin){
+  public EndGame(boolean isWin,int star){
     if(isWin){
       ribon = "ribonWin";
       title = "victory";
@@ -49,7 +57,6 @@ public class EndGame {
     group.addActor(popup);
 
     Image ribbon = GUI.createImage(TextureAtlasC.uiAtlas,ribon);
-//    ribbon.setSize(ribbon.getWidth()*0.8f,ribbon.getHeight()*0.8f);
     ribbon.setOrigin(Align.center);
     ribbon.setPosition(0,-popup.getHeight()/2+ribbon.getHeight()*0.15f,Align.center);
     group.addActor(ribbon);
@@ -59,18 +66,122 @@ public class EndGame {
     group.addActor(Title);
 
     if(isWin){
-      ButtonC btnNextLv = new ButtonC(TextureAtlasC.uiAtlas,group,"btnGreen");
-      btnNextLv.setScale(0.7f,0.7f);
-      btnNextLv.setPosition(-btnNextLv.getSize().x/2,popup.getHeight()/2-btnNextLv.getSize().y/2,Align.center);
-      btnNextLv.addBitmapFont(BitmapFontC.font_white);
-      btnNextLv.addText("nextLv",0.7f);
+      aniStar(star,()->{
+        Image gift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
+        gift.setOrigin(Align.center);
+        gift.setPosition(0,20,Align.center);
+        group.addActor(gift);
+        gift.setScale(0);
+        gift.addAction(Actions.sequence(
+                Actions.scaleTo(1,1,0.2f),
+                GSimpleAction.simpleAction((d,a)->{
+                  aniGift(gift);
+                  return true;
+                })
+        ));
+      });
+      initButton(-popup.getWidth()*0.2f,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","Next Level",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+          return super.touchDown(event, x, y, pointer, button);
+        }
+      });
 
-      ButtonC btnWatch = new ButtonC(TextureAtlasC.uiAtlas,group,"btnWatchAds");
-      btnWatch.setScale(0.7f,0.7f);
-      btnWatch.setPosition(btnWatch.getSize().x/2,popup.getHeight()/2-btnWatch.getSize().y/2,Align.center);
-      btnWatch.addBitmapFont(BitmapFontC.font_white);
-      btnWatch.addText("open gift",0.4f);
+      initButton(popup.getWidth()*0.2f,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnWatchAds","Open Gift",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+          return super.touchDown(event, x, y, pointer, button);
+        }
+      });
+
+    }else {
+      initButton(0,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","Replay",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+          return super.touchDown(event, x, y, pointer, button);
+        }
+      });
     }
 
+  }
+  private void aniStar(int star,Runnable runnable){
+    for (int i=0;i<star;i++){
+      int finalI = i;
+      Tweens.setTimeout(group,0.5f*i,()->{
+        Image icStar = GUI.createImage(TextureAtlasC.uiAtlas,(finalI +1) + "star");
+        icStar.setSize(icStar.getWidth()*2,icStar.getHeight()*2);
+        icStar.setScale(5);
+        icStar.setOrigin(Align.center);
+        icStar.setPosition(0,-80,Align.center);
+        group.addActor(icStar);
+        icStar.addAction(Actions.sequence(
+                Actions.scaleTo(1,1,0.2f),
+                GScreenShakeAction.screenShake1(Config.duraShake,5,group),
+                GSimpleAction.simpleAction((d,a)->{
+                  if(finalI==star-1){
+                    group.addAction(Actions.run(runnable));
+                  }
+                  return true;
+                })
+        ));
+      });
+    }
+  }
+  private void aniGift(Image img){
+    img.addAction(Actions.sequence(
+            Actions.delay(0.5f),
+            Actions.parallel(
+              Actions.rotateBy(15,0.4f),
+              Actions.sequence(
+                Actions.moveBy(10,0,0.1f),
+                Actions.moveBy(-20,0,0.1f),
+                Actions.moveBy(20,0,0.1f),
+                Actions.moveBy(-20,0,0.1f),
+                Actions.moveBy(10,0,0.1f)
+              )
+            ),
+            Actions.parallel(
+              Actions.rotateBy(-30,0.4f),
+              Actions.sequence(
+                Actions.moveBy(10,0,0.1f),
+                Actions.moveBy(-20,0,0.1f),
+                Actions.moveBy(20,0,0.1f),
+                Actions.moveBy(-20,0,0.1f),
+                Actions.moveBy(10,0,0.1f)
+              )
+            ),
+            Actions.parallel(
+              Actions.rotateBy(15,0.4f),
+              Actions.sequence(
+                Actions.moveBy(10,0,0.1f),
+                Actions.moveBy(-20,0,0.1f),
+                Actions.moveBy(20,0,0.1f),
+                Actions.moveBy(-20,0,0.1f),
+                Actions.moveBy(10,0,0.1f)
+              )
+            ),
+            GSimpleAction.simpleAction((d,a)->{
+              aniGift(img);
+              return true;
+            })
+    ));
+  }
+
+  private void initButton(float x, float y, TextureAtlas atlas, String kind, String text, BitmapFont bit, float sclText, float sclbtn, Group gr, ClickListener event) {
+    Group grbtn = new Group();
+    gr.addActor(grbtn);
+    Image btn = GUI.createImage(atlas, kind);
+    btn.setSize(btn.getWidth()*sclbtn,btn.getHeight()*sclbtn);
+    btn.setOrigin(Align.center);
+    grbtn.addActor(btn);
+    Label lbItSp = new Label(text, new Label.LabelStyle(bit, null));
+    lbItSp.setFontScale(sclText);
+    GlyphLayout glItSp = new GlyphLayout(bit, lbItSp.getText());
+    lbItSp.setSize(glItSp.width * lbItSp.getFontScaleX(), glItSp.height * lbItSp.getFontScaleY());
+    lbItSp.setPosition(btn.getX() + btn.getWidth() * 0.5f, btn.getY() + btn.getHeight() * 0.5f, Align.center);
+    grbtn.addActor(lbItSp);
+    grbtn.setSize(btn.getWidth(), btn.getHeight());
+    grbtn.setPosition(x, y, Align.center);
+    grbtn.addListener(event);
   }
 }
