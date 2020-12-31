@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.ss.commons.BitmapFontC;
 import com.ss.commons.ButtonC;
 import com.ss.commons.TextureAtlasC;
@@ -69,7 +70,7 @@ public class EndGame {
       aniStar(star,()->{
         Image gift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
         gift.setOrigin(Align.center);
-        gift.setPosition(0,20,Align.center);
+        gift.setPosition(0,gift.getHeight()/2,Align.center);
         group.addActor(gift);
         gift.setScale(0);
         gift.addAction(Actions.sequence(
@@ -80,14 +81,14 @@ public class EndGame {
                 })
         ));
       });
-      initButton(-popup.getWidth()*0.2f,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","Next Level",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+      initButton(-popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen","Next Level",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
           return super.touchDown(event, x, y, pointer, button);
         }
       });
 
-      initButton(popup.getWidth()*0.2f,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnWatchAds","Open Gift",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+      initButton(popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnWatchAds","Open Gift",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
           return super.touchDown(event, x, y, pointer, button);
@@ -95,6 +96,25 @@ public class EndGame {
       });
 
     }else {
+      for (int i=0;i<3;i++){
+        int finalI = i;
+        Tweens.setTimeout(group,0.4f*i,()->{
+          Image ic = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(finalI +1)+"Off");
+          ic.setPosition(-ic.getWidth()*1.5f+ic.getWidth()* finalI,50,Align.topLeft);
+          group.addActor(ic);
+          if(finalI ==0)
+            ic.setX(ic.getX()-10);
+          if(finalI ==2)
+            ic.setX(ic.getX()+10);
+          ic.setScale(5);
+          ic.setOrigin(Align.center);
+          ic.addAction(Actions.scaleTo(1,1,0.2f));
+
+        });
+
+
+      }
+
       initButton(0,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","Replay",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -105,14 +125,26 @@ public class EndGame {
 
   }
   private void aniStar(int star,Runnable runnable){
+    Array<Image> arrIc = new Array<>();
+    for (int i=0;i<3;i++){
+      Image ic = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(i+1)+"Off");
+      ic.setPosition(-ic.getWidth()*1.5f+ic.getWidth()*i,0,Align.topLeft);
+      group.addActor(ic);
+      if(i==0)
+        ic.setX(ic.getX()-10);
+      if(i==2)
+        ic.setX(ic.getX()+10);
+
+      arrIc.add(ic);
+    }
+
     for (int i=0;i<star;i++){
       int finalI = i;
       Tweens.setTimeout(group,0.5f*i,()->{
-        Image icStar = GUI.createImage(TextureAtlasC.uiAtlas,(finalI +1) + "star");
-        icStar.setSize(icStar.getWidth()*2,icStar.getHeight()*2);
+        Image icStar = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(finalI+1)+"On");
         icStar.setScale(5);
         icStar.setOrigin(Align.center);
-        icStar.setPosition(0,-80,Align.center);
+        icStar.setPosition(arrIc.get(finalI).getX(),arrIc.get(finalI).getY());
         group.addActor(icStar);
         icStar.addAction(Actions.sequence(
                 Actions.scaleTo(1,1,0.2f),

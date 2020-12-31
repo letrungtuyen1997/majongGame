@@ -6,14 +6,14 @@ filter: Nearest,Nearest
 repeat: none
 1star
   rotate: false
-  xy: 569, 140
+  xy: 655, 291
   size: 96, 42
   orig: 96, 42
   offset: 0, 0
   index: -1
 2star
   rotate: false
-  xy: 724, 771
+  xy: 569, 126
   size: 96, 42
   orig: 96, 42
   offset: 0, 0
@@ -27,7 +27,7 @@ repeat: none
   index: -1
 TileLv
   rotate: false
-  xy: 724, 1133
+  xy: 724, 901
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
@@ -48,14 +48,14 @@ btnGreen
   index: -1
 btnHint
   rotate: false
-  xy: 901, 1791
+  xy: 818, 337
   size: 78, 86
   orig: 78, 86
   offset: 0, 0
   index: -1
 btnPause
   rotate: false
-  xy: 901, 1703
+  xy: 660, 335
   size: 77, 86
   orig: 77, 86
   offset: 0, 0
@@ -76,7 +76,7 @@ btnReplay
   index: -1
 btnShuffle
   rotate: false
-  xy: 819, 1501
+  xy: 739, 336
   size: 77, 86
   orig: 77, 86
   offset: 0, 0
@@ -97,14 +97,14 @@ btnYellow
   index: -1
 cucxilau
   rotate: false
-  xy: 724, 1345
+  xy: 724, 1113
   size: 93, 120
   orig: 93, 120
   offset: 0, 0
   index: -1
 exit
   rotate: false
-  xy: 819, 1350
+  xy: 667, 140
   size: 47, 53
   orig: 47, 53
   offset: 0, 0
@@ -118,7 +118,7 @@ fail
   index: -1
 frmLevel
   rotate: false
-  xy: 569, 184
+  xy: 901, 1681
   size: 90, 90
   orig: 90, 90
   offset: 0, 0
@@ -146,28 +146,28 @@ giftOpen
   index: -1
 home
   rotate: false
-  xy: 724, 1027
+  xy: 724, 795
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
   index: -1
 iconlock
   rotate: false
-  xy: 660, 361
+  xy: 898, 363
   size: 45, 60
   orig: 45, 60
   offset: 0, 0
   index: -1
 offMusic
   rotate: false
-  xy: 724, 815
+  xy: 901, 1773
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
   index: -1
 offSound
   rotate: false
-  xy: 724, 1239
+  xy: 724, 1007
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
@@ -181,7 +181,7 @@ onMusic
   index: -1
 onSound
   rotate: false
-  xy: 724, 921
+  xy: 569, 170
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
@@ -216,14 +216,56 @@ scl
   index: -1
 star
   rotate: false
-  xy: 819, 1405
+  xy: 667, 195
   size: 52, 50
   orig: 52, 50
   offset: 0, 0
   index: -1
+star1Off
+  rotate: false
+  xy: 865, 1592
+  size: 83, 87
+  orig: 83, 87
+  offset: 0, 0
+  index: -1
+star1On
+  rotate: false
+  xy: 708, 424
+  size: 82, 87
+  orig: 82, 87
+  offset: 0, 0
+  index: -1
+star2Off
+  rotate: false
+  xy: 724, 1473
+  size: 119, 114
+  orig: 119, 114
+  offset: 0, 0
+  index: -1
+star2On
+  rotate: false
+  xy: 724, 1357
+  size: 118, 114
+  orig: 118, 114
+  offset: 0, 0
+  index: -1
+star3Off
+  rotate: false
+  xy: 792, 425
+  size: 82, 87
+  orig: 82, 87
+  offset: 0, 0
+  index: -1
+star3On
+  rotate: false
+  xy: 876, 425
+  size: 82, 87
+  orig: 82, 87
+  offset: 0, 0
+  index: -1
 starOff
   rotate: false
-  xy: 819, 1457
+  xy: 667, 247
   size: 96, 42
   orig: 96, 42
   offset: 0, 0
@@ -237,7 +279,7 @@ titlePause
   index: -1
 titlebg
   rotate: false
-  xy: 724, 1467
+  xy: 724, 1235
   size: 93, 120
   orig: 93, 120
   offset: 0, 0

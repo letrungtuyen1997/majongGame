@@ -27,11 +27,12 @@ public class SelectLevel {
   private gameScene  gameScene;
   private Group      group;
   private boolean    isDrag = false;
+  private int        s;
+  private int        lvPer;
 
-  private int s;
-
-  public SelectLevel(Group group,gameScene gameScene){
+  public SelectLevel(Group group,gameScene gameScene,int lvPer){
     this.gameScene = gameScene;
+    this.lvPer     = lvPer;
     this.group = group;
     grTable.setSize(GStage.getWorldWidth(),1000);
     grTable.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2, Align.center);
@@ -112,6 +113,9 @@ public class SelectLevel {
     grTable.addActor(table);
     grTable.setScale(1,-1);
     grTable.setOrigin(Align.center);
+
+    scroll.layout();
+    scroll.setScrollPercentY((float) ((float)lvPer/2.5f)/10);
   }
   private void dispose(){
     grTable.clear();

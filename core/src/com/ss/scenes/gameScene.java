@@ -35,11 +35,11 @@ public class gameScene extends GScreen {
     bg.setSize(GStage.getWorldWidth(),GStage.getWorldHeight());
     group.addActor(bg);
 
-    new SelectLevel(group,this);
+    new SelectLevel(group,this,25);
     bg.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        new EndGame(true,3);
+        new EndGame(false,3);
 
         System.out.println("click!!");
 //        effectWin ef =new effectWin(1,GStage.getWorldWidth()/2,100,group);
