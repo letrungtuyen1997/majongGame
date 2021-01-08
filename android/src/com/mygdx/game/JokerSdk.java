@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -34,8 +34,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+//import com.google.firebase.iid.FirebaseInstanceId;
+//import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.platform.IPlatform;
@@ -78,7 +78,7 @@ public class JokerSdk implements IPlatform {
   }
 
   public void OnCreate(View libgdxview) {
-
+    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
     rootView = new FrameLayout(androidLauncher);
     rootView.addView(libgdxview);
     androidLauncher.setContentView(rootView);
@@ -197,12 +197,12 @@ public class JokerSdk implements IPlatform {
 
   @Override
   public void CrashKey(String key, String value) {
-    Crashlytics.setString(key, value);
+    FirebaseCrashlytics.getInstance().setCustomKey(key, value);
   }
 
   @Override
   public void CrashLog(String log) {
-    Crashlytics.log(log);
+    FirebaseCrashlytics.getInstance().log(log);
   }
 
   @Override
@@ -415,14 +415,14 @@ public class JokerSdk implements IPlatform {
 
   void InitFirebase(){
     try {
-      mFirebaseAnalytics = FirebaseAnalytics.getInstance(androidLauncher);
-      FirebaseInstanceId.getInstance().getInstanceId()
-              .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                @Override
-                public void onComplete(Task<InstanceIdResult> task) {
-                  //Log.d("IID_TOKEN", task.getResult().getToken());
-                }
-              });
+//      mFirebaseAnalytics = FirebaseAnalytics.getInstance(androidLauncher);
+//      FirebaseInstanceId.getInstance().getInstanceId()
+//              .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                @Override
+//                public void onComplete(Task<InstanceIdResult> task) {
+//                  //Log.d("IID_TOKEN", task.getResult().getToken());
+//                }
+//              });
     }
     catch(Exception e){
       e.printStackTrace();
@@ -447,8 +447,8 @@ public class JokerSdk implements IPlatform {
     try {
       mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
       FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().build();
-      mFirebaseRemoteConfig.setConfigSettings(configSettings);
-      mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+      mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+      mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
       int cacheExpiration = 1;
       mFirebaseRemoteConfig.fetch(cacheExpiration)
               .addOnCompleteListener(androidLauncher, new OnCompleteListener<Void>() {
@@ -456,7 +456,8 @@ public class JokerSdk implements IPlatform {
                 public void onComplete(@NonNull Task<Void> task) {
                   if (task.isSuccessful()) {
                     Log.i("remoteconfig", "ok");
-                    mFirebaseRemoteConfig.activateFetched();
+//                    mFirebaseRemoteConfig.activateFetched();
+                    mFirebaseRemoteConfig.fetchAndActivate();
                   } else {
                     Log.i("remoteconfig", "false");
                   }

@@ -9,13 +9,14 @@ import com.ss.core.util.GLayer;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
+import com.ss.gameLogic.config.Config;
 import com.ss.gameLogic.objects.Board;
 import com.ss.gameLogic.objects.Effect;
 import com.ss.gameLogic.objects.EndGame;
 import com.ss.gameLogic.objects.SelectLevel;
 
 
-public class gameScene extends GScreen {
+public class GameScene extends GScreen {
 
   private        Group                       group              = new Group();
   private        Board                       board;
@@ -35,12 +36,11 @@ public class gameScene extends GScreen {
     bg.setSize(GStage.getWorldWidth(),GStage.getWorldHeight());
     group.addActor(bg);
 
-    new SelectLevel(group,this,25);
+    new SelectLevel(group,this, Config.LvPer,Config.isContinues);
     bg.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        new EndGame(false,3);
-
+//        new EndGame(false,3);
         System.out.println("click!!");
 //        effectWin ef =new effectWin(1,GStage.getWorldWidth()/2,100,group);
 //        ef.start();

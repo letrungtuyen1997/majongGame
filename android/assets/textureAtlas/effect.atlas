@@ -4,65 +4,86 @@ size: 512,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+004
+  rotate: false
+  xy: 359, 68
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+010
+  rotate: false
+  xy: 293, 60
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 021
   rotate: false
-  xy: 293, 25
+  xy: 359, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 041
   rotate: false
-  xy: 204, 91
+  xy: 204, 126
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 2-6
   rotate: false
-  xy: 429, 86
+  xy: 429, 121
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
+UI_QiangHua03
+  rotate: false
+  xy: 2, 32
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
 butter
   rotate: false
-  xy: 2, 19
+  xy: 2, 54
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 fire
   rotate: false
-  xy: 429, 152
+  xy: 429, 187
   size: 64, 67
   orig: 64, 67
   offset: 0, 0
   index: -1
 line
   rotate: false
-  xy: 495, 99
+  xy: 495, 134
   size: 11, 120
   orig: 11, 120
   offset: 0, 0
   index: -1
 pblue
   rotate: false
-  xy: 204, 2
+  xy: 204, 37
   size: 87, 87
   orig: 87, 87
   offset: 0, 0
   index: -1
 select
   rotate: false
-  xy: 334, 99
+  xy: 334, 134
   size: 93, 120
   orig: 93, 120
   offset: 0, 0
   index: -1
 zhuji31_BZ3
   rotate: false
-  xy: 2, 3
+  xy: 293, 44
   size: 13, 14
   orig: 13, 14
   offset: 0, 0

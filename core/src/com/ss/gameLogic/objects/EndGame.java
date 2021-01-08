@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.ss.GMain;
 import com.ss.commons.BitmapFontC;
-import com.ss.commons.ButtonC;
 import com.ss.commons.TextureAtlasC;
 import com.ss.commons.Tweens;
 import com.ss.core.action.exAction.GScreenShakeAction;
@@ -23,14 +23,16 @@ import com.ss.core.util.GLayer;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
 import com.ss.gameLogic.config.Config;
+import com.ss.scenes.GameScene;
 
 public class EndGame {
   private Group    group       = new Group();
   private String   ribon,title;
-  public EndGame(boolean isWin,int star){
+  public EndGame(boolean isWin, int star, String jsLV[], int lv, GameScene gameScene, Board board){
     if(isWin){
       ribon = "ribonWin";
       title = "victory";
+      saveData(star,lv+1);
     }else {
       ribon="ribonFail";
       title = "fail";
@@ -44,8 +46,8 @@ public class EndGame {
     Gshape.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        group.clear();
-        group.remove();
+//        group.clear();
+//        group.remove();
         return super.touchDown(event, x, y, pointer, button);
       }
     });
@@ -81,14 +83,20 @@ public class EndGame {
                 })
         ));
       });
-      initButton(-popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen","Next Level",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+      initButton(-popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen","Next Level",BitmapFontC.Font_Button,0.3f,0.8f,group,new ClickListener(){
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+          board.dispose();
+          group.clear();
+          group.remove();
+          Board board1 = new Board(lv+1,jsLV,gameScene);
+          new Header(board1,lv+1,gameScene,jsLV);
+
           return super.touchDown(event, x, y, pointer, button);
         }
       });
 
-      initButton(popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnWatchAds","Open Gift",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+      initButton(popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnWatchAds","Open Gift",BitmapFontC.Font_Button,0.3f,0.8f,group,new ClickListener(){
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
           return super.touchDown(event, x, y, pointer, button);
@@ -111,13 +119,16 @@ public class EndGame {
           ic.addAction(Actions.scaleTo(1,1,0.2f));
 
         });
-
-
       }
 
-      initButton(0,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","Replay",BitmapFontC.font_white,0.3f,0.8f,group,new ClickListener(){
+      initButton(0,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","Replay",BitmapFontC.Font_Button,0.3f,0.8f,group,new ClickListener(){
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+          board.dispose();
+          group.clear();
+          group.remove();
+          Board board1 = new Board(lv,jsLV,gameScene);
+          new Header(board1,lv,gameScene,jsLV);
           return super.touchDown(event, x, y, pointer, button);
         }
       });
@@ -147,14 +158,14 @@ public class EndGame {
         icStar.setPosition(arrIc.get(finalI).getX(),arrIc.get(finalI).getY());
         group.addActor(icStar);
         icStar.addAction(Actions.sequence(
-                Actions.scaleTo(1,1,0.2f),
-                GScreenShakeAction.screenShake1(Config.duraShake,5,group),
-                GSimpleAction.simpleAction((d,a)->{
-                  if(finalI==star-1){
-                    group.addAction(Actions.run(runnable));
-                  }
-                  return true;
-                })
+          Actions.scaleTo(1,1,0.2f),
+          GScreenShakeAction.screenShake1(Config.DuraShake,5,group),
+          GSimpleAction.simpleAction((d,a)->{
+            if(finalI==star-1){
+              group.addAction(Actions.run(runnable));
+            }
+            return true;
+          })
         ));
       });
     }
@@ -198,6 +209,24 @@ public class EndGame {
             })
     ));
   }
+  private void saveData(int star,int lv){
+    int oldStar = GMain.prefs.getInteger("starLv"+lv);
+    int LvPre   = GMain.prefs.getInteger("LvPre");
+    System.out.println("lv: "+lv);
+
+    System.out.println("oldStar: "+oldStar);
+    System.out.println("lvPre: "+oldStar);
+    if(oldStar<star){
+      GMain.prefs.putInteger("starLv"+lv,star);
+      GMain.prefs.flush();
+    }
+    if(LvPre<=lv){
+      GMain.prefs.putInteger("LvPre",lv+1);
+      Config.LvPer = lv+1;
+      GMain.prefs.flush();
+    }
+
+  }
 
   private void initButton(float x, float y, TextureAtlas atlas, String kind, String text, BitmapFont bit, float sclText, float sclbtn, Group gr, ClickListener event) {
     Group grbtn = new Group();
@@ -216,4 +245,7 @@ public class EndGame {
     grbtn.setPosition(x, y, Align.center);
     grbtn.addListener(event);
   }
+
+
+
 }

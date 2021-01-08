@@ -17,9 +17,8 @@ import com.ss.core.util.GLayer;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
 import com.ss.effects.SoundEffect;
-import com.ss.gameLogic.config.Config;
 
-public class loadingScene extends GScreen {
+public class LoadingScene extends GScreen {
     Group group = new Group();
 
     @Override
@@ -36,7 +35,7 @@ public class loadingScene extends GScreen {
         BitmapFontC.initBitmapFont();
         SoundEffect.initSound();
 //        if(Config.remoteEffect)
-//            LoadParticle.init();
+            LoadParticle.init();
 //        C.init();
 
     }
@@ -60,7 +59,7 @@ public class loadingScene extends GScreen {
                  GAssetsManager.update();
              } else {
                  TextureAtlasC.initAtlas();
-                 this.setScreen(new gameScene());
+                 this.setScreen(new StartScene());
                  //this.setScreen(new GameScene());
                  System.out.println("chuyen");
              }

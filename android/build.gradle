@@ -17,7 +17,7 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.jkstudiogroup.template"
+        applicationId "com.Majong"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 2
@@ -36,10 +36,15 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+//configurations.all {
+//    resolutionStrategy {
+//        force 'com.android.support:support-v4:27.1.0'
+//    }}
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+//        force 'com.android.support:support-v4:27.1.0'
         def requested = details.requested
-        if (requested.group == 'com.android.support') {
+        if (requested.group == 'com.android.support:support-v4:29.0.0') {
             if (!requested.name.startsWith("multidex")) {
                 details.useVersion '29.0.0'
             }

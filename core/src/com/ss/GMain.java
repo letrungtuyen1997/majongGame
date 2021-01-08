@@ -10,7 +10,7 @@ import com.ss.core.util.GDirectedGame;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GStage.StageBorder;
-import com.ss.scenes.loadingScene;
+import com.ss.scenes.LoadingScene;
 
 public class GMain extends GDirectedGame {
 
@@ -82,7 +82,7 @@ public class GMain extends GDirectedGame {
   
   private static GScreen menuScreen()
   {
-    return new loadingScene();
+    return new LoadingScene();
   }
 
   public void create()
@@ -94,13 +94,15 @@ public class GMain extends GDirectedGame {
     this.init();
     this.initPrefs();
 //    C.init();
+//    prefs.clear();
+//    prefs.flush();
 
 
     this.setScreen(menuScreen());
   }
 
   private void initPrefs(){
-    prefs = Gdx.app.getPreferences("My Preferences5");
+    prefs = Gdx.app.getPreferences("Majong");
   }
 
   public void dispose()

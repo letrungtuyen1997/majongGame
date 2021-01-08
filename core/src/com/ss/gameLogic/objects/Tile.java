@@ -7,23 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.ss.commons.BitmapFontC;
 import com.ss.commons.TextureAtlasC;
-import com.ss.commons.Tweens;
-import com.ss.core.action.exAction.GArcMoveToAction;
-import com.ss.core.action.exAction.GImageGrayscaleAction;
 import com.ss.core.action.exAction.GScreenShakeAction;
-import com.ss.core.action.exAction.GShakeAction;
 import com.ss.core.action.exAction.GSimpleAction;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
-import com.ss.effects.effectWin;
 import com.ss.gameLogic.config.Config;
-import com.ss.scenes.gameScene;
+import com.ss.scenes.GameScene;
 
 public class Tile {
   public Image            block,OverLay;
@@ -57,15 +50,10 @@ public class Tile {
     IdAni = GUI.createImage(TextureAtlasC.AnimalsAtlas,""+id);
     IdAni.setPosition(block.getX(Align.center),block.getY(Align.center),Align.center);
     gr.addActor(IdAni);
-//    OverLay = GUI.createImage(TextureAtlasC.uiAtlas,"titlebg");
-//    OverLay.setPosition(block.getX(),block.getY());
-//    gr.addActor(OverLay);
-//    select(false);
   }
 
   public void setPos(float x ,float y,int kind,boolean move,int index){
     block = GUI.createImage(TextureAtlasC.uiAtlas,"cucxilau");
-    System.out.println("get Layer: "+getLayer());
     gr.setSize(block.getWidth(),block.getHeight());
     gr.setOrigin(Align.center);
     gr.addActor(block);
@@ -74,7 +62,7 @@ public class Tile {
       gr.setPosition(GStage.getWorldWidth()/2,-GStage.getWorldHeight()/2-group.getHeight()/2);
       gr.addAction(Actions.sequence(
               Actions.delay(0.01f*index),
-              Actions.moveTo(x-block.getWidth()-((Layer-1)* Config.paddingX)+gr.getWidth()/2,y-block.getHeight()/2-((Layer-1)* Config.paddingY),Config.duraMove,Interpolation.swingOut),
+              Actions.moveTo(x-block.getWidth()-((Layer-1)* Config.paddingX)+gr.getWidth()/2,y-block.getHeight()/2-((Layer-1)* Config.paddingY),Config.DuraMove,Interpolation.swingOut),
               GSimpleAction.simpleAction((d,a)->{
                 this.x=gr.getX();
                 this.y=gr.getY();
@@ -126,13 +114,12 @@ public class Tile {
   }
   public void select(boolean set){
     if(set==true){
-      if(gameScene.effect!=null)
-        idEff = gameScene.effect.StartEffSelect(effPos().x-2,effPos().y);
+      if(GameScene.effect!=null)
+        idEff = GameScene.effect.StartEffSelect(effPos().x-2,effPos().y);
     }else {
-      if(gameScene.effect!=null)
-        gameScene.effect.FreeEfSelect(idEff);
+      if(GameScene.effect!=null)
+        GameScene.effect.FreeEfSelect(idEff);
     }
-//    OverLay.setVisible(set);
   }
   public boolean checkLock(){
     if(block.getColor()==Color.DARK_GRAY)
@@ -141,27 +128,27 @@ public class Tile {
   }
   public void ActionSelectLock(int s){
     gr.addAction(Actions.sequence(
-            GScreenShakeAction.screenShake1(Config.duraShake,5,gr)
+            GScreenShakeAction.screenShake1(Config.DuraShake,5,gr)
     ));
   }
   private void ActionSelect(){
     gr.addAction(Actions.sequence(
-            Actions.scaleTo(1,0.9f,Config.duraSelect),
-            Actions.scaleTo(1,1f,Config.duraSelect)
+            Actions.scaleTo(1,0.9f,Config.DuraSelect),
+            Actions.scaleTo(1,1f,Config.DuraSelect)
     ));
   }
   public void ActionHint(){
     gr.addAction(Actions.sequence(
-            Actions.rotateBy(-10,Config.duraHint),
-            Actions.rotateBy(10,Config.duraHint)
+            Actions.rotateBy(-10,Config.DuraHint),
+            Actions.rotateBy(10,Config.DuraHint)
     ));
   }
   private Vector2 effPos(){
     return new Vector2(gr.getParent().localToStageCoordinates(new Vector2(gr.getX(Align.center),gr.getY(Align.center))));
   }
   public void dispose(){
-    if(gameScene.effect!=null){
-      gameScene.effect.StartEff(effPos().x,effPos().y);
+    if(GameScene.effect!=null){
+      GameScene.effect.StartEff(effPos().x,effPos().y);
     }
     gr.clear();
     gr.remove();

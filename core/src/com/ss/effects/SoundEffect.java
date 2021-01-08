@@ -65,71 +65,15 @@ public class SoundEffect {
   }
 
 
-  public static void Playmusic(int mode) {
-    music = false;
-    switch (mode) {
-      case 1: {
-        GSound.initMusic("bg.mp3");
-        GSound.playMusic();
-//        GSound.playLoopSound("bg.mp3");
-        break;
-      }
-      case 2: {
-        GSound.playSound("click.mp3");
-        break;
-      }
-      case 3: {
-        GSound.playSound("unlock2.mp3");
-        break;
-      }
-      case 4: {
-        GSound.playSound("wheel_sound.mp3");
-        break;
-      }
-      case 5: {
-        GSound.playSound("panel_close.mp3");
-        break;
-      }
-      case 6: {
-        GSound.playSound("panel_open.mp3");
-        break;
-      }
-      case 7: {
-        GSound.playSound("unlock.mp3");
-        break;
-      }
-      case 8: {
-        GSound.playSound("merge.mp3");
-        break;
-      }
-      default:{
-//        bgSound.play();
-//        bgSound.setLooping(true);
-//        bgSound.setVolume(0.2f);
-        break;
-      }
-    }
+  public static void Playmusic() {
+    bgSound.play();
+    bgSound.setLooping(true);
   }
 
-  public static void Stopmusic(int mode) {
-    music = true;
-    switch (mode){
-      case 1: {
-        bgSound.pause();
-        break;
-      }
-      case 2: {
-        bgSound2.stop();
-        break;
-      }
-      case 3: {
-        bgSound3.pause();
-        break;
-      }
-      default:{
-        bgSound.stop();
-        break;
-      }
-    }
+  public static void Stopmusic(){
+    bgSound.stop();
+  }
+  public static void Pausemusic(){
+    bgSound.pause();
   }
 }

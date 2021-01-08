@@ -515,7 +515,7 @@ public class Wheel extends Group {
           //calc playing sound
           float magicNumber = 2;
           if (Math.abs(acc /(VELOCITY_SCALE*coefficient)) >= magicNumber) {
-            SoundEffect.Playmusic(SoundEffect.wheel_sound);
+//            SoundEffect.Playmusic(SoundEffect.wheel_sound);
 //              Wheel.wheelTick.play(0.5f);
             this.acc = 0;
           }
@@ -529,7 +529,7 @@ public class Wheel extends Group {
       //calc playing sound
       float magicNumber = 2;
       if (Math.abs(acc /(VELOCITY_SCALE*coefficient)) >= magicNumber) {
-          SoundEffect.Playmusic(SoundEffect.wheel_sound);
+//          SoundEffect.Playmusic(SoundEffect.wheel_sound);
 //        Wheel.wheelTick.play();
         this.acc = 0;
       }
