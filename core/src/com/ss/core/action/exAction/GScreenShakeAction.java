@@ -3,8 +3,10 @@ package com.ss.core.action.exAction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.ss.core.util.GLayer;
 
 public class GScreenShakeAction extends Action {
@@ -14,7 +16,7 @@ public class GScreenShakeAction extends Action {
    Group[] layers;
    float time;
    int shakeStregth = 25;
-   Group gr;
+   Actor gr;
    public static GScreenShakeAction screenShake(float duration, int strength, GLayer... var1) {
       GScreenShakeAction var3 = (GScreenShakeAction)Actions.action(GScreenShakeAction.class);
       var3.duration = duration;
@@ -28,7 +30,7 @@ public class GScreenShakeAction extends Action {
       var3.time = 0.0F;
       return var3;
    }
-   public static GScreenShakeAction screenShake1(float duration, int strength, Group var1) {
+   public static GScreenShakeAction screenShake1(float duration, int strength, Actor var1) {
       GScreenShakeAction var3 = (GScreenShakeAction)Actions.action(GScreenShakeAction.class);
       var3.duration = duration;
       var3.gr = var1;
@@ -41,6 +43,7 @@ public class GScreenShakeAction extends Action {
       var3.time = 0.0F;
       return var3;
    }
+
 
    public boolean act(float var1) {
       if(this.time == 0.0F) {
@@ -77,7 +80,7 @@ public class GScreenShakeAction extends Action {
 
    }
    public void translateLayer1(int var1, int var2) {
-      Group var5 = this.gr;
+      Actor var5 = this.gr;
 //      int var4 = var5.length;
 
 //      for(int var3 = 0; var3 < var4; ++var3) {
@@ -85,4 +88,5 @@ public class GScreenShakeAction extends Action {
 //      }
 
    }
+
 }

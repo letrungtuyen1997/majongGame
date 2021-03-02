@@ -18,6 +18,8 @@ public class effectWin extends Actor{
     ////////// file handel/////
     FileHandle match = Gdx.files.internal("particle/match");
     FileHandle select = Gdx.files.internal("particle/select");
+    FileHandle light = Gdx.files.internal("particle/light");
+    FileHandle firework = Gdx.files.internal("particle/fireWork");
 //    FileHandle lightyelow = Gdx.files.internal("particle/lightYellow");
 //    FileHandle tree = Gdx.files.internal("particle/tree");
 //    FileHandle merge = Gdx.files.internal("particle/merge");
@@ -25,8 +27,8 @@ public class effectWin extends Actor{
     //////// index handel ///////
     public static int Match = 1;
     public static int Select = 2;
-    public static int Tree = 3;
-    public static int Merge = 4;
+    public static int Light = 3;
+    public static int FireWork = 4;
     public ParticleEffect effect;
     public ParticleEffectPool effectPool;
     public ParticleEffectPool.PooledEffect pooledEffect;
@@ -44,19 +46,33 @@ public class effectWin extends Actor{
         setX(f);
         setY(f2);
             if(id==Match) {
-                this.effect.load(match, TextureAtlasC.effectAtlas);
+                this.effect.load(match, TextureAtlasC.EffectAtlas);
                 for (int i = 0; i < this.effect.getEmitters().size; i++) {
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
                 this.effect.scaleEffect(1f);
             }else if(id==Select) {
-                this.effect.load(select, TextureAtlasC.effectAtlas);
+                this.effect.load(select, TextureAtlasC.EffectAtlas);
                 for (int i = 0; i < this.effect.getEmitters().size; i++) {
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
-                this.effect.scaleEffect(1f);
+                this.effect.scaleEffect(0.85f);
+            }else if(id==Light) {
+                this.effect.load(light, TextureAtlasC.EffectAtlas);
+                for (int i = 0; i < this.effect.getEmitters().size; i++) {
+                    ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
+                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
+                }
+                this.effect.scaleEffect(3);
+            }else if(id==FireWork) {
+                this.effect.load(firework, TextureAtlasC.EffectAtlas);
+                for (int i = 0; i < this.effect.getEmitters().size; i++) {
+                    ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
+                    ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
+                }
+                this.effect.scaleEffect(2);
             }
         this.effect.setPosition(f, f2);
     }

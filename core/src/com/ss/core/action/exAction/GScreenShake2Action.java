@@ -14,7 +14,7 @@ public class GScreenShake2Action extends Action {
    Group[] layers;
    float time;
    int shakeStregth = 25;
-   Image gr;
+   Group gr;
    public static GScreenShake2Action screenShake(float duration, int strength, GLayer... var1) {
       GScreenShake2Action var3 = (GScreenShake2Action)Actions.action(GScreenShake2Action.class);
       var3.duration = duration;
@@ -28,7 +28,7 @@ public class GScreenShake2Action extends Action {
       var3.time = 0.0F;
       return var3;
    }
-   public static GScreenShake2Action screenShake1(float duration, int strength, Image var1) {
+   public static GScreenShake2Action screenShake1(float duration, int strength, Group var1) {
       GScreenShake2Action var3 = (GScreenShake2Action)Actions.action(GScreenShake2Action.class);
       var3.duration = duration;
       var3.gr = var1;
@@ -78,7 +78,7 @@ public class GScreenShake2Action extends Action {
 
    }
    public void translateLayer1(int var1, int var2) {
-      Image var5 = this.gr;
+      Group var5 = this.gr;
 //      int var4 = var5.length;
 
 //      for(int var3 = 0; var3 < var4; ++var3) {

@@ -12,33 +12,58 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.ss.GMain;
 import com.ss.commons.BitmapFontC;
 import com.ss.commons.TextureAtlasC;
 import com.ss.commons.Tweens;
+import com.ss.core.action.exAction.GScreenFlashAction;
+import com.ss.core.action.exAction.GScreenShake2Action;
+import com.ss.core.action.exAction.GScreenShake3Action;
 import com.ss.core.action.exAction.GScreenShakeAction;
 import com.ss.core.action.exAction.GSimpleAction;
 import com.ss.core.exSprite.GShapeSprite;
 import com.ss.core.util.GLayer;
+import com.ss.core.util.GLayerGroup;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
+import com.ss.effects.SoundEffect;
+import com.ss.effects.effectWin;
 import com.ss.gameLogic.config.Config;
 import com.ss.scenes.GameScene;
+import com.ss.scenes.StartScene;
 
 public class EndGame {
   private Group    group       = new Group();
-  private String   ribon,title;
-  public EndGame(boolean isWin, int star, String jsLV[], int lv, GameScene gameScene, Board board){
+  private Group    gref        = new Group();
+  private Group    grtop       = new Group();
+  private Group    grNotice;
+  private String   ribon,title,pop;
+  private Group    grBoard;
+  private Image    popup,gift,sclBar;
+  private Label    lbProgress;
+  private float    dura=5;
+  public EndGame(boolean isWin, int star, JsonValue jsLV[], int lv, GameScene gameScene, Board board, Group grBoard, Group grTimer, GLayerGroup grCombo){
+    this.grBoard = grBoard;
+    GStage.addToLayer(GLayer.top,group);
+    GStage.addToLayer(GLayer.top,gref);
+    GStage.addToLayer(GLayer.top,grtop);
     if(isWin){
       ribon = "ribonWin";
-      title = "victory";
+      title = "victory"+GMain.locale.get("idLang");
+      pop   = "popup";
+      SoundEffect.Play(SoundEffect.win);
       saveData(star,lv+1);
+
     }else {
+      SoundEffect.Play(SoundEffect.lose);
       ribon="ribonFail";
-      title = "fail";
+      title = "fail"+GMain.locale.get("idLang");
+      pop   = "popup";
     }
-    GStage.addToLayer(GLayer.top,group);
     group.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2);
+    gref.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2);
+    grtop.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2);
     GShapeSprite Gshape = new GShapeSprite();
     Gshape.createRectangle(true,-GStage.getWorldWidth()/2,-GStage.getWorldHeight()/2,GStage.getWorldWidth(),GStage.getWorldHeight());
     Gshape.setColor(0,0,0,0.6f);
@@ -53,98 +78,142 @@ public class EndGame {
     });
     group.setScale(0);
     group.addAction(Actions.scaleTo(1,1,0.5f, Interpolation.swingOut));
+    gref.setScale(0);
+    gref.addAction(Actions.scaleTo(1,1,0.5f, Interpolation.swingOut));
+    grtop.setScale(0);
+    grtop.addAction(Actions.scaleTo(1,1,0.5f, Interpolation.swingOut));
 
-    Image popup = GUI.createImage(TextureAtlasC.uiAtlas,"popup");
+    popup = GUI.createImage(TextureAtlasC.uiAtlas,pop);
     popup.setOrigin(Align.center);
     popup.setPosition(0,0, Align.center);
     group.addActor(popup);
 
     Image ribbon = GUI.createImage(TextureAtlasC.uiAtlas,ribon);
     ribbon.setOrigin(Align.center);
-    ribbon.setPosition(0,-popup.getHeight()/2+ribbon.getHeight()*0.15f,Align.center);
+    ribbon.setPosition(0,-popup.getHeight()/2+ribbon.getHeight()/3,Align.center);
     group.addActor(ribbon);
 
     Image Title = GUI.createImage(TextureAtlasC.uiAtlas,title);
-    Title.setPosition(ribbon.getX(Align.center),ribbon.getY(Align.center)-ribbon.getHeight()*0.2f,Align.center);
+    Title.setPosition(ribbon.getX(Align.center),ribbon.getY(Align.center)-ribbon.getHeight()*0.3f,Align.center);
     group.addActor(Title);
 
-    if(isWin){
-      aniStar(star,()->{
-        Image gift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
-        gift.setOrigin(Align.center);
-        gift.setPosition(0,gift.getHeight()/2,Align.center);
-        group.addActor(gift);
-        gift.setScale(0);
-        gift.addAction(Actions.sequence(
-                Actions.scaleTo(1,1,0.2f),
-                GSimpleAction.simpleAction((d,a)->{
-                  aniGift(gift);
-                  return true;
-                })
-        ));
-      });
-      initButton(-popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen","Next Level",BitmapFontC.Font_Button,0.3f,0.8f,group,new ClickListener(){
-        @Override
-        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-          board.dispose();
-          group.clear();
-          group.remove();
-          Board board1 = new Board(lv+1,jsLV,gameScene);
-          new Header(board1,lv+1,gameScene,jsLV);
+    Tweens.setTimeout(group,0.1f,()->{
+      if(isWin){
+        aniStar(star,()->{
+          effectWin ef = new effectWin(effectWin.Light,0,20,gref);
+          ef.start();
+          gift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
+          gift.setOrigin(Align.center);
+          gift.setPosition(0,gift.getHeight()*0.25f,Align.center);
+          grtop.addActor(gift);
+          gift.setScale(0);
+          gift.addAction(Actions.sequence(
+                  Actions.scaleTo(0.8f,0.8f,0.2f),
+                  GSimpleAction.simpleAction((d,a)->{
+                    aniGift(gift);
+                    return true;
+                  })
+          ));
+          effectWin ef1= new effectWin(effectWin.FireWork,0,0,grtop);
+          ef1.start();
+          updateProgress();
+        });
+        initButton(-popup.getWidth()*0.23f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen",GMain.locale.get("btnNext"),BitmapFontC.Font_Title,0.5f,1,grtop,0,new ClickListener(){
+          @Override
+          public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            SoundEffect.Play(SoundEffect.click);
+            board.dispose();
+            group.clear();
+            group.remove();
+            gref.clear();
+            gref.remove();
+            grtop.clear();
+            grtop.remove();
+            if(jsLV.length<=lv+1){
+              grNotice = new Notice(GMain.locale.get("noticeMaxLv"),0.6f,new ClickListener(){
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                  SoundEffect.Play(SoundEffect.click);
+                  grNotice.clear();
+                  grNotice.remove();
+                  gameScene.setScreen(new StartScene());
+                  return super.touchDown(event, x, y, pointer, button);
+                }
+              });
+            }else {
+              new Board(lv+1,jsLV,gameScene,grBoard,grTimer,grCombo);
+            }
+            return super.touchDown(event, x, y, pointer, button);
+          }
+        });
 
-          return super.touchDown(event, x, y, pointer, button);
+        initButton(popup.getWidth()*0.23f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnWatchAds",GMain.locale.get("btnGift"),BitmapFontC.Font_Title,0.5f,1,grtop,20,new ClickListener(){
+          @Override
+          public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            SoundEffect.Play(SoundEffect.click);
+            showAdsReward(board,lv+1,jsLV,gameScene,grTimer,grCombo);
+
+
+            return super.touchDown(event, x, y, pointer, button);
+          }
+        });
+
+      }else {
+        for (int i=0;i<3;i++){
+          int finalI = i;
+          Tweens.setTimeout(group,0.4f*i,()->{
+            Image ic = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(finalI +1)+"Off");
+            ic.setPosition(-ic.getWidth()*1.5f+ic.getWidth()* finalI,100,Align.topLeft);
+            group.addActor(ic);
+            if(finalI ==0)
+              ic.setX(ic.getX()-10);
+            if(finalI ==2)
+              ic.setX(ic.getX()+10);
+            ic.setScale(5);
+            ic.setOrigin(Align.center);
+            ic.addAction(Actions.scaleTo(1,1,0.2f));
+
+          });
         }
-      });
 
-      initButton(popup.getWidth()*0.2f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnWatchAds","Open Gift",BitmapFontC.Font_Button,0.3f,0.8f,group,new ClickListener(){
-        @Override
-        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-          return super.touchDown(event, x, y, pointer, button);
-        }
-      });
+        initButton(0,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen",GMain.locale.get("btnRestart"),BitmapFontC.Font_Title,0.4f,1.2f,group,0,new ClickListener(){
+          @Override
+          public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            SoundEffect.Play(SoundEffect.click);
+            board.dispose();
+            group.clear();
+            group.remove();
+            gref.clear();
+            gref.remove();
+            grtop.clear();
+            grtop.remove();
 
-    }else {
-      for (int i=0;i<3;i++){
-        int finalI = i;
-        Tweens.setTimeout(group,0.4f*i,()->{
-          Image ic = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(finalI +1)+"Off");
-          ic.setPosition(-ic.getWidth()*1.5f+ic.getWidth()* finalI,50,Align.topLeft);
-          group.addActor(ic);
-          if(finalI ==0)
-            ic.setX(ic.getX()-10);
-          if(finalI ==2)
-            ic.setX(ic.getX()+10);
-          ic.setScale(5);
-          ic.setOrigin(Align.center);
-          ic.addAction(Actions.scaleTo(1,1,0.2f));
-
+            new Board(lv,jsLV,gameScene,grBoard,grTimer,grCombo);
+            return super.touchDown(event, x, y, pointer, button);
+          }
         });
       }
+    });
 
-      initButton(0,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","Replay",BitmapFontC.Font_Button,0.3f,0.8f,group,new ClickListener(){
-        @Override
-        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-          board.dispose();
-          group.clear();
-          group.remove();
-          Board board1 = new Board(lv,jsLV,gameScene);
-          new Header(board1,lv,gameScene,jsLV);
-          return super.touchDown(event, x, y, pointer, button);
-        }
-      });
-    }
+
+    if(Config.countTimePlay%Config.countShowAds==0)
+      GMain.platform.ShowFullscreen();
+
+    createReward();
 
   }
   private void aniStar(int star,Runnable runnable){
     Array<Image> arrIc = new Array<>();
     for (int i=0;i<3;i++){
       Image ic = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(i+1)+"Off");
-      ic.setPosition(-ic.getWidth()*1.5f+ic.getWidth()*i,0,Align.topLeft);
-      group.addActor(ic);
+      ic.setSize(ic.getWidth()*0.6f,ic.getHeight()*0.6f);
+      ic.setOrigin(Align.center);
+      ic.setPosition(-ic.getWidth()*1.5f+ic.getWidth()*i,-50,Align.topLeft);
+      grtop.addActor(ic);
       if(i==0)
-        ic.setX(ic.getX()-10);
+        ic.setX(ic.getX()-20);
       if(i==2)
-        ic.setX(ic.getX()+10);
+        ic.setX(ic.getX()+20);
 
       arrIc.add(ic);
     }
@@ -152,14 +221,21 @@ public class EndGame {
     for (int i=0;i<star;i++){
       int finalI = i;
       Tweens.setTimeout(group,0.5f*i,()->{
+        System.out.println("here!!"+finalI);
         Image icStar = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(finalI+1)+"On");
+        icStar.setSize(icStar.getWidth()*0.6f,icStar.getHeight()*0.6f);
         icStar.setScale(5);
         icStar.setOrigin(Align.center);
         icStar.setPosition(arrIc.get(finalI).getX(),arrIc.get(finalI).getY());
-        group.addActor(icStar);
+        grtop.addActor(icStar);
         icStar.addAction(Actions.sequence(
           Actions.scaleTo(1,1,0.2f),
-          GScreenShakeAction.screenShake1(Config.DuraShake,5,group),
+                Actions.parallel(
+                        GScreenShake3Action.screenShake(Config.DuraShake, 5, GLayer.top),
+                        Actions.run(()->{
+                          SoundEffect.Play(SoundEffect.getStar1+finalI);
+                        })
+                        ),
           GSimpleAction.simpleAction((d,a)->{
             if(finalI==star-1){
               group.addAction(Actions.run(runnable));
@@ -209,6 +285,35 @@ public class EndGame {
             })
     ));
   }
+  private void aniOpenGift(Image img,Runnable callback){
+    SoundEffect.Play(SoundEffect.open);
+    Image giftOpen = GUI.createImage(TextureAtlasC.uiAtlas,"giftOpen");
+    giftOpen.setPosition(img.getX(Align.center),img.getY(Align.center),Align.center);
+    grtop.addActor(giftOpen);
+    giftOpen.getColor().a=0;
+    img.clearActions();
+    img.setRotation(0);
+    img.setOrigin(Align.center);
+    img.addAction(Actions.sequence(
+                    Actions.parallel(
+                      GScreenShakeAction.screenShake1(3,5,img),
+                      Actions.scaleTo(1.5f,1.5f,2)
+                    ),
+                    Actions.parallel(
+                            Actions.alpha(0,1),
+                            Actions.run(()->{
+                              giftOpen.addAction(Actions.sequence(
+                                      Actions.alpha(1,1),
+                                      Actions.run(callback)
+                              ));
+                              return;
+                            })
+                    )
+            )
+          );
+
+  }
+
   private void saveData(int star,int lv){
     int oldStar = GMain.prefs.getInteger("starLv"+lv);
     int LvPre   = GMain.prefs.getInteger("LvPre");
@@ -225,10 +330,16 @@ public class EndGame {
       Config.LvPer = lv+1;
       GMain.prefs.flush();
     }
+    int starPre=0;
+    for (int i=1;i<=Config.LvPer;i++){
+       starPre+=GMain.prefs.getInteger("starLv"+i);
+      GMain.prefs.putInteger("sumStar",starPre);
+      GMain.prefs.flush();
+    }
 
   }
 
-  private void initButton(float x, float y, TextureAtlas atlas, String kind, String text, BitmapFont bit, float sclText, float sclbtn, Group gr, ClickListener event) {
+  private void initButton(float x, float y, TextureAtlas atlas, String kind, String text, BitmapFont bit, float sclText, float sclbtn, Group gr,float paddingX, ClickListener event) {
     Group grbtn = new Group();
     gr.addActor(grbtn);
     Image btn = GUI.createImage(atlas, kind);
@@ -239,13 +350,204 @@ public class EndGame {
     lbItSp.setFontScale(sclText);
     GlyphLayout glItSp = new GlyphLayout(bit, lbItSp.getText());
     lbItSp.setSize(glItSp.width * lbItSp.getFontScaleX(), glItSp.height * lbItSp.getFontScaleY());
-    lbItSp.setPosition(btn.getX() + btn.getWidth() * 0.5f, btn.getY() + btn.getHeight() * 0.5f, Align.center);
+    lbItSp.setPosition(btn.getX() + btn.getWidth() * 0.5f+paddingX, btn.getY() + btn.getHeight() * 0.5f, Align.center);
     grbtn.addActor(lbItSp);
     grbtn.setSize(btn.getWidth(), btn.getHeight());
     grbtn.setPosition(x, y, Align.center);
     grbtn.addListener(event);
   }
 
+  private void showAdsReward(Board board,int lv, JsonValue[] jsLV,GameScene gameScene,Group grTimer,GLayerGroup grCombo) {
+    if (GMain.platform.isVideoRewardReady()) {
+      GMain.platform.ShowVideoReward((succes) -> {
+        if (succes) {
+//          gr.clear();
+//          gr.remove();
+          aniOpenGift(gift,()->{
+            System.out.println("mo qua");
+            createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo);
+            setReward();
+          });
+        } else {
+//          gr.clear();
+//          gr.remove();
+
+        }
+      });
+    } else {
+      grNotice = new Notice(GMain.locale.get("noticeAdsErr"),0.5f,new ClickListener(){
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+          SoundEffect.Play(SoundEffect.click);
+//          gr.clear();
+//          gr.remove();
+          grNotice.clear();
+          grNotice.remove();
+          return super.touchDown(event, x, y, pointer, button);
+        }
+      });
+    }
+  }
+
+  private void createPopAds(Board board,int lv, JsonValue[] jsLV,GameScene gameScene,Group grTimer,GLayerGroup grCombo) {
+    SoundEffect.Play(SoundEffect.unlock);
+    Group grAds = new Group();
+    GStage.addToLayer(GLayer.top, grAds);
+    grAds.setPosition(GStage.getWorldWidth() / 2, GStage.getWorldHeight() / 2);
+    GShapeSprite Gshape = new GShapeSprite();
+    Gshape.createRectangle(true, -GStage.getWorldWidth() / 2, -GStage.getWorldHeight() / 2, GStage.getWorldWidth(), GStage.getWorldHeight());
+    Gshape.setColor(0, 0, 0, 0.7f);
+    grAds.addActor(Gshape);
+    grAds.setScale(0);
+    grAds.addAction(Actions.scaleTo(1, 1, 0.5f, Interpolation.swingOut));
+    Image popup = GUI.createImage(TextureAtlasC.uiAtlas, "popup");
+    popup.setPosition(0, 0, Align.center);
+    grAds.addActor(popup);
+
+    Label lbTitle = new Label(GMain.locale.get("lbTitle"), new Label.LabelStyle(BitmapFontC.Font_Button, null));
+    lbTitle.setFontScale(1.5f);
+    lbTitle.setAlignment(Align.center);
+    GlyphLayout Gltitle = new GlyphLayout(BitmapFontC.Font_Button, lbTitle.getText());
+    lbTitle.setSize(Gltitle.width * lbTitle.getFontScaleX(), Gltitle.height * lbTitle.getFontScaleY());
+    lbTitle.setPosition(0, popup.getY() + lbTitle.getHeight() * 1f, Align.center);
+    grAds.addActor(lbTitle);
+
+    Label lbDesAds = new Label(GMain.locale.get("lbDesAds2"), new Label.LabelStyle(BitmapFontC.Font_Button, null));
+    lbDesAds.setFontScale(0.6f);
+    GlyphLayout GlDesAds = new GlyphLayout(BitmapFontC.Font_Title, lbDesAds.getText());
+    lbDesAds.setSize(GlDesAds.width * lbDesAds.getFontScaleX(), GlDesAds.height * lbDesAds.getFontScaleY());
+    lbDesAds.setWidth(popup.getWidth() * 0.8f);
+    lbDesAds.setAlignment(Align.center);
+    lbDesAds.setPosition(0, -popup.getHeight()*0.15f, Align.bottom);
+    grAds.addActor(lbDesAds);
+    lbDesAds.setWrap(true);
 
 
+    Image iconSwap = GUI.createImage(TextureAtlasC.uiAtlas, "btnShuffle");
+    iconSwap.setOrigin(Align.center);
+    iconSwap.setPosition(popup.getX()+popup.getWidth()/2-iconSwap.getWidth()*2, popup.getY()+popup.getHeight()*0.55f,Align.center);
+    grAds.addActor(iconSwap);
+    Label lbSwap = new Label("x" + Config.RewardShuffle, new Label.LabelStyle(BitmapFontC.Font_Button, null));
+    lbSwap.setFontScale(0.8f);
+    GlyphLayout GlSwap = new GlyphLayout(BitmapFontC.Font_Button, lbSwap.getText());
+    lbSwap.setSize(GlSwap.width * lbSwap.getFontScaleX(), GlSwap.height * lbSwap.getFontScaleY());
+    lbSwap.setPosition(iconSwap.getX() + iconSwap.getWidth()/2 , iconSwap.getY() + iconSwap.getHeight()*1.3f,Align.center);
+    grAds.addActor(lbSwap);
+
+    Image iconHint = GUI.createImage(TextureAtlasC.uiAtlas, "btnHint");
+    iconHint.setOrigin(Align.center);
+    iconHint.setPosition(popup.getX()+popup.getWidth()/2, popup.getY()+popup.getHeight()*0.55f,Align.center);
+    grAds.addActor(iconHint);
+    Label lbHint = new Label("x" + Config.RewardHint, new Label.LabelStyle(BitmapFontC.Font_Button, null));
+    lbHint.setFontScale(0.8f);
+    GlyphLayout GlHint = new GlyphLayout(BitmapFontC.Font_Button, lbHint.getText());
+    lbHint.setSize(GlHint.width * lbHint.getFontScaleX(), GlHint.height * lbHint.getFontScaleY());
+    lbHint.setPosition(iconHint.getX() + iconHint.getWidth()/2 , iconHint.getY() + iconHint.getHeight()*1.3f,Align.center);
+    grAds.addActor(lbHint);
+
+    Image iconBomb = GUI.createImage(TextureAtlasC.uiAtlas, "btnBomb");
+    iconBomb.setOrigin(Align.center);
+    iconBomb.setPosition(popup.getX()+popup.getWidth()/2+iconBomb.getWidth()*2, popup.getY()+popup.getHeight()*0.55f,Align.center);
+    grAds.addActor(iconBomb);
+    Label lbThunder = new Label("x" + Config.RewardBomb, new Label.LabelStyle(BitmapFontC.Font_Button, null));
+    lbThunder.setFontScale(0.8f);
+    GlyphLayout GlThunder = new GlyphLayout(BitmapFontC.Font_Button, lbSwap.getText());
+    lbThunder.setSize(GlThunder.width * lbThunder.getFontScaleX(), GlThunder.height * lbThunder.getFontScaleY());
+    lbThunder.setPosition(iconBomb.getX() + iconBomb.getWidth()/2, iconBomb.getY() + iconBomb.getHeight()*1.3f,Align.center);
+    grAds.addActor(lbThunder);
+    initButton(0, popup.getY(Align.top)-70 , TextureAtlasC.uiAtlas, "btnGreen", GMain.locale.get("btnGive"), BitmapFontC.Font_Title, 0.55f,1.2f, grAds,0, new ClickListener() {
+      @Override
+      public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        SoundEffect.Play(SoundEffect.click);
+        grAds.clear();
+        grAds.remove();
+        board.dispose();
+        group.clear();
+        group.remove();
+        gref.clear();
+        gref.remove();
+        grtop.clear();
+        grtop.remove();
+        new Board(lv+1,jsLV,gameScene,grBoard,grTimer,grCombo);
+        return super.touchDown(event, x, y, pointer, button);
+      }
+    });
+  }
+
+  private void setQuanItSp(String type,int num){
+    if(type.equals("hint")){
+      Config.ItSpHint+=num;
+    }
+    if(type.equals("shuffle")){
+      Config.ItSpShuffle+=num;
+    }
+    if(type.equals("bomb")){
+      Config.ItSpBomb+=num;
+    }
+    ///// save data//////
+    GMain.prefs.putInteger("hint",Config.ItSpHint);
+    GMain.prefs.putInteger("shuffle",Config.ItSpShuffle);
+    GMain.prefs.putInteger("bomb",Config.ItSpBomb);
+    GMain.prefs.flush();
+
+  }
+  private void setReward(){
+    setQuanItSp("hint",Config.RewardHint);
+    setQuanItSp("shuffle",Config.RewardShuffle);
+    setQuanItSp("bomb",Config.RewardBomb);
+  }
+  private void createReward(){
+    Image bar = GUI.createImage(TextureAtlasC.uiAtlas,"barGift");
+    bar.setPosition(popup.getX(Align.center),popup.getY(Align.top)+bar.getHeight()*2,Align.center);
+    group.addActor(bar);
+    sclBar = GUI.createImage(TextureAtlasC.uiAtlas,"barSclGift");
+    sclBar.setPosition(bar.getX(Align.center),bar.getY(Align.center),Align.center);
+    group.addActor(sclBar);
+    sclBar.setScale(0,1);
+    Image gift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
+    gift.setSize(gift.getWidth()*0.3f,gift.getHeight()*0.3f);
+    gift.setOrigin(Align.center);
+    gift.setPosition(bar.getX(Align.right),bar.getY(Align.center),Align.center);
+    group.addActor(gift);
+    int target = 15;
+    int moment = 0;
+    lbProgress = new Label(moment+"/"+target,new Label.LabelStyle(BitmapFontC.Font_brown_thin,null));
+    lbProgress.setFontScale(0.4f);
+    lbProgress.setAlignment(Align.center);
+    GlyphLayout glProgress = new GlyphLayout(BitmapFontC.Font_brown_thin,lbProgress.getText());
+    lbProgress.setSize(glProgress.width*lbProgress.getFontScaleX(),glProgress.height*lbProgress.getFontScaleY());
+    lbProgress.setPosition(bar.getX(Align.center),bar.getY(Align.center),Align.center);
+    group.addActor(lbProgress);
+    Image icStar = GUI.createImage(TextureAtlasC.uiAtlas,"star");
+    icStar.setSize(icStar.getWidth()*0.8f,icStar.getHeight()*0.8f);
+    icStar.setOrigin(Align.center);
+    icStar.setPosition(lbProgress.getX(Align.right)+icStar.getWidth(),lbProgress.getY(Align.center),Align.center);
+    group.addActor(icStar);
+//    updateProgress((float) moment/target);
+
+  }
+  int tic=0;
+  int up= 15-0;
+  int moment=0;
+  private void updateProgress(){
+
+    float scl=(float)moment/15;
+    if(scl==0)
+      scl=1;
+    sclBar.addAction(Actions.scaleTo(scl,1,dura));
+    sclBar.addAction(GSimpleAction.simpleAction((d,a)->{
+      tic++;
+      if(tic==((dura*60)/15) && up>0){
+        tic=0;
+        up-=1;
+        moment+=1;
+        lbProgress.setText(moment+"/"+15);
+        System.out.println("up: "+up);
+
+      }else if(up==0) {
+        return true;
+      }
+      return false;
+    }));
+  }
 }

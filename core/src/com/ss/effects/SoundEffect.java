@@ -19,38 +19,54 @@ public class SoundEffect {
   public static boolean music = false;
   public static boolean mute = false;
 
+  private static Sound[] explode;
   public static int bg            = 1;
   public static int click         = 2;
-  public static int unlock        = 3;
-  public static int wheel_sound   = 4;
-  public static int panel_close   = 5;
-  public static int panel_open    = 6;
-  public static int unlock2       = 7;
-  public static int merge         = 8;
+  public static int clickTile     = 3;
+  public static int match         = 4;
+  public static int unmatch       = 5;
+  public static int win           = 6;
+  public static int getStar1      = 7;
+  public static int getStar2      = 8;
+  public static int getStar3      = 9;
+  public static int lose          = 10;
+  public static int drop          = 11;
+  public static int hint          = 12;
+  public static int shuffle       = 13;
+  public static int unlock        = 14;
+  public static int open        = 15;
 
-  private static Sound[] explode;
 
 
   public static void initSound() {
-
+    explode = new Sound[6];
     commons = new Sound[MAX_COMMON];
     commons[click] = GAssetsManager.getSound("click.mp3");
-    commons[unlock] = GAssetsManager.getSound("unlock.mp3");
-    commons[wheel_sound] = GAssetsManager.getSound("wheel_sound.mp3");
-    commons[panel_open] = GAssetsManager.getSound("panel_open.mp3");
-    commons[panel_close] = GAssetsManager.getSound("panel_close.mp3");
-    commons[unlock2] = GAssetsManager.getSound("unlock2.mp3");
-    commons[merge] = GAssetsManager.getSound("merge.mp3");
+    commons[clickTile] = GAssetsManager.getSound("clickTile.mp3");
+    commons[match] = GAssetsManager.getSound("match.mp3");
+    commons[unmatch] = GAssetsManager.getSound("unmatch.mp3");
+    commons[win] = GAssetsManager.getSound("finishwindow.mp3");
+    commons[getStar1] = GAssetsManager.getSound("getstar1.mp3");
+    commons[getStar2] = GAssetsManager.getSound("getstar2.mp3");
+    commons[getStar3] = GAssetsManager.getSound("getstar3.mp3");
+    commons[lose] = GAssetsManager.getSound("lose.mp3");
+    commons[drop] = GAssetsManager.getSound("drop.mp3");
+    commons[hint] = GAssetsManager.getSound("hint.mp3");
+    commons[shuffle] = GAssetsManager.getSound("shuffle.mp3");
+    commons[unlock] = GAssetsManager.getSound("unlock2.mp3");
+    commons[open] = GAssetsManager.getSound("openGift.mp3");
 ////        commons[coins] = GAssetsManager.getSound("Coin.mp3");
 ////        commons[coins].setVolume(2,5);
     bgSound = GAssetsManager.getMusic("bg.mp3");
+    for (int i = 0; i < explode.length; i++)
+      explode[i] = GAssetsManager.getSound("e" + (i+1) + ".mp3");
 
   }
-  public void test(){
-    GSound.playSound(commons[click].toString());
 
+  public static void explode(int level) {
+    if(!mute)
+      explode[(level > 5) ? 5 : level].play();
   }
-
   public static long Play(int i) {
     long id = -1;
     if (!mute) {
@@ -59,10 +75,7 @@ public class SoundEffect {
     }
     return id;
   }
-  public static void explode(int level) {
-    if(!mute)
-      explode[(level > 13) ? 13 : level].play();
-  }
+
 
 
   public static void Playmusic() {

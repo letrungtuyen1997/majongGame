@@ -20,6 +20,7 @@ public interface IPlatform {
     public void CrashLog(String log);
 
     public void TrackCustomEvent(String event);
+    public void TrackingLevel(int lv);
     public void TrackLevelInfo(String event, int mode, int difficult, int level);
     public void TrackPlayerInfo(String event, int mode, int difficult, int level);
     public void TrackPlaneInfo(String event, int planeid, int level);

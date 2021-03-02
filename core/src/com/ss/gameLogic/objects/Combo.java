@@ -15,19 +15,23 @@ import com.ss.core.util.GLayerGroup;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
 import com.ss.effects.SoundEffect;
+import com.ss.gameLogic.config.Config;
 
 public class Combo {
-  private GLayerGroup group                   = new GLayerGroup();
+  private GLayerGroup     group;
   private Image           TimeBar;
-  private GClipGroup clipGroup               = new GClipGroup();
+  private GClipGroup      clipGroup  = new GClipGroup();
   private TemporalAction  action;
   private Runnable        onComplete;
-  private int             duration,count=1;
+  private float             duration,count=1;
   private Label           labelCombo;
   private Group           grLabel;
 
-  public Combo(float x, float y, int duration){
-    GStage.addToLayer(GLayer.top,group);
+  public Combo(float x, float y, float duration, GLayerGroup group){
+//    group                   = new GLayerGroup();
+    this.group              = group;
+//    clipGroup               = new GClipGroup();
+//    GStage.addToLayer(GLayer.top,group);
     this.duration       = duration;
     group.setPosition(x,y, Align.center);
     TimeBar = GUI.createImage(TextureAtlasC.uiAtlas,"comboLine");
@@ -45,7 +49,7 @@ public class Combo {
     grLabel = new Group();
     labelCombo = new Label("",new Label.LabelStyle(BitmapFontC.font_white,null));
     labelCombo.setPosition(0,0,Align.center);
-    labelCombo.setFontScale(0.7f);
+    labelCombo.setFontScale(0.5f);
     labelCombo.setAlignment(Align.center);
     grLabel.addActor(labelCombo);
     grLabel.setPosition(TimeBar.getX()+TimeBar.getWidth()/2,TimeBar.getY()+labelCombo.getPrefHeight()*1.1f,Align.center);
@@ -73,7 +77,7 @@ public class Combo {
         Combo.this.clipGroup.setClipArea( -(Combo.this.TimeBar.getWidth() * f),0, Combo.this.TimeBar.getWidth(), Combo.this.TimeBar.getHeight());
 
         if (f == 1.0f) {
-//          BoardConfig.countcombo=0;
+          Config.Combo =0;
           group.setVisible(false);
         }
       }
@@ -84,18 +88,9 @@ public class Combo {
     group.clearActions();
     ActionScaleTime();
   }
-  public void upTime(int combo,int id){
+  public void upTime(int combo){
     System.out.println("combo: " + combo);
-//    if(combo>1)
-//      SoundEffect.explode(combo-1);
-//      if(id==2||id==6||id==8||id==18||id==23)
-//        SoundEffect.noel();
-//    else{
-//      if(id==2||id==6||id==8||id==18||id==23)
-//        SoundEffect.noel();
-//      else
-//        SoundEffect.Play(SoundEffect.match);
-//    }
+
     if(combo==1){
       resetTime();
     }else if(combo>1){
@@ -108,6 +103,14 @@ public class Combo {
 
   public void setPause(Boolean set){
     group.setPause(set);
+  }
+  public void dispose(){
+    Config.Combo=0;
+//    group.remove();
+    group.clear();
+  }
+  public void setPositon(float x, float y){
+    group.setPosition(x,y,Align.center);
   }
 
 

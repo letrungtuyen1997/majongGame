@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat;
 
 
 public class AlarmReceiver extends BroadcastReceiver {
-    public static final String CUSTOM_INTENT = "com.jkstudiogroup.popcat.intent.action.ALARM";
+    public static final String CUSTOM_INTENT = "com.mygdx.game.intent.action.ALARM";
 
     public void showNotification(Context context, String title, String body, Intent intent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

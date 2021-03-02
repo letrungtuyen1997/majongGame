@@ -49,7 +49,8 @@ public class ToggleBtn {
         SoundEffect.Play(SoundEffect.click);
         setValue(false);
         if(id == 1){
-          SoundEffect.music = false;
+          SoundEffect.music = true;
+          SoundEffect.Pausemusic();
 //          SoundEffect.pauseM();
         }
         else if(id == 2){
@@ -66,8 +67,9 @@ public class ToggleBtn {
         setValue(true);
 
         if(id == 1){
-          SoundEffect.music = true;
+          SoundEffect.music = false;
 //          SoundEffect.unPause();
+          SoundEffect.Playmusic();
         }
         else if(id == 2){
           SoundEffect.mute = false;

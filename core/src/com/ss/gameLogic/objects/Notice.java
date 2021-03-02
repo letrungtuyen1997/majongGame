@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.ss.GMain;
 import com.ss.commons.BitmapFontC;
 import com.ss.commons.TextureAtlasC;
 import com.ss.core.exSprite.GShapeSprite;
@@ -35,10 +36,10 @@ public class Notice extends Group {
     this.setOrigin(Align.center);
     this.addAction(Actions.scaleTo(1,1,0.5f, Interpolation.swingOut));
 
-    Label notice = new Label("Notice",new Label.LabelStyle(BitmapFontC.Font_Title,null));
-    notice.setFontScale(1.5f);
+    Label notice = new Label(GMain.locale.get("lbTitle"),new Label.LabelStyle(BitmapFontC.Font_Button,null));
+    notice.setFontScale(1.3f);
     notice.setAlignment(Align.center);
-    notice.setPosition(0,-popup.getHeight()/2+notice.getHeight(),Align.center);
+    notice.setPosition(0,-popup.getHeight()/2+notice.getHeight()*1.7f,Align.center);
     this.addActor(notice);
 
     Label des = new Label(text,new Label.LabelStyle(BitmapFontC.Font_Button,null));
@@ -48,7 +49,7 @@ public class Notice extends Group {
     des.setPosition(0,0,Align.center);
     des.setAlignment(Align.center);
     this.addActor(des);
-    initButton(0,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen","ok",BitmapFontC.Font_Button,0.7f,1,this,event);
+    initButton(0,popup.getHeight()*0.3f,TextureAtlasC.uiAtlas,"btnGreen",GMain.locale.get("btnOk"),BitmapFontC.Font_Title,0.8f,1,this,event);
   }
 
   private void initButton(float x, float y, TextureAtlas atlas, String kind, String text, BitmapFont bit, float sclText, float sclbtn, Group gr, ClickListener event) {
@@ -62,7 +63,7 @@ public class Notice extends Group {
     lbItSp.setFontScale(sclText);
     GlyphLayout glItSp = new GlyphLayout(bit, lbItSp.getText());
     lbItSp.setSize(glItSp.width * lbItSp.getFontScaleX(), glItSp.height * lbItSp.getFontScaleY());
-    lbItSp.setPosition(btn.getX() + btn.getWidth() * 0.5f, btn.getY() + btn.getHeight() * 0.4f, Align.center);
+    lbItSp.setPosition(btn.getX() + btn.getWidth() * 0.5f, btn.getY() + btn.getHeight() * 0.5f, Align.center);
     thisbtn.addActor(lbItSp);
     thisbtn.setSize(btn.getWidth(), btn.getHeight());
     thisbtn.setPosition(x, y, Align.center);

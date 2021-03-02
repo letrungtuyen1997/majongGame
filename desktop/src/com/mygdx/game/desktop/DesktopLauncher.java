@@ -10,7 +10,7 @@ public class DesktopLauncher {
   public static void main (String[] arg) {
     LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
     config.width = 720*2/3;
-    config.height = 1280*2/3;
+    config.height = 1680*2/3;
     config.x= 1180;
     new LwjglApplication(new GMain(new IPlatform() {
       @Override
@@ -60,7 +60,7 @@ public class DesktopLauncher {
 
       @Override
       public int GetConfigIntValue(String name, int defaultValue) {
-        return 0;
+        return defaultValue;
       }
 
       @Override
@@ -68,7 +68,7 @@ public class DesktopLauncher {
         if(name.equals(""))
           return defaultValue;
         else
-          return name;
+          return defaultValue;
       }
 
       @Override
@@ -83,6 +83,11 @@ public class DesktopLauncher {
 
       @Override
       public void TrackCustomEvent(String event) {
+
+      }
+
+      @Override
+      public void TrackingLevel(int lv) {
 
       }
 

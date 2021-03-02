@@ -2,6 +2,8 @@ package com.ss;
 
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.platform.IPlatform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -10,7 +12,12 @@ import com.ss.core.util.GDirectedGame;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GStage.StageBorder;
+import com.ss.gameLogic.config.Config;
+import com.ss.gameLogic.objects.LevelData.LevelData;
 import com.ss.scenes.LoadingScene;
+
+import java.util.Locale;
+import java.util.MissingResourceException;
 
 public class GMain extends GDirectedGame {
 
@@ -24,6 +31,7 @@ public class GMain extends GDirectedGame {
   public static Preferences prefs;
   public static IPlatform platform;
   public static AssetManager assetManager;
+  public static I18NBundle locale;
 
   public GMain(IPlatform plat){
     platform = plat;
@@ -85,8 +93,13 @@ public class GMain extends GDirectedGame {
     return new LoadingScene();
   }
 
+  private void exportlv(){
+
+  }
+
   public void create()
   {
+
     initLocalNotification();
 //    SoundEffect.initSound();
 //    TextureAtlasC.initAtlas();
@@ -94,10 +107,25 @@ public class GMain extends GDirectedGame {
     this.init();
     this.initPrefs();
 //    C.init();
-//    prefs.clear();
-//    prefs.flush();
+    prefs.clear();
+//    prefs.putInteger("LvPre",500);
+//    GMain.prefs.putInteger("hint", 1000);
+//    GMain.prefs.putInteger("shuffle",1000);
+//    GMain.prefs.putInteger("bomb",1000);
+//    GMain.prefs.flush();
+    prefs.flush();
+    String deviceLang = GMain.platform.GetDefaultLanguage();
+    Gdx.app.log("language code", deviceLang);
+    //localization
+    FileHandle specFilehandle = Gdx.files.internal("i18n/lang_" + deviceLang);
+    FileHandle baseFileHandle = Gdx.files.internal("i18n/lang");
 
-
+    try {
+      locale = I18NBundle.createBundle(specFilehandle, new Locale(""));
+    }
+    catch (MissingResourceException e) {
+      locale = I18NBundle.createBundle(baseFileHandle, new Locale(""));
+    }
     this.setScreen(menuScreen());
   }
 
@@ -123,20 +151,6 @@ public class GMain extends GDirectedGame {
     }
   }
 
-
-  public static native void openTextField(String title, String defaultValue, IPlatform.OnPopupCallback callback)/*-{
-            $wnd.openPopup(title, defaultValue, function(v){
-                callback.@com.platform.IPlatform.OnPopupCallback::OnValue(Ljava/lang/String;)(v);
-            });
-        }-*/;
-  public static native void shareFb( IPlatform.OnShareCallback callback)/*-{
-            $wnd.shareFB(function(v){
-                callback.@com.platform.IPlatform.OnShareCallback::OnValue(Z)(v);
-            });
-        }-*/;
-  public static native String FormatDate( String s)/*-{
-            return $wnd.FormatDate(s);
-        }-*/;
 
 
 }

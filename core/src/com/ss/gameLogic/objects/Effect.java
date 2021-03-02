@@ -37,16 +37,7 @@ public class Effect {
     return null;
   }
 
-  public effectWin getEfSelect(){
-    if(arrEffSelect != null && arrEffSelect.size != 0){
-      for (int i=0;i<arrEffSelect.size;i++){
-        if(!arrEffSelect.get(i).isAlive){
-          return arrEffSelect.get(i);
-        }
-      }
-    }
-    return null;
-  }
+
 
   public void StartEff( float x, float y){
     effectWin ef          = getEfMatch();
@@ -56,36 +47,8 @@ public class Effect {
 
     }
   }
-  public int StartEffSelect(float x, float y){
-    effectWin ef         = getEfSelect();
-    if(ef!=null ){
-      ef.setPosition(x,y);
-      ef.start();
-      idTemp = arrEffSelect.indexOf(ef,true);
-      return idTemp;
-    }
-    return -1;
-  }
 
 
-  public void FreeEfSelect(int id){
-    if(id==-1)
-      return;
-    System.out.println("size :"+arrEffSelect.size);
-    System.out.println("size-idtemp :"+idTemp);
 
-    if(id<arrEffSelect.size && arrEffSelect!=null){
-      arrEffSelect.get(id).remove();
-      arrEffSelect.get(id).isAlive = false;
-    }
-  }
-
-  public void FreeAllEfSelect(){
-    for(int i = 0; i < arrEffSelect.size; i++) {
-      if(arrEffSelect.get(i).isAlive){
-        FreeEfSelect(i);
-      }
-    }
-  }
 
   }

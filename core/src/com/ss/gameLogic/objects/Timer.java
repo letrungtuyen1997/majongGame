@@ -74,7 +74,7 @@ public class Timer extends GLayerGroup {
       /* access modifiers changed from: protected */
       public void update(float f) {
         Timer.this.clipGroup.setClipArea( -(Timer.this.TimeBar.getWidth() * f),0, Timer.this.TimeBar.getWidth(), Timer.this.TimeBar.getHeight());
-        ef.setPosition(clipGroup.getX()+TimeBar.getWidth()-TimeBar.getWidth()*f,frmTime.getY()+frmTime.getHeight()*0.5f);
+        ef.setPosition(clipGroup.getX()+(TimeBar.getWidth()*0.99f)-TimeBar.getWidth()*f,frmTime.getY()+frmTime.getHeight()*0.5f);
         resDura =  duration-(int)(duration*f);
         checkStar(ef.getX());
 //        System.out.println("resTime: "+((int)(duration*f)));
@@ -115,7 +115,7 @@ public class Timer extends GLayerGroup {
 
   private void Effect(){
     ef = GParticleSystem.getGParticleSystem("timeFire").create(this, frmTime.getX()+TimeBar.getWidth(),frmTime.getY()+TimeBar.getHeight()/2);
-    ef.setScale(2.5f,2.5f);
+    ef.setScale(2.5f,2.3f);
   }
   public void setActionTime(float res){
     this.action.setTime(res);
@@ -127,5 +127,9 @@ public class Timer extends GLayerGroup {
         count++;
     }
     return count;
+  }
+  public void setPosition(float x, float y){
+    this.setPosition(x,y,Align.center);
+
   }
 }

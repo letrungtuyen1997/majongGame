@@ -3,6 +3,7 @@ package com.ss.gameLogic.objects;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
@@ -11,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -19,13 +19,14 @@ import com.ss.commons.TextureAtlasC;
 import com.ss.core.action.exAction.GPathAction;
 import com.ss.core.action.exAction.GScreenShakeAction;
 import com.ss.core.action.exAction.GSimpleAction;
+import com.ss.core.exSprite.particle.GParticleSprite;
+import com.ss.core.exSprite.particle.GParticleSystem;
 import com.ss.core.util.GStage;
-import com.ss.core.util.GUI;
 import com.ss.effects.SoundEffect;
 import com.ss.gameLogic.config.Config;
 import com.ss.scenes.GameScene;
 
-public class TileRefactor extends Actor {
+public class Tile extends Actor {
   public TextureRegion    block;
   private Board           board;
   private int             Layer       = 0;
@@ -37,37 +38,38 @@ public class TileRefactor extends Actor {
   private Array<Integer>  arrActionShark = new Array<>();
   private Group           group;
   private int             idEff   =0;
+  private boolean         islock  =false;
+  private GParticleSprite ef;
+  private TextureAtlas atlas;
+  private String       strCxl;
 
 
-  public TileRefactor(Group group, Board board){
+  public Tile(Group group, Board board){
     this.board  = board;
     this.group  = group;
+
     arrActionShark.add(1);
     arrActionShark.add(-1);
-
-
-
   }
   public void createID(int Id){
     this.id = Id;
-    IdAni = TextureAtlasC.AnimalsAtlas.findRegion(""+id);
-//    IdAni.setOrigin(Align.center);
-//    IdAni.setPosition(block.getX(Align.center),block.getY(Align.center),Align.center);
-//    group.addActor(this);
-
-//    addevent();
+    this.atlas  = Config.atlasSKin;
+    IdAni       = atlas.findRegion(""+id);
+    IdAni.getTexture().setFilter(Texture.TextureFilter.Linear,Texture.TextureFilter.Linear);
   }
 
   public void setPos(float x ,float y,int kind,boolean move,int index,int Id){
-//    block = SelectLevel.poolImage.getTileFree();
     this.id = Id;
-    block = TextureAtlasC.AnimalsAtlas.findRegion("cucxilau");
-    IdAni = TextureAtlasC.AnimalsAtlas.findRegion(""+id);
-    setSize(block.getRegionWidth(), block.getRegionHeight());
+    block = TextureAtlasC.uiAtlas.findRegion(Config.Cxl);
+    block.getTexture().setFilter(Texture.TextureFilter.Linear,Texture.TextureFilter.Linear);
+
+    IdAni = Config.atlasSKin.findRegion(""+id);
+    IdAni.getTexture().setFilter(Texture.TextureFilter.Linear,Texture.TextureFilter.Linear);
+
     group.addActor(this);
+    setSize(block.getRegionWidth(), block.getRegionHeight());
     this.kind = kind;
     if(move){
-
       this.setPosition(GStage.getWorldWidth()/2,-GStage.getWorldHeight()/2-group.getHeight()/2);
       this.addAction(Actions.sequence(
               Actions.delay(0.01f*index),
@@ -75,7 +77,7 @@ public class TileRefactor extends Actor {
               GSimpleAction.simpleAction((d,a)->{
                 this.x=this.getX();
                 this.y=this.getY();
-//                IdAni.setPosition(block.getX(Align.center),block.getY(Align.center),Align.center);
+                addevent();
                 return true;
               })
       ));
@@ -86,9 +88,7 @@ public class TileRefactor extends Actor {
       this.x=this.getX();
       this.y=this.getY();
       this.kind = kind;
-//      if(board!=null){
-//        addevent();
-//      }
+      addevent();
     }
 
   }
@@ -122,50 +122,43 @@ public class TileRefactor extends Actor {
   }
   public int getId(){return id;}
   public void setColor(Color set){
-    this.setColor(set);
-//    IdAni.setColor(set);
+
+//    this.setColor(set.r,set.g,set.b,100-(Layer*10));
+//    set.a=.5f;
+    float r = set.r +(Layer*20)/ 255f ;
+    float g = set.g +(Layer*20)/ 255f ;
+    float b = set.b +(Layer*20)/ 255f ;
+    this.setColor(r,g,b,set.a);
   }
   public void select(boolean set){
     if(set==true){
-      if(GameScene.effect!=null)
-        idEff = GameScene.effect.StartEffSelect(effPos().x-2,effPos().y);
+//      ef = GParticleSystem.getGParticleSystem("select").create(group, effPos().x-2,effPos().y);
+      ef = GParticleSystem.getGParticleSystem("select").create(group, this.getX(Align.center),this.getY(Align.center));
+      ef.setZIndex(this.getZIndex()+1);
+      ef.setScale(0.85f);
     }else {
-      if(GameScene.effect!=null)
-        GameScene.effect.FreeEfSelect(idEff);
+      if(ef!=null){
+        ef.free();
+        ef=null;
+      }
     }
-  }
-  public boolean checkLock(){
-    if(this.getColor()==Color.DARK_GRAY)
-      return true;
-    return false;
   }
   public void ActionSelectLock(int s){
     this.addAction(Actions.sequence(
             GScreenShakeAction.screenShake1(Config.DuraShake,5,this)
     ));
-//    IdAni.addAction(Actions.sequence(
-//            GScreenShakeAction.screenShake1(Config.DuraShake,5,IdAni)
-//    ));
   }
   private void ActionSelect(){
     this.addAction(Actions.sequence(
             Actions.scaleTo(1,0.9f,Config.DuraSelect),
             Actions.scaleTo(1,1f,Config.DuraSelect)
     ));
-//    IdAni.addAction(Actions.sequence(
-//            Actions.scaleTo(1,0.9f,Config.DuraSelect),
-//            Actions.scaleTo(1,1f,Config.DuraSelect)
-//    ));
   }
   public void ActionHint(){
     this.addAction(Actions.sequence(
             Actions.rotateBy(-10,Config.DuraHint),
             Actions.rotateBy(10,Config.DuraHint)
     ));
-//    IdAni.addAction(Actions.sequence(
-//            Actions.rotateBy(-10,Config.DuraHint),
-//            Actions.rotateBy(10,Config.DuraHint)
-//    ));
   }
   private Vector2 effPos(){
     return new Vector2(this.getParent().localToStageCoordinates(new Vector2(this.getX(Align.center),this.getY(Align.center))));
@@ -174,37 +167,18 @@ public class TileRefactor extends Actor {
     if(GameScene.effect!=null){
       GameScene.effect.StartEff(effPos().x,effPos().y);
     }
-    this.clear();
-    this.remove();
-//    block.clear();
-//    block.remove();
-//    SelectLevel.poolImage.dispose(block);
-//    SelectLevel.poolImage.disposeAni(IdAni,id);
+    this.addAction(Actions.sequence(
+//            Actions.delay(0.2f),
+            Actions.alpha(0,0.3f),
+            Actions.run(()->{
+              this.clear();
+              this.remove();
+            })
+    ));
 
-//    IdAni.clear();
-//    IdAni.remove();
-//    OverLay.clear();
-//    OverLay.remove();
   }
   public void changeId(int Id){
-//    IdAni.clear();
-//    IdAni.remove();
     createID(Id);
-//    block.addAction(Actions.sequence(
-//            Actions.moveTo(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2,0.5f),
-//            GSimpleAction.simpleAction((d,a)->{
-//              return true;
-//            }),
-//            Actions.moveTo(x,y,0.5f)
-//    ));
-//    IdAni.addAction(Actions.sequence(
-//            Actions.moveTo(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2,0.5f),
-//            GSimpleAction.simpleAction((d,a)->{
-//              createID(Id);
-//              return true;
-//            }),
-//            Actions.moveTo(x,y,0.5f)
-//    ));
   }
 
   private void addevent(){
@@ -212,37 +186,38 @@ public class TileRefactor extends Actor {
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         SoundEffect.Play(SoundEffect.clickTile);
-        select(true);
+        if(ef==null)
+          select(true);
 //        System.out.println("check tile click: "+getRowCol().x+"__"+getRowCol().y+"__"+getKind()+"__"+getLayer());
-        Array<TileRefactor> arrTile = board.getLock(TileRefactor.this);
-        Array<TileRefactor> arrTile2 = board.getLockLayer(TileRefactor.this);
+        Array<Tile> arrTile = board.getLock(Tile.this);
+        Array<Tile> arrTile2 = board.getLockLayer(Tile.this);
         if(arrTile!=null && arrTile.size!=0){
           select(false);
-          for (TileRefactor t : arrTile){
+          for (Tile t : arrTile){
               t.ActionSelectLock(arrActionShark.get((int)(Math.random()*arrActionShark.size)));
           }
 
-        }else if(board.checkLayer(TileRefactor.this)==1) {
+        }else if(board.checkLayer(Tile.this)==1) {
           select(false);
-          Array<TileRefactor> arr = new Array<>();
+          Array<Tile> arr = new Array<>();
 //          System.out.println("check size arrTile2: "+arrTile2.size);
 //          System.out.println("check this tile: "+getRowCol().x+"_"+getRowCol().y+"_"+getKind()+"_"+getLayer());
           for (int i=0;i<arrTile2.size;i++){
-            System.out.println(arrTile2.get(i));
+//            System.out.println(arrTile2.get(i));
             if(arrTile2.get(i)!=null){
               arr.add(arrTile2.get(i));
             }
           }
 //          System.out.println("check size arrTile2: "+arrTile2.size);
           if(arr.size>=2){
-            for (TileRefactor t : arr){
+            for (Tile t : arr){
 //              System.out.println("tile orthe layer: "+t.getRowCol().x+"_"+t.getRowCol().y+"_"+t.getKind()+"_"+t.getLayer());
                 t.ActionSelectLock(arrActionShark.get((int)(Math.random()*arrActionShark.size)));
             }
           }
         }else {
           ActionSelect();
-          board.checkMatch(TileRefactor.this);
+          board.checkMatch(Tile.this);
         }
         return super.touchDown(event, x, y, pointer, button);
       }
@@ -250,20 +225,22 @@ public class TileRefactor extends Actor {
   }
 
   public void ActionMoveArc(Array<Vector2> arrVec, float dur, boolean dir,Runnable runnable){
-//    IdAni.setTouchable(Touchable.disabled);
+    select(false);
+    this.setTouchable(Touchable.disabled);
     this.addAction(Actions.sequence(
-            GPathAction.init(arrVec.toArray(Vector2.class),dur,dir),
-            Actions.run(()->{
-            })
+        GPathAction.init(arrVec.toArray(Vector2.class),dur,dir),
+        Actions.run(runnable)
     ));
+//    this.addAction(Actions.run(runnable));
+
   }
 
   @Override
   public void draw(Batch batch, float parentAlpha) {
     super.draw(batch, parentAlpha);
-    batch.draw(block, 0, 0, block.getRegionWidth()/2f, block.getRegionHeight()/2f, block.getRegionWidth(), block.getRegionHeight(), 1, 1, 1);
-    batch.draw(IdAni, 0, 0, block.getRegionWidth()/2f, block.getRegionHeight()/2f, block.getRegionWidth(), block.getRegionHeight(), 1, 1, 1);
-
+    batch.setColor(this.getColor());
+    batch.draw(block, getX(), getY(), block.getRegionWidth()/2f, block.getRegionHeight()/2f, block.getRegionWidth(), block.getRegionHeight(), this.getScaleX(), this.getScaleY(), this.getRotation());
+    batch.draw(IdAni, getX(), getY(), block.getRegionWidth()/2f, block.getRegionHeight()/2f, block.getRegionWidth(), block.getRegionHeight(), this.getScaleX(), this.getScaleY(), this.getRotation());
   }
 
 }

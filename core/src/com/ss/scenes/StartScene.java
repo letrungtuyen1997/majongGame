@@ -15,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.ss.GMain;
 import com.ss.commons.BitmapFontC;
 import com.ss.commons.TextureAtlasC;
 import com.ss.core.action.exAction.GArcMoveByAction;
@@ -23,12 +26,22 @@ import com.ss.core.action.exAction.GPathAction;
 import com.ss.core.action.exAction.GSimpleAction;
 import com.ss.core.action.exAction.PathAction;
 import com.ss.core.exSprite.GShapeSprite;
+import com.ss.core.transitions.GTransitionFade;
+import com.ss.core.transitions.GTransitionRotationScale;
+import com.ss.core.transitions.GTransitionSlide;
 import com.ss.core.util.GLayer;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GUI;
 import com.ss.effects.SoundEffect;
 import com.ss.gameLogic.config.Config;
+import com.ss.gameLogic.objects.CrossPanel;
+import com.ss.gameLogic.objects.EndGame;
+import com.ss.gameLogic.objects.LeaderBoard;
+import com.ss.utils.Utils;
+import com.sun.nio.sctp.HandlerResult;
+import com.sun.nio.sctp.Notification;
+import com.sun.nio.sctp.NotificationHandler;
 
 public class StartScene extends GScreen {
   private Group         group     = new Group();
@@ -41,6 +54,8 @@ public class StartScene extends GScreen {
   @Override
   public void init() {
     GStage.addToLayer(GLayer.top,group);
+    if(!SoundEffect.music)
+      SoundEffect.Playmusic();
     createBg();
 
   }
@@ -51,30 +66,35 @@ public class StartScene extends GScreen {
   }
 
   private void createBg(){
+    GMain.platform.ShowBanner(true);
     Image bg = GUI.createImage(TextureAtlasC.uiAtlas,"bg");
     bg.setSize(GStage.getWorldWidth(),GStage.getWorldHeight());
     group.addActor(bg);
 
-    Image logo = GUI.createImage(TextureAtlasC.uiAtlas,"logo");
+    Image logo = GUI.createImage(TextureAtlasC.uiNotiny,"logo");
     logo.setOrigin(Align.center);
     logo.setPosition(GStage.getWorldWidth()/2,logo.getHeight()*0.6f, Align.center);
     group.addActor(logo);
     aniLogo(logo);
 
-    btnStart = initButton(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2,TextureAtlasC.uiAtlas,"btnPlay","Play", BitmapFontC.Font_Button,1,1,group,new ClickListener(){
+    btnStart = initButton(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2,TextureAtlasC.uiAtlas,"btnBrown",GMain.locale.get("btnPlay"), BitmapFontC.Font_Button,0.9f,1,group,new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        SoundEffect.Play(SoundEffect.click);
         Config.isContinues = true;
-        setScreen(new GameScene());
+        setScreen(new GameScene(), GTransitionFade.init(1));
         return super.touchDown(event, x, y, pointer, button);
       }
     });
 
-    btnLevel = initButton(GStage.getWorldWidth()/2,btnStart.getY()+btnStart.getHeight()*2,TextureAtlasC.uiAtlas,"btnLv","Level",BitmapFontC.Font_Button,1,1,group,new ClickListener(){
+    btnLevel = initButton(GStage.getWorldWidth()/2,btnStart.getY()+btnStart.getHeight()*2,TextureAtlasC.uiAtlas,"btnBrown",GMain.locale.get("btnLevel"),BitmapFontC.Font_Button,0.9f,1,group,new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        SoundEffect.Play(SoundEffect.click);
         Config.isContinues = false;
-        setScreen(new GameScene());
+        setScreen(new GameScene(), GTransitionRotationScale.init(0.5f,1));
+//        new EndGame(true,3,null,1,null,null,null,null,null);
+
         return super.touchDown(event, x, y, pointer, button);
       }
     });
@@ -83,15 +103,15 @@ public class StartScene extends GScreen {
     table.defaults().pad(10);
     table.setFillParent(true);
 
-    Image btnRank = GUI.createImage(TextureAtlasC.uiAtlas,"btnRank");
-    Image btnGameOther = GUI.createImage(TextureAtlasC.uiAtlas,"btnGameOther");
+    Image btnRank = GUI.createImage(TextureAtlasC.uiNotiny,"btnRank");
+    Image btnGameOther = GUI.createImage(TextureAtlasC.uiNotiny,"btnGameOther");
 
-    Button btnMusic = GUI.creatButton(TextureAtlasC.uiAtlas.findRegion("onMusic"));
-    btnMusic.getStyle().checked = new TextureRegionDrawable(TextureAtlasC.uiAtlas.findRegion("offMusic"));
+    Button btnMusic = GUI.creatButton(TextureAtlasC.uiNotiny.findRegion("onMusic"));
+    btnMusic.getStyle().checked = new TextureRegionDrawable(TextureAtlasC.uiNotiny.findRegion("offMusic"));
     btnMusic.setSize(btnRank.getWidth(),btnRank.getHeight());
 
-    Button btnSound = GUI.creatButton(TextureAtlasC.uiAtlas.findRegion("onSound"));
-    btnSound.getStyle().checked = new TextureRegionDrawable(TextureAtlasC.uiAtlas.findRegion("offSound"));
+    Button btnSound = GUI.creatButton(TextureAtlasC.uiNotiny.findRegion("onSound"));
+    btnSound.getStyle().checked = new TextureRegionDrawable(TextureAtlasC.uiNotiny.findRegion("offSound"));
     btnSound.setSize(btnRank.getWidth(),btnRank.getHeight());
 
 
@@ -103,21 +123,25 @@ public class StartScene extends GScreen {
     table.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()-100);
     ////// event btn /////
     eventBtn(btnRank,()->{
+      new LeaderBoard();
+
 
     });
     eventBtn(btnGameOther,()->{
+      new CrossPanel();
 
     });
     btnMusic.setChecked(SoundEffect.music);
     btnMusic.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        SoundEffect.Play(SoundEffect.click);
         SoundEffect.music = !SoundEffect.music;
-        btnMusic.setChecked(SoundEffect.music);
-//        if(SoundEffect.music)
-//          SoundEffect.Playmusic();
-//        else
-//          SoundEffect.Pausemusic();
+        btnMusic.setChecked(!SoundEffect.music);
+        if(!SoundEffect.music)
+          SoundEffect.Playmusic();
+        else
+          SoundEffect.Pausemusic();
         return super.touchDown(event, x, y, pointer, button);
       }
     });
@@ -125,11 +149,13 @@ public class StartScene extends GScreen {
     btnSound.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        SoundEffect.Play(SoundEffect.click);
         SoundEffect.mute = !SoundEffect.mute;
-        btnSound.setChecked(SoundEffect.mute);
+        btnSound.setChecked(!SoundEffect.mute);
         return super.touchDown(event, x, y, pointer, button);
       }
     });
+
 
   }
   private void eventBtn(Image img,Runnable runnable){
@@ -137,6 +163,7 @@ public class StartScene extends GScreen {
     img.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        SoundEffect.Play(SoundEffect.click);
         img.addAction(Actions.sequence(
                 Actions.scaleTo(0.9f,0.9f,0.1f),
                 Actions.scaleTo(1,1,0.1f),
@@ -177,4 +204,6 @@ public class StartScene extends GScreen {
             })
     ));
   }
+
+
 }

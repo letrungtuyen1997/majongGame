@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.ss.GMain;
+import com.ss.PoolTile;
 import com.ss.commons.BitmapFontC;
 import com.ss.commons.LoadParticle;
 import com.ss.commons.PaticleConvert;
@@ -17,6 +18,9 @@ import com.ss.core.util.GLayer;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
 import com.ss.effects.SoundEffect;
+import com.ss.gameLogic.config.Config;
+import com.ss.gameLogic.objects.LevelData.LevelData;
+import com.ss.utils.Utils;
 
 public class LoadingScene extends GScreen {
     Group group = new Group();
@@ -30,13 +34,17 @@ public class LoadingScene extends GScreen {
     public void init() {
         GStage.addToLayer(GLayer.ui,group);
         loading();
-//        TextureAtlasC.loadAtlas();
         new PaticleConvert();
-        BitmapFontC.initBitmapFont();
+        BitmapFontC.LoadBitmapFont();
+        TextureAtlasC.LoadAtlas();
         SoundEffect.initSound();
-//        if(Config.remoteEffect)
-            LoadParticle.init();
-//        C.init();
+        LoadParticle.init();
+        Config.loadjson();
+        Utils.initLoadData();
+        LevelData.sortLevel();
+
+
+
 
     }
     static boolean firstShow = false;
@@ -49,24 +57,32 @@ public class LoadingScene extends GScreen {
             }
     }
 
-    float waitTime = 3f;
+    float waitTime = 3;
     @Override
     public void run() {
-         System.out.println("run");
+//        GAssetsManager.getAssetManager().getLoadedAssets()
+//         System.out.println("run: "+  GAssetsManager.getAssetManager().getProgress());
          waitTime-= Gdx.graphics.getDeltaTime();
          if(waitTime<=0) {
              if (!GAssetsManager.isFinished()) {
+//                 System.out.println("load");
                  GAssetsManager.update();
-             } else {
-                 TextureAtlasC.initAtlas();
+//                 GAssetsManager.getAssetManager().getProgress();
+             }
+             else {
+                 BitmapFontC.InitBitmapFont();
+                 TextureAtlasC.InitAtlas();
+                 //new PoolTile();
                  this.setScreen(new StartScene());
-                 //this.setScreen(new GameScene());
-                 System.out.println("chuyen");
+//                 this.setScreen(new GameScene());
+//                 System.out.println("chuyen");
              }
          }
 
     }
     void loading(){
+        Texture img = new Texture("textureAtlas/bgload.png");
+        img.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         Image bg = new Image(new Texture("textureAtlas/bgload.png"));
         bg.setSize(GStage.getWorldWidth(), GStage.getWorldHeight());
         bg.setScale(1,-1);
@@ -74,7 +90,7 @@ public class LoadingScene extends GScreen {
         group.addActor(bg);
         Image load = new Image(new Texture("textureAtlas/loadding.png"));
         load.setOrigin(Align.center);
-        load.setPosition(GStage.getWorldWidth()/2, GStage.getWorldHeight()/2, Align.center);
+        load.setPosition(GStage.getWorldWidth()/2, GStage.getWorldHeight()/2+100, Align.center);
         group.addActor(load);
         aniload(load);
     }

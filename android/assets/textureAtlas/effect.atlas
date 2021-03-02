@@ -1,89 +1,117 @@
 
 effect.png
-size: 512,256
+size: 512,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+0023
+  rotate: false
+  xy: 2, 233
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 004
   rotate: false
-  xy: 359, 68
+  xy: 217, 99
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 010
   rotate: false
-  xy: 293, 60
+  xy: 283, 165
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+013
+  rotate: false
+  xy: 204, 33
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 021
   rotate: false
-  xy: 359, 2
+  xy: 283, 99
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
+028
+  rotate: false
+  xy: 260, 231
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 041
   rotate: false
-  xy: 204, 126
+  xy: 260, 361
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 2-6
   rotate: false
-  xy: 429, 121
+  xy: 217, 165
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 UI_QiangHua03
   rotate: false
-  xy: 2, 32
+  xy: 485, 469
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
+UIdaannui02
+  rotate: false
+  xy: 2, 18
+  size: 106, 11
+  orig: 106, 11
+  offset: 0, 0
+  index: -1
 butter
   rotate: false
-  xy: 2, 54
+  xy: 2, 31
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 fire
   rotate: false
-  xy: 429, 187
+  xy: 390, 211
   size: 64, 67
   orig: 64, 67
   offset: 0, 0
   index: -1
 line
   rotate: false
-  xy: 495, 134
+  xy: 204, 111
   size: 11, 120
   orig: 11, 120
   offset: 0, 0
   index: -1
 pblue
   rotate: false
-  xy: 204, 37
+  xy: 390, 280
   size: 87, 87
   orig: 87, 87
   offset: 0, 0
   index: -1
 select
   rotate: false
-  xy: 334, 134
+  xy: 390, 369
   size: 93, 120
   orig: 93, 120
   offset: 0, 0
   index: -1
 zhuji31_BZ3
   rotate: false
-  xy: 293, 44
+  xy: 2, 2
   size: 13, 14
   orig: 13, 14
   offset: 0, 0

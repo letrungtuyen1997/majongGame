@@ -2,79 +2,90 @@ package com.ss.gameLogic.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
+import com.ss.GMain;
 import com.ss.commons.BitmapFontC;
-import com.ss.commons.TextureAtlasC;
 import com.ss.commons.Tweens;
-import com.ss.core.action.exAction.GPathAction;
+import com.ss.core.action.exAction.GScreenShake2Action;
 import com.ss.core.action.exAction.GSimpleAction;
-import com.ss.core.exSprite.GShapeSprite;
-import com.ss.core.util.GLayer;
+import com.ss.core.util.GLayerGroup;
 import com.ss.core.util.GStage;
-import com.ss.core.util.GUI;
+import com.ss.effects.SoundEffect;
 import com.ss.gameLogic.config.Config;
+import com.ss.gameLogic.objects.LevelData.LevelData;
 import com.ss.scenes.GameScene;
-import com.ss.utils.Utils;
 
 public class Board {
   private Array<Tile> arrTile;
   private Array<Tile>                 arrTileBoard       = new Array<>();
-  private Group                       group              = new Group();
-  private Group                       grTimer            = new Group();
+  private Group                       group;
+  private Group                       grTimer;
+  private GLayerGroup                 grCombo;
   private Array<Tile>                 arrCompare         = new Array<>();
   private Array<Integer>              arrTileShuffle     = new Array<>();
   private Array<Tile>                 arrTileHint        = new Array<>();
-  private Array<Tile>                 arrTileautoMatch   = new Array<>();
   private Array<Tile>                 arrTileCanHint     = new Array<>();
   private Label                       lbShuffle;
   private int                         s;
   private GameScene gameScene;
   private int                         count              = 0;
-  private int                         Level              = 0;
-  private String                      jsLV[];
+  private int level = 0;
+  private JsonValue                   jsLV[];
   private Group                       grNotice;
   private Timer                       timer;
+  private int                         NumEnd             = 4;
+  private Combo                       combo;
+  public  boolean                     isUseItem          = true;
+  private Header                      header;
+  private LevelData.LevelDto          levelDto;
 
-  public Board(int lv, String Lv[], GameScene gameScene){
+
+  public Board(int lv, JsonValue[] levels, GameScene gameScene, Group group, Group grTimer, GLayerGroup grCombo){
+    Config.countTimePlay++;
+    GMain.platform.ShowBanner(true);
     this.gameScene = gameScene;
-    this.Level     = lv;
-    this.jsLV      = Lv;
-    GStage.addToLayer(GLayer.map,group);
-    GStage.addToLayer(GLayer.top,grTimer);
-    group.setSize(Config.TileW*8,Config.TileH*10);
-    group.setPosition(GStage.getWorldWidth()/2-group.getWidth()/2,GStage.getWorldHeight()/2-group.getHeight()/2);
-//    group.debug();
+    this.level = lv;
+    this.jsLV      = levels;
+    this.group     = group;
+    this.grTimer   = grTimer;
+    this.grCombo   = grCombo;
+    group.setVisible(true);
     timer = new Timer(GStage.getWorldWidth()/2,40,TimeLevel(lv+1));
+//    grTimer.addActor(timer);
     grTimer.addActor(timer);
     timer.start(()->{
-      System.out.println("out Time");
-      grNotice = new Notice("out of move",0.3f,new ClickListener(){
+//      System.out.println("out Time");
+      grNotice = new Notice(GMain.locale.get("noticeOutTime"),0.5f,new ClickListener(){
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
           grNotice.clear();
           grNotice.remove();
-          new EndGame(false,timer.getStar(),jsLV,Level,gameScene,Board.this);
+          new EndGame(false,timer.getStar(),jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
+          TrackingEventLv(Config.NameEvent.FAIL);
           return super.touchDown(event, x, y, pointer, button);
         }
       });
     });
 
-    createBoard(Utils.GetJsV(Lv[lv]));
+    combo = new Combo(GStage.getWorldWidth()/2,60,Config.TimeCombo,grCombo);
+
+    header = new Header(this,lv,gameScene,levels,group,grTimer,grCombo);
+
+    levelDto = LevelData.getLevel(lv+1);
+    createBoard(levels[levelDto.getFile()-1]);
     setLockTile();
     shuffleBoard("begin",()->{
-      System.out.println("begin done!");
+//      System.out.println("begin done!");
     });
-    showfps();
+    //Todo: tracking event start
+    TrackingEventLv(Config.NameEvent.START);
   }
   private void createBoard(JsonValue Arrjv ){
     int index=0;
@@ -82,8 +93,8 @@ public class Board {
       Tile t = new Tile(group,this);
       t.setRowCol(jv.get("row").asInt(),jv.get("col").asInt());
       t.setLayer2(jv.get("layer").asInt());
-      t.setPos(jv.get("x").asFloat(),jv.get("y").asFloat(),jv.get("kind").asInt(),true,index);
-      t.createID(jv.get("id").asInt());
+      t.setPos(jv.get("x").asFloat(),jv.get("y").asFloat(),jv.get("kind").asInt(),true,index,jv.get("id").asInt());
+//      t.createID(jv.get("id").asInt());
       arrTileBoard.add(t);
       index++;
     }
@@ -92,17 +103,15 @@ public class Board {
     setDefault();
     for (int i=0;i<arrTileBoard.size;i++){
       if(setLock(arrTileBoard.get(i))){
-        arrTileBoard.get(i).setColor(Color.DARK_GRAY);
+        arrTileBoard.get(i).setColor(new Color(30/255f,30/255f,30/255f,255/255f));
       }
 //      System.out.println("check: "+arrTileBoard.get(i).getRowCol().x+"___"+arrTileBoard.get(i).getRowCol().y+"__"+arrTileBoard.get(i).getKind());
     }
 
   }
   public void setDefault(){
-    System.out.println("arr board tile when setColor: "+arrTileBoard.size );
     for (int i=0;i<arrTileBoard.size;i++){
        arrTileBoard.get(i).setColor(Color.WHITE);
-
     }
 
   }
@@ -497,78 +506,84 @@ public class Board {
       if(row==(int)t.getRowCol().x && col == (int)t.getRowCol().y && id == t.getId() && kind== t.getKind()){
         System.out.println("trùng ");
         if(GameScene.effect!=null)
-          GameScene.effect.FreeAllEfSelect();
-//        arrCompare.get(0).select(false);
+//          GameScene.effect.FreeAllEfSelect();
+        arrCompare.get(0).select(false);
         arrCompare.clear();
       }else {
-        System.out.println("them tile mới!!");
+//        System.out.println("them tile mới!!");
         arrCompare.add(t);
       }
     }
 
     if(arrCompare.size==2){
-      System.out.println("compare here!!");
+//      System.out.println("compare here!!");
       if(arrCompare.get(0).getId()==arrCompare.get(1).getId()){
+        Config.Combo++;
         Tile t1 = arrCompare.get(0);
         Tile t2 = arrCompare.get(1);
-        matchTile(t1,t2);
+        matchTile(t1,t2,"",Config.Combo);
       }else {
         arrCompare.get(0).select(false);
         arrCompare.removeIndex(0);
+//        SoundEffect.Play(SoundEffect.unmatch);
 //        arrCompare.get(1).select(false);
 //        arrCompare.clear();
       }
     }
   }
-  private void matchTile(Tile t1, Tile t2){
-    if(gameScene.effect!=null)
-      gameScene.effect.FreeAllEfSelect();
+  private void matchTile(Tile t1, Tile t2,String type,int combo){
+
+    Upcombo(combo);
     float x1 = t1.getXY().x;
     float y1 = t1.getXY().y;
     float x2 = t2.getXY().x;
     float y2 = t2.getXY().y;
-    float WTile = t1.gr.getWidth();
-    float HTile = t1.gr.getHeight();
+    float WTile = t1.getWidth();
+    float HTile = t1.getHeight();
     float moveY1 = Math.abs(y1-y2)/2;
     float perArcX = Config.PerArcX;
-    float perArcY = Config.perArcY;
+    float perArcY = Config.PerArcY;
     if(y1>y2)
       moveY1*=-1;
     float moveY2 = Math.abs(y1-y2)/2;
     if(y2>y1)
       moveY2*=-1;
 
-    float moveOutX1 = Math.abs(x1-x2)/2-t1.gr.getWidth()/2;
+    float moveOutX1 = Math.abs(x1-x2)/2-t1.getWidth()*0.4f;
     float moveX1 = Config.MoveOut;
     if(x1<x2){
       moveX1*=-1;
       moveOutX1*=-1;
+      t1.setZindex(1001);
+      t2.setZindex(1000);
     }
-    float moveOutX2 = Math.abs(x1-x2)/2-t1.gr.getWidth()/2;
+    float moveOutX2 = Math.abs(x1-x2)/2-t1.getWidth()*0.4f;
     float moveX2 = Config.MoveOut;
     if(x2<x1){
       moveX2*=-1;
       moveOutX2*=-1;
+      t1.setZindex(1000);
+      t2.setZindex(1001);
     }
     if (x1==x2){
       moveX1*=-1;
-      moveOutX1+=WTile/2;
-      moveOutX2+=WTile/2;
+      moveOutX1+=WTile;
+//      moveOutX2-=WTile;
       perArcY=0;
+      t1.setZindex(1000);
+      t2.setZindex(1001);
     }
-
-    removeTile((int)t1.getRowCol().x,(int)t1.getRowCol().y,t1.getKind(),t1.getId(),t1.getLayer());
-    removeTile((int)t2.getRowCol().x,(int)t2.getRowCol().y,t2.getKind(),t2.getId(),t2.getLayer());
+    removeTile(t1);
+    removeTile(t2);
     arrCompare.clear();
     setLockTile();
-    t1.setZindex(1000);
-    t2.setZindex(1000);
+//    t1.setZindex(1000);
+//    t2.setZindex(1000);
 
     Array<Vector2> arrVecT1 = new Array<>();
     arrVecT1.add(new Vector2(x1,y1));
     arrVecT1.add(new Vector2(x1,y1));
-//    if(y1!=y2)
-      arrVecT1.add(new Vector2(x1+moveX1*perArcX,y1+moveY1*perArcY));
+    arrVecT1.add(new Vector2(x1+moveX1*perArcX,y1+moveY1*perArcY));
     arrVecT1.add(new Vector2(x1+moveX1,y1+moveY1));
     arrVecT1.add(new Vector2((x1+moveX1)-(moveX1+moveOutX1),y1+moveY1));
     arrVecT1.add(new Vector2((x1+moveX1)-(moveX1+moveOutX1),y1+moveY1));
@@ -576,108 +591,97 @@ public class Board {
     Array<Vector2> arrVecT2 = new Array<>();
     arrVecT2.add(new Vector2(x2,y2));
     arrVecT2.add(new Vector2(x2,y2));
-//    if(y1!=y2)
-      arrVecT2.add(new Vector2(x2+moveX2*perArcX,y2+moveY2*perArcY));
+    arrVecT2.add(new Vector2(x2+moveX2*perArcX,y2+moveY2*perArcY));
     arrVecT2.add(new Vector2(x2+moveX2,y2+moveY2));
     arrVecT2.add(new Vector2((x2+moveX2)-(moveX2+moveOutX2),y2+moveY2));
     arrVecT2.add(new Vector2((x2+moveX2)-(moveX2+moveOutX2),y2+moveY2));
 
-    t1.gr.addAction(Actions.sequence(
-            GPathAction.init(arrVecT1.toArray(Vector2.class),Config.DurMoveTile,false),
-            Actions.run(()->{
-              t1.dispose();
-            })
-    ));
-    t2.gr.addAction(Actions.sequence(
-            GPathAction.init(arrVecT2.toArray(Vector2.class),Config.DurMoveTile,false),
-            Actions.run(()->{
-              t2.dispose();
-            })
-    ));
+    t1.ActionMoveArc(arrVecT1,Config.DurMoveTile,false,()->{
+      if(type.equals("bomb")){
+        group.addAction(GScreenShake2Action.screenShake1(0.1f,4,group));
+      }
+      SoundEffect.Play(SoundEffect.match);
+      if(combo>1)
+        SoundEffect.explode(combo-1);
+      t1.dispose();
+    });
+
+    t2.ActionMoveArc(arrVecT2,Config.DurMoveTile,false,()->{
+      t2.dispose();
+    });
 
 
-
-//    t1.gr.addAction(Actions.sequence(
-//            Actions.moveBy(moveX1,moveY1,0.2f,Interpolation.circleOut),
-//            Actions.moveBy(-(moveX1+moveOutX1),0,0.2f,Interpolation.swingOut),
-//            Actions.run(()->{
-//              t1.dispose();
-//            })
-//    ));
-//    t2.gr.addAction(Actions.sequence(
-//            Actions.moveBy(moveX2,moveY2,0.2f,Interpolation.circleOut),
-//            Actions.moveBy(-(moveX2+moveOutX2),0,0.2f,Interpolation.swingOut),
-//            Actions.run(()->{
-//              t2.dispose();
-//            })
-//    ));
     hintBoard("check before match");
     if(arrTileHint.size<2 ){
-      if(arrTileBoard.size>2){
+      if(!checkEndGame() && arrTileBoard.size!=0){
         shuffleBoard("shuffle before match",()->{
-          System.out.println("finish!!");
+//          System.out.println("finish!!");
         });
-      }else if(arrTileBoard.size==2){
-        pauseTime(true);
-        System.out.println("out of move!!!");
-        Tweens.setTimeout(group,1,()->{
-          grNotice = new Notice("out of move",0.3f,new ClickListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-              grNotice.clear();
-              grNotice.remove();
-              new EndGame(false,timer.getStar(),jsLV,Level,gameScene,Board.this);
-              return super.touchDown(event, x, y, pointer, button);
-            }
+      }else if(checkEndGame() && arrTileBoard.size!=0){
+          pauseTime(true);
+//        System.out.println("out of move!!!");
+          Tweens.setTimeout(group,1,()->  {
+            grNotice = new Notice(GMain.locale.get("noticeOutMove"),0.5f,new ClickListener(){
+              @Override
+              public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                grNotice.clear();
+                grNotice.remove();
+                new EndGame(false,timer.getStar(),jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
+                TrackingEventLv(Config.NameEvent.FAIL);
+                return super.touchDown(event, x, y, pointer, button);
+              }
+            });
           });
-        });
-
-      }else {
+      }else if(arrTileBoard.size==0) {
         pauseTime(true);
-        System.out.println("win game!!");
+//        System.out.println("win game!!");
         Tweens.setTimeout(group,1,()->{
-          new EndGame(true,timer.getStar(),jsLV,Level,gameScene,this);
+          new EndGame(true,timer.getStar(),jsLV, level,gameScene,this,group,grTimer,grCombo);
+          TrackingEventLv(Config.NameEvent.COMPLETE);
         });
       }
 
     }
   }
-
   public void autoMatch(Runnable runnable){
     count++;
-    if(count> Config.QuanAutomatch || arrTileBoard.size<=2){
+    if(count> Config.QuanAutomatch ||checkEndGame()){
+      if(checkEndGame())
+        isUseItem=false;
       count=0;
       group.addAction(Actions.run(runnable));
       return;
     }
     SkipHint();
-    shuffleBoard("automatch",()->{
-      if(arrTileHint.size>=2){
-        Tile t1= arrTileHint.get(0);
-        Tile t2= arrTileHint.get(1);
-        matchTile(t1,t2);
-        System.out.println("match");
-      }
-      if(arrTileBoard.size<=2){
-        group.addAction(Actions.run(runnable));
-        return;
-      }
-      Tweens.setTimeout(group,0.5f,()->{
-        autoMatch(runnable);
+    hintBoard("hint");
+    if(arrTileHint.size>=2){
+      Tile t1= arrTileHint.get(0);
+      Tile t2= arrTileHint.get(1);
+      Tweens.setTimeout(group,0.3f,()->{
+        Config.Combo++;
+        matchTile(t1,t2,"bomb",Config.Combo);
       });
-
-    });
-  }
-
-  private void removeTile(int row, int col,int kind,int id,int layer){
-    for (Tile t : arrTileBoard){
-      if(t.getRowCol().x==row && t.getRowCol().y==col && t.getKind()==kind && t.getId()==id && t.getLayer() == layer){
-        arrTileBoard.removeIndex(arrTileBoard.indexOf(t,true));
-      }
+//      System.out.println("match");
+    }else {
+      shuffleBoard("hint",()->{
+        if(arrTileHint.size>=2){
+          Tile t1= arrTileHint.get(0);
+          Tile t2= arrTileHint.get(1);
+          Config.Combo++;
+          matchTile(t1,t2,"bomb",Config.Combo);
+//          System.out.println("match");
+        }
+      });
     }
+    Tweens.setTimeout(group,0.5f,()->{
+      autoMatch(runnable);
+    });
 
   }
 
+  private void removeTile(Tile t){
+    arrTileBoard.removeValue(t, true);
+  }
 
   //Label: tim lien ket khoa tile
   private Tile findTile(int row, int col, int Layer, int kind){
@@ -690,10 +694,11 @@ public class Board {
 
 
   public void hintBoard(String type){
+    SkipHint();
     arrTileHint.clear();
     arrTileCanHint.clear();
     for (Tile t : arrTileBoard){
-      if(t.block.getColor().equals(Color.WHITE))
+      if(t.getColor().equals(Color.WHITE))
         arrTileCanHint.add(t);
     }
     int counthint=0;
@@ -710,9 +715,8 @@ public class Board {
       }else {
         arrTileHint.clear();
       }
-
     }
-    System.out.println("get size arrhint: "+ arrTileHint.size);
+//    System.out.println("get size arrhint: "+ arrTileHint.size);
     int hint =0;
     for (Tile t: arrTileHint){
       hint++;
@@ -730,11 +734,7 @@ public class Board {
     for (Tile t : arrTileHint)
       t.select(false);
   }
-  public void createlbShuffle(){
-    lbShuffle = new Label("dang shuffle!!!",new Label.LabelStyle(BitmapFontC.FontAlert,null));
-    lbShuffle.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2, Align.center);
-    group.addActor(lbShuffle);
-  }
+
   public void shuffleBoard(String type,Runnable runnable){
     arrTileShuffle.clear();
     for (Tile t : arrTileBoard){
@@ -749,7 +749,6 @@ public class Board {
     }
     hintBoard(type);
     if(arrTileHint.size>=2){
-//      lbShuffle.remove();
       group.addAction(Actions.run(runnable));
       return;
     }else {
@@ -758,10 +757,13 @@ public class Board {
 
   }
   public void dispose(){
-    group.clear();
-    group.remove();
+    SkipHint();
     grTimer.clear();
-    grTimer.remove();
+    combo.dispose();
+    header.dispose();
+    group.clear();
+
+
   }
 
   private void showfps(){
@@ -780,44 +782,49 @@ public class Board {
     timer.setPause(set);
   }
 
-  private void Notice(String text){
-    Group gr = new Group();
-    GStage.addToLayer(GLayer.top,gr);
-    gr.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2);
 
-    GShapeSprite bg = new GShapeSprite();
-    bg.createRectangle(true,-GStage.getWorldWidth()/2,-GStage.getWorldHeight()/2,GStage.getWorldWidth(),GStage.getWorldHeight());
-    gr.addActor(bg);
-
-    Image popup = GUI.createImage(TextureAtlasC.uiAtlas,"popup");
-    popup.setPosition(0,0,Align.center);
-    gr.addActor(popup);
-    gr.setScale(0);
-    gr.setOrigin(Align.center);
-    gr.addAction(Actions.scaleTo(1,1,0.5f,Interpolation.swingOut));
-
-    Label notice = new Label("Notice",new Label.LabelStyle(BitmapFontC.Font_Title,null));
-    notice.setFontScale(1.5f);
-    notice.setAlignment(Align.center);
-    notice.setPosition(0,-popup.getHeight()/2+notice.getHeight(),Align.center);
-    gr.addActor(notice);
-
-    Label des = new Label(text,new Label.LabelStyle(BitmapFontC.Font_Button,null));
-    des.setWrap(true);
-    des.setWidth(popup.getWidth()*0.8f);
-    des.setPosition(0,0,Align.center);
-    des.setAlignment(Align.center);
-    gr.addActor(des);
-
-  }
   private int TimeLevel(int lv){
     int time= Config.Time;
     time = (int)(time - ((float)lv/Config.PercentTime)*time);
     if(lv>=Config.MaxLvtime){
       time=time-(Config.MaxLvtime /Config.PercentTime)*time;
     }
-    System.out.println("time level: "+time);
+//    System.out.println("time level: "+time);
     return time;
   }
+  private boolean checkEndGame(){
+    int count=0;
+    for (Tile t : arrTileBoard){
+      if(t.getColor().equals(Color.WHITE))
+        count++;
+    }
+    if(count<2)
+      return true;
+    return false;
+  }
+  public void Upcombo(int c){
+    combo.upTime(c);
+  }
+  public void setPosTimer(float x,float y){
+    timer.setPosition(x,y);
+  }
+  public void setPosCombo(float x, float y){
+    combo.setPositon(x,y);
+  }
+  private void TrackingEventLv(Config.NameEvent select){
+//    System.out.println("check name : "+ select);
+    String name = "";
+    if(select==Config.NameEvent.START)
+      name ="level_start_"+(level +1)+"_"+levelDto.getFile();
+    if(select==Config.NameEvent.COMPLETE)
+      name ="level_complete_"+(level +1)+"_"+levelDto.getFile();
+    if(select==Config.NameEvent.FAIL)
+      name ="level_fail_"+(level +1)+"_"+levelDto.getFile();
+
+//    System.out.println("tracking : "+name);
+    GMain.platform.TrackCustomEvent(name);
+
+  }
+
 
 }

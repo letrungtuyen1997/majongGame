@@ -2,8 +2,8 @@
 - Delay -
 active: false
 - Duration - 
-lowMin: 1000.0
-lowMax: 1000.0
+lowMin: 2000.0
+lowMax: 2000.0
 - Count - 
 min: 10
 max: 30
@@ -20,8 +20,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1800.0
-highMax: 1800.0
+highMin: 2800.0
+highMax: 2800.0
 relative: false
 scalingCount: 2
 scaling0: 1.0
@@ -29,10 +29,8 @@ scaling1: 1.0
 timelineCount: 2
 timeline0: 0.0
 timeline1: 1.0
-independent: false
 - Life Offset - 
 active: false
-independent: false
 - X Offset - 
 active: false
 - Y Offset - 
@@ -40,12 +38,12 @@ active: false
 - Spawn Shape - 
 shape: ellipse
 edges: true
-side: top
+side: bottom
 - Spawn Width - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 500.0
-highMax: 500.0
+highMin: 300.0
+highMax: 300.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -152,14 +150,16 @@ lowMax: 0.0
 highMin: 1.0
 highMax: 1.0
 relative: false
-scalingCount: 3
+scalingCount: 4
 scaling0: 0.0
 scaling1: 0.9649123
-scaling2: 0.0
-timelineCount: 3
+scaling2: 0.9649123
+scaling3: 0.0
+timelineCount: 4
 timeline0: 0.0
 timeline1: 0.15068494
-timeline2: 1.0
+timeline2: 0.9041096
+timeline3: 1.0
 - Options - 
 attached: true
 continuous: false
@@ -176,8 +176,8 @@ spriteMode: single
 - Delay -
 active: false
 - Duration - 
-lowMin: 1000.0
-lowMax: 1000.0
+lowMin: 2000.0
+lowMax: 2000.0
 - Count - 
 min: 10
 max: 50
@@ -194,8 +194,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1800.0
-highMax: 1800.0
+highMin: 2800.0
+highMax: 2800.0
 relative: false
 scalingCount: 2
 scaling0: 1.0
@@ -203,10 +203,8 @@ scaling1: 1.0
 timelineCount: 2
 timeline0: 0.0
 timeline1: 1.0
-independent: false
 - Life Offset - 
 active: false
-independent: false
 - X Offset - 
 active: false
 - Y Offset - 
@@ -312,14 +310,16 @@ lowMax: 0.0
 highMin: 1.0
 highMax: 1.0
 relative: false
-scalingCount: 3
+scalingCount: 4
 scaling0: 0.0
 scaling1: 0.98245615
-scaling2: 0.0
-timelineCount: 3
+scaling2: 0.98245615
+scaling3: 0.0
+timelineCount: 4
 timeline0: 0.0
 timeline1: 0.16438356
-timeline2: 1.0
+timeline2: 0.9041096
+timeline3: 1.0
 - Options - 
 attached: true
 continuous: false
@@ -336,8 +336,8 @@ spriteMode: single
 - Delay -
 active: false
 - Duration - 
-lowMin: 1000.0
-lowMax: 1000.0
+lowMin: 2000.0
+lowMax: 2000.0
 - Count - 
 min: 20
 max: 50
@@ -354,8 +354,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1800.0
-highMax: 1800.0
+highMin: 2800.0
+highMax: 2800.0
 relative: false
 scalingCount: 2
 scaling0: 1.0
@@ -363,10 +363,8 @@ scaling1: 1.0
 timelineCount: 2
 timeline0: 0.0
 timeline1: 1.0
-independent: false
 - Life Offset - 
 active: false
-independent: false
 - X Offset - 
 active: false
 - Y Offset - 
@@ -487,12 +485,12 @@ relative: false
 scalingCount: 4
 scaling0: 0.0
 scaling1: 0.9649123
-scaling2: 0.64912283
+scaling2: 0.9649123
 scaling3: 0.0
 timelineCount: 4
 timeline0: 0.0
 timeline1: 0.1369863
-timeline2: 0.8150685
+timeline2: 0.8835617
 timeline3: 1.0
 - Options - 
 attached: true
@@ -510,8 +508,8 @@ spriteMode: single
 - Delay -
 active: false
 - Duration - 
-lowMin: 1000.0
-lowMax: 1000.0
+lowMin: 2000.0
+lowMax: 2000.0
 - Count - 
 min: 10
 max: 10
@@ -528,8 +526,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1800.0
-highMax: 1800.0
+highMin: 2800.0
+highMax: 2800.0
 relative: false
 scalingCount: 2
 scaling0: 1.0
@@ -537,10 +535,8 @@ scaling1: 1.0
 timelineCount: 2
 timeline0: 0.0
 timeline1: 1.0
-independent: false
 - Life Offset - 
 active: false
-independent: false
 - X Offset - 
 active: false
 - Y Offset - 
@@ -548,12 +544,12 @@ active: false
 - Spawn Shape - 
 shape: ellipse
 edges: true
-side: top
+side: bottom
 - Spawn Width - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 500.0
-highMax: 500.0
+highMin: 300.0
+highMax: 300.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -660,14 +656,16 @@ lowMax: 0.0
 highMin: 1.0
 highMax: 1.0
 relative: false
-scalingCount: 3
+scalingCount: 4
 scaling0: 0.0
-scaling1: 0.98245615
-scaling2: 0.0
-timelineCount: 3
+scaling1: 1.0
+scaling2: 0.98876405
+scaling3: 0.011235955
+timelineCount: 4
 timeline0: 0.0
-timeline1: 0.1849315
-timeline2: 1.0
+timeline1: 0.1369863
+timeline2: 0.9028037
+timeline3: 1.0
 - Options - 
 attached: true
 continuous: false
@@ -678,4 +676,3 @@ premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
 013.png
-
