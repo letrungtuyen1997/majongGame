@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "31821297523",
+    "project_id": "jkmahjong",
+    "storage_bucket": "jkmahjong.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31821297523:android:ff6d676250b7688535f706",
+        "android_client_info": {
+          "package_name": "jk.mahjong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31821297523-d800aprkc31mq16cmmhqung8cndep1hn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfST_uYoirDBDSdci0YdpH6h6-ECxrns8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31821297523-d800aprkc31mq16cmmhqung8cndep1hn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

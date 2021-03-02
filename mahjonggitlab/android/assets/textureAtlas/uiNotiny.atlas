@@ -1,0 +1,69 @@
+
+uiNotiny.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+TileLv
+  rotate: false
+  xy: 649, 50
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+btnBack
+  rotate: false
+  xy: 756, 186
+  size: 79, 81
+  orig: 79, 81
+  offset: 0, 0
+  index: -1
+btnGameOther
+  rotate: false
+  xy: 649, 382
+  size: 105, 111
+  orig: 105, 111
+  offset: 0, 0
+  index: -1
+btnRank
+  rotate: false
+  xy: 649, 156
+  size: 105, 111
+  orig: 105, 111
+  offset: 0, 0
+  index: -1
+logo
+  rotate: false
+  xy: 2, 2
+  size: 645, 491
+  orig: 645, 491
+  offset: 0, 0
+  index: -1
+offMusic
+  rotate: false
+  xy: 863, 382
+  size: 105, 111
+  orig: 105, 111
+  offset: 0, 0
+  index: -1
+offSound
+  rotate: false
+  xy: 756, 382
+  size: 105, 111
+  orig: 105, 111
+  offset: 0, 0
+  index: -1
+onMusic
+  rotate: false
+  xy: 649, 269
+  size: 105, 111
+  orig: 105, 111
+  offset: 0, 0
+  index: -1
+onSound
+  rotate: false
+  xy: 756, 269
+  size: 105, 111
+  orig: 105, 111
+  offset: 0, 0
+  index: -1
