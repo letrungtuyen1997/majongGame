@@ -8,9 +8,12 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.ss.GMain;
 import com.ss.commons.TextureAtlasC;
 import com.ss.core.util.GStage;
+import com.ss.utils.Utils;
+
 public class Config {
     public static float ScreenW = GStage.getWorldWidth();
     public static float ScreenH = GStage.getWorldHeight();
+    public static int           targetGift          = 15;
     public static boolean       checkConnet         = true;
     public static boolean       checkWheel          = false;
     public static String        megaID              ="10001";
@@ -40,9 +43,9 @@ public class Config {
     public static int           PercentTime         = 1000;
     public static int           MaxLvtime           = 400;
     public static boolean       isContinues         = false;
-    public static int           ItSpHint            = GMain.prefs.getInteger("hint",20);
-    public static int           ItSpShuffle         = GMain.prefs.getInteger("shuffle",20);
-    public static int           ItSpBomb            = GMain.prefs.getInteger("bomb",200);
+    public static int           ItSpHint            = GMain.prefs.getInteger("hint",1);
+    public static int           ItSpShuffle         = GMain.prefs.getInteger("shuffle",1);
+    public static int           ItSpBomb            = GMain.prefs.getInteger("bomb",1);
     public static int           RewardHint          = 1;
     public static int           RewardShuffle       = 1;
     public static int           RewardBomb          = 1;
@@ -93,6 +96,42 @@ public class Config {
         COMPLETE,
         FAIL
     }
+    public static void setSkin(int level){
+        level+=1;
+        System.out.println("check skin here lv: "+level+"----"+(level/500));
+        if(level>0 &&level<100){
+            Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter1);
+            Config.Cxl          = Config.cxlchapter1;
+            Config.Bg           = Config.bgchapter1;
+
+        }
+        if(level>=100 &&level<200){
+            Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter2);
+            Config.Cxl          = Config.cxlchapter2;
+            Config.Bg           = Config.bgchapter2;
+            System.out.println("chuyen skin 2");
+
+        }
+        if(level>=200 &&level<300){
+            Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter3);
+            Config.Cxl          = Config.cxlchapter3;
+            Config.Bg           = Config.bgchapter3;
+
+        }
+        if(level>=300 &&level<400){
+            Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter4);
+            Config.Cxl          = Config.cxlchapter4;
+            Config.Bg           = Config.bgchapter4;
+
+        }
+        if(level>=400 &&level<Utils.getLv().length){
+            Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter5);
+            Config.Cxl          = Config.cxlchapter5;
+            Config.Bg           = Config.bgchapter5;
+
+        }
+//  System.out.println("check cucxilau: "+Config.Cxl);
+    }
 
 
 
@@ -135,6 +174,7 @@ public class Config {
         TimeCombo           = jv.get("TimeCombo").asFloat();
         countShowAds        = jv.get("countShowAds").asInt();
         SORT_GROUP_LEVEL    = jv.get("sort_group_level").asInt();
+        targetGift          = jv.get("targetGift").asInt();
 
     }
 

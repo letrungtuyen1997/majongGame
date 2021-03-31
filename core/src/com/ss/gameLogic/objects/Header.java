@@ -63,11 +63,16 @@ public class Header {
     lbLvTitle.setSize(GlLvTitle.width * lbLvTitle.getFontScaleX(),GlLvTitle.height * lbLvTitle.getFontScaleY());
     lbLvTitle.setPosition(lbLvTitle.getX(Align.center)+20,btnPause.getY()+lbLvTitle.getHeight()*0.52f,Align.center);
     group.addActor(lbLvTitle);
+    if(GlLvTitle.width>150)
+    {
+      lbLvTitle.setFontScale((float)150/GlLvTitle.width);
+      lbLvTitle.setAlignment(Align.center);
+    }
 
     Label lbLv = new Label(""+lv,new Label.LabelStyle(BitmapFontC.Font_Title,null));
     lbLv.setFontScale(0.8f);
     lbLv.setAlignment(Align.center);
-    lbLv.setPosition(lbLvTitle.getX(Align.center),lbLvTitle.getY()+lbLvTitle.getHeight()*1.5f,Align.center);
+    lbLv.setPosition(lbLvTitle.getX(Align.center),lbLvTitle.getY()+lbLvTitle.getHeight()*1.7f,Align.center);
     group.addActor(lbLv);
   }
 
@@ -81,15 +86,17 @@ public class Header {
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         SoundEffect.Play(SoundEffect.shuffle);
-        if(Config.ItSpShuffle>0 && board.isUseItem ==true){
-          setQuanItSp("shuffle",-1);
-          grTouch = disabledTouch();
-          board.SkipHint();
-          board.shuffleBoard("shuffle",()->{
-            grTouch.clear();
-            grTouch.remove();
+        if(Config.ItSpShuffle>0 ){
+          if(board.isUseItem ==true) {
+            setQuanItSp("shuffle",-1);
+            grTouch = disabledTouch();
+            board.SkipHint();
+            board.shuffleBoard("shuffle",()->{
+              grTouch.clear();
+              grTouch.remove();
 //            System.out.println("shuffle done");
-          });
+            });
+          }
         }else {
           /// ads
           createPopAds();
@@ -103,9 +110,12 @@ public class Header {
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         SoundEffect.Play(SoundEffect.hint);
-        if(Config.ItSpHint>0 && board.isUseItem ==true){
-          setQuanItSp("hint",-1);
-          board.hintBoard("hint");
+        if(Config.ItSpHint>0 ){
+          if(board.isUseItem ==true){
+            setQuanItSp("hint",-1);
+            board.hintBoard("hint");
+          }
+
         }else{
           /// ads
           createPopAds();
@@ -233,7 +243,7 @@ public class Header {
     grAds.addActor(popup);
 
     Label lbTitle = new Label(GMain.locale.get("lbTitle"), new Label.LabelStyle(BitmapFontC.Font_Button, null));
-    lbTitle.setFontScale(1.3f);
+    lbTitle.setFontScale(1.1f);
     lbTitle.setAlignment(Align.center);
     GlyphLayout Gltitle = new GlyphLayout(BitmapFontC.Font_Button, lbTitle.getText());
     lbTitle.setSize(Gltitle.width * lbTitle.getFontScaleX(), Gltitle.height * lbTitle.getFontScaleY());
@@ -283,7 +293,7 @@ public class Header {
     lbThunder.setSize(GlThunder.width * lbThunder.getFontScaleX(), GlThunder.height * lbThunder.getFontScaleY());
     lbThunder.setPosition(iconBomb.getX() + iconBomb.getWidth()/2, iconBomb.getY() + iconBomb.getHeight()*1.3f,Align.center);
     grAds.addActor(lbThunder);
-    initButton(-popup.getWidth() * 0.22f, popup.getY(Align.top)-70 , TextureAtlasC.uiAtlas, "btnGreen", "để sau", BitmapFontC.Font_Title, 0.5f,1, grAds,0, new ClickListener() {
+    initButton(-popup.getWidth() * 0.22f, popup.getY(Align.top)-70 , TextureAtlasC.uiAtlas, "btnGreen", GMain.locale.get("late"), BitmapFontC.Font_Title, 0.5f,1, grAds,0, new ClickListener() {
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         SoundEffect.Play(SoundEffect.click);
@@ -292,7 +302,7 @@ public class Header {
         return super.touchDown(event, x, y, pointer, button);
       }
     });
-    initButton(popup.getWidth() * 0.22f, popup.getY(Align.top)-70, TextureAtlasC.uiAtlas, "btnWatchAds","xem ads", BitmapFontC.Font_Title, 0.5f,1, grAds,20, new ClickListener() {
+    initButton(popup.getWidth() * 0.22f, popup.getY(Align.top)-70, TextureAtlasC.uiAtlas, "btnWatchAds",GMain.locale.get("watch"), BitmapFontC.Font_Title, 0.5f,1, grAds,23, new ClickListener() {
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         SoundEffect.Play(SoundEffect.click);
@@ -310,11 +320,18 @@ public class Header {
     grbtn.addActor(btn);
     Label lbItSp = new Label(text, new Label.LabelStyle(bit, null));
     lbItSp.setFontScale(sclText);
+    lbItSp.setAlignment(Align.center);
     GlyphLayout glItSp = new GlyphLayout(bit, lbItSp.getText());
     lbItSp.setSize(glItSp.width * lbItSp.getFontScaleX(), glItSp.height * lbItSp.getFontScaleY());
     lbItSp.setPosition(btn.getX() + btn.getWidth() * 0.5f+paddingX, btn.getY() + btn.getHeight() * 0.45f, Align.center);
     grbtn.addActor(lbItSp);
     grbtn.setSize(btn.getWidth(), btn.getHeight());
+//    if(glItSp.width>(grbtn.getWidth()*0.8f)){
+//      float scl = (grbtn.getWidth()*0.8f)/glItSp.width;
+//      System.out.println("check scl: "+scl);
+//      lbItSp.setFontScale(scl);
+//      lbItSp.setAlignment(Align.center);
+//    }
     grbtn.setPosition(x, y, Align.center);
     grbtn.addListener(event);
   }

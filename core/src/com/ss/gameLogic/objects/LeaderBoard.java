@@ -148,7 +148,6 @@ public class LeaderBoard implements HttpLeaderBoard.GetLeaderBoard {
     private void Lisview(JsonValue data){
         Array<Utils.LeaderBoard> arrdata = new Array<>();
 //        Utils.LeaderBoard [] arrdata;
-        System.out.println("check dât leaderboard: "+data);
         for (int i=0;i<data.size;i++){
             Utils.LeaderBoard s = new Utils.LeaderBoard();
             s.setName(data.get(i).get("name").asString());
@@ -266,8 +265,8 @@ public class LeaderBoard implements HttpLeaderBoard.GetLeaderBoard {
     @Override
     public void getLeaderBoard(JsonValue data) {
         finishLoad();
-        System.out.println("data: "+data);
-        Lisview(data.child);
+//        System.out.println("data: "+data);
+        Lisview(data);
     }
 
     @Override

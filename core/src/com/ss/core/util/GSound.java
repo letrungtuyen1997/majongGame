@@ -50,13 +50,13 @@ public class GSound {
 
          while (var1.hasNext()) {
             Music var2 = (Music) var1.next();
-            GAssetsManager.unload((Object) var0);
+            GMain.getAssetManager().unload((Object) var0);
          }
 
          Iterator var3 = soundPool.values().iterator();
 
          while (var3.hasNext()) {
-            GAssetsManager.unload((Object) ((Sound) var3.next()));
+            GMain.getAssetManager().unload((Object) ((Sound) var3.next()));
          }
          musicPool.clear();
          soundPool.clear();
@@ -84,7 +84,7 @@ public class GSound {
       }
       else {
          if (!musicPool.containsKey(var0)) {
-            music = GAssetsManager.getMusic(var0);
+            music = GMain.getAssetManager().getMusic(var0);
             musicPool.put(var0, music);
          }
 
@@ -98,11 +98,11 @@ public class GSound {
       }
       else {
          if (!soundPool.containsKey(var0)) {
-            Sound var1 = GAssetsManager.getSound(var0);
+            Sound var1 = GMain.getAssetManager().getSound(var0);
             soundPool.put(var0, var1);
          }
 
-         soundPool.put(var0, GAssetsManager.getSound(var0));
+         soundPool.put(var0, GMain.getAssetManager().getSound(var0));
       }
    }
 
@@ -270,7 +270,7 @@ public class GSound {
 
          while (var1.hasNext()) {
             String var2 = (String) var1.next();
-            ((Sound) GAssetsManager.getRes(var2)).setVolume(loopSound.findKey(var2, true, -1L), var0);
+            ((Sound) GMain.getAssetManager().getRes(var2)).setVolume(loopSound.findKey(var2, true, -1L), var0);
          }
       }
 
@@ -383,12 +383,12 @@ public class GSound {
       }
 
       musicPool.remove(var0);
-      GAssetsManager.unload((Object)var1);
+      GMain.getAssetManager().unload((Object)var1);
    }
 
    public static void unloadSound(String var0) {
       stopSound(var0);
-      GAssetsManager.unload(var0);
+      GMain.getAssetManager().unload(var0);
       soundPool.remove(var0);
       soundPlayList.remove(var0);
       loopSound.remove(loopSound.findKey(var0, true, -1L));

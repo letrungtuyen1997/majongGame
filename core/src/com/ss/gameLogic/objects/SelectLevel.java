@@ -2,6 +2,7 @@ package com.ss.gameLogic.objects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -163,7 +164,7 @@ public class SelectLevel {
         if(a[i].length() > a[j].length())  //nếu có nghịch thế thì đổi chỗ
           Swap(i, j,a);
   }
-private void setSkin(){
+  private void setSkin(){
   if(chapter==0){
     Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter1);
     Config.Cxl          = Config.cxlchapter1;
@@ -235,24 +236,21 @@ private void setSkin(){
       Label lb = new Label(""+(i+1),new Label.LabelStyle(BitmapFontC.Font_Title,null));
       lb.setFontScale(0.8f);
       lb.setAlignment(Align.center);
-      lb.setPosition(Tile.getX(Align.center),Tile.getY(Align.center)-10,Align.center);
+      lb.setPosition(Tile.getX(Align.center),Tile.getY(Align.center),Align.center);
       grT.addActor(lb);
-
 
       Image iconLock = GUI.createImage(TextureAtlasC.uiAtlas,"iconlock");
       iconLock.setPosition(Tile.getX(Align.center),Tile.getY(Align.center),Align.center);
       grT.addActor(iconLock);
       iconLock.setVisible(false);
 
-
       grT.setSize(Tile.getWidth(),Tile.getHeight()+frmStar.getHeight()*1.1f);
       grT.setScale(1,-1);
       grT.setOrigin(Align.center);
       tableScroll.add(grT).center().pad(grT.getWidth()/2);
-     padRow++;
+      padRow++;
       if(padRow%3==0)
         tableScroll.row();
-
 
       if(i> Config.LvPer-1){
         Tile.setColor(Color.DARK_GRAY);

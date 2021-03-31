@@ -13,7 +13,6 @@ import com.ss.commons.LoadParticle;
 import com.ss.commons.PaticleConvert;
 import com.ss.commons.TextureAtlasC;
 import com.ss.core.action.exAction.GSimpleAction;
-import com.ss.core.util.GAssetsManager;
 import com.ss.core.util.GLayer;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
@@ -35,10 +34,7 @@ public class LoadingScene extends GScreen {
         GStage.addToLayer(GLayer.ui,group);
         loading();
         new PaticleConvert();
-        BitmapFontC.LoadBitmapFont();
-        TextureAtlasC.LoadAtlas();
-        SoundEffect.initSound();
-        LoadParticle.init();
+
         Config.loadjson();
         Utils.initLoadData();
         LevelData.sortLevel();
@@ -60,21 +56,25 @@ public class LoadingScene extends GScreen {
     float waitTime = 3;
     @Override
     public void run() {
-//        GAssetsManager.getAssetManager().getLoadedAssets()
-//         System.out.println("run: "+  GAssetsManager.getAssetManager().getProgress());
+//        GMain.getAssetManager().getAssetManager().getLoadedAssets()
+//         System.out.println("run: "+  GMain.getAssetManager().getAssetManager().getProgress());
          waitTime-= Gdx.graphics.getDeltaTime();
          if(waitTime<=0) {
-             if (!GAssetsManager.isFinished()) {
+             if (!GMain.getAssetManager().isFinished()) {
 //                 System.out.println("load");
-                 GAssetsManager.update();
-//                 GAssetsManager.getAssetManager().getProgress();
+                 GMain.getAssetManager().update();
+//                 GMain.getAssetManager().getAssetManager().getProgress();
              }
              else {
+                 BitmapFontC.LoadBitmapFont();
+                 TextureAtlasC.LoadAtlas();
+                 SoundEffect.initSound();
+                 LoadParticle.init();
                  BitmapFontC.InitBitmapFont();
                  TextureAtlasC.InitAtlas();
                  //new PoolTile();
                  this.setScreen(new StartScene());
-//                 this.setScreen(new GameScene());
+//                 this.setScreen(new WheelScene());
 //                 System.out.println("chuyen");
              }
          }

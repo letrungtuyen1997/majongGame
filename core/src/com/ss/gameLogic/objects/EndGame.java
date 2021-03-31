@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -37,12 +38,17 @@ public class EndGame {
   private Group    group       = new Group();
   private Group    gref        = new Group();
   private Group    grtop       = new Group();
+  private Group    grTouch     = new Group();
   private Group    grNotice;
   private String   ribon,title,pop;
   private Group    grBoard;
-  private Image    popup,gift,sclBar;
+  private Image    popup,gift,sclBar,icGift;
   private Label    lbProgress;
-  private float    dura=5;
+  private float    dura=3;
+  private int      tic=0;
+  private int      moment=0;
+  private int      up=0;
+  private int      count=0;
   public EndGame(boolean isWin, int star, JsonValue jsLV[], int lv, GameScene gameScene, Board board, Group grBoard, Group grTimer, GLayerGroup grCombo){
     this.grBoard = grBoard;
     GStage.addToLayer(GLayer.top,group);
@@ -50,7 +56,10 @@ public class EndGame {
     GStage.addToLayer(GLayer.top,grtop);
     if(isWin){
       ribon = "ribonWin";
-      title = "victory"+GMain.locale.get("idLang");
+      String id = GMain.locale.get("idLang");
+//      if(id.equals("Vn")==false||id.equals("Vn")==false)
+//        id="En";
+      title = "victory"+id;
       pop   = "popup";
       SoundEffect.Play(SoundEffect.win);
       saveData(star,lv+1);
@@ -58,7 +67,10 @@ public class EndGame {
     }else {
       SoundEffect.Play(SoundEffect.lose);
       ribon="ribonFail";
-      title = "fail"+GMain.locale.get("idLang");
+      String id = GMain.locale.get("idLang");
+//      if(id.equals("Vn")==false||id.equals("Vn")==false)
+//        id="En";
+      title = "fail"+id;
       pop   = "popup";
     }
     group.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2);
@@ -100,7 +112,7 @@ public class EndGame {
     Tweens.setTimeout(group,0.1f,()->{
       if(isWin){
         aniStar(star,()->{
-          effectWin ef = new effectWin(effectWin.Light,0,20,gref);
+          effectWin ef = new effectWin(effectWin.Light,0,20,3,gref);
           ef.start();
           gift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
           gift.setOrigin(Align.center);
@@ -114,9 +126,43 @@ public class EndGame {
                     return true;
                   })
           ));
-          effectWin ef1= new effectWin(effectWin.FireWork,0,0,grtop);
+          effectWin ef1= new effectWin(effectWin.FireWork,0,0,2,grtop);
           ef1.start();
-          updateProgress();
+          updateProgress(star,()->{
+            if(moment>=Config.targetGift){
+              aniGift(icGift);
+              effectWin ef2 = new effectWin(effectWin.Light,icGift.getX(Align.center),icGift.getY(Align.center),0.5f,gref);
+              ef2.start();
+              icGift.addListener(new ClickListener(){
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                  moment =  moment - Config.targetGift;
+                  GMain.prefs.putInteger("momentGift",moment);
+                  GMain.prefs.flush();
+                  createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo,()->{
+                    board.dispose();
+                    group.clear();
+                    group.remove();
+                    gref.clear();
+                    gref.remove();
+                    grtop.clear();
+                    grtop.remove();
+                    grTouch.clear();
+                    grTouch.remove();
+                    setReward();
+                    Config.setSkin(lv+1);
+                    new Board(lv+1,jsLV,gameScene,grBoard,grTimer,grCombo);
+                  });
+                  setReward();
+                  return super.touchDown(event, x, y, pointer, button);
+                }
+              });
+            }
+
+
+
+
+          });
         });
         initButton(-popup.getWidth()*0.23f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen",GMain.locale.get("btnNext"),BitmapFontC.Font_Title,0.5f,1,grtop,0,new ClickListener(){
           @Override
@@ -141,19 +187,18 @@ public class EndGame {
                 }
               });
             }else {
+              Config.setSkin(lv+1);
               new Board(lv+1,jsLV,gameScene,grBoard,grTimer,grCombo);
             }
             return super.touchDown(event, x, y, pointer, button);
           }
         });
 
-        initButton(popup.getWidth()*0.23f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnWatchAds",GMain.locale.get("btnGift"),BitmapFontC.Font_Title,0.5f,1,grtop,20,new ClickListener(){
+        initButton(popup.getWidth()*0.23f,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnWatchAds",GMain.locale.get("btnGift"),BitmapFontC.Font_Title,0.5f,1,grtop,23,new ClickListener(){
           @Override
           public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             SoundEffect.Play(SoundEffect.click);
             showAdsReward(board,lv+1,jsLV,gameScene,grTimer,grCombo);
-
-
             return super.touchDown(event, x, y, pointer, button);
           }
         });
@@ -175,6 +220,39 @@ public class EndGame {
 
           });
         }
+        updateProgress(star,()->{
+          if(moment>=Config.targetGift){
+            aniGift(icGift);
+            effectWin ef2 = new effectWin(effectWin.Light,icGift.getX(Align.center),icGift.getY(Align.center),0.5f,gref);
+            ef2.start();
+            icGift.addListener(new ClickListener(){
+              @Override
+              public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                moment =  moment - Config.targetGift;
+                GMain.prefs.putInteger("momentGift",moment);
+                GMain.prefs.flush();
+                createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo,()->{
+                  updateProgressDec();
+                  grTouch.clear();
+                  grTouch.remove();
+                  setReward();
+                  if(moment<Config.targetGift){
+                    icGift.setTouchable(Touchable.disabled);
+                    icGift.clearActions();
+                    ef2.remove();
+
+                  }
+                });
+                setReward();
+                return super.touchDown(event, x, y, pointer, button);
+              }
+            });
+          }
+
+
+
+
+        });
 
         initButton(0,popup.getHeight()*0.35f,TextureAtlasC.uiAtlas,"btnGreen",GMain.locale.get("btnRestart"),BitmapFontC.Font_Title,0.4f,1.2f,group,0,new ClickListener(){
           @Override
@@ -187,7 +265,7 @@ public class EndGame {
             gref.remove();
             grtop.clear();
             grtop.remove();
-
+            Config.setSkin(lv);
             new Board(lv,jsLV,gameScene,grBoard,grTimer,grCombo);
             return super.touchDown(event, x, y, pointer, button);
           }
@@ -198,8 +276,8 @@ public class EndGame {
 
     if(Config.countTimePlay%Config.countShowAds==0)
       GMain.platform.ShowFullscreen();
-
-    createReward();
+    createReward(GMain.prefs.getInteger("momentGift"),Config.targetGift);
+    updatePref(star);
 
   }
   private void aniStar(int star,Runnable runnable){
@@ -365,8 +443,20 @@ public class EndGame {
 //          gr.remove();
           aniOpenGift(gift,()->{
             System.out.println("mo qua");
-            createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo);
-            setReward();
+            createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo,()->{
+              board.dispose();
+              group.clear();
+              group.remove();
+              gref.clear();
+              gref.remove();
+              grtop.clear();
+              grtop.remove();
+              grTouch.clear();
+              grTouch.remove();
+              setReward();
+              Config.setSkin(lv);
+              new Board(lv,jsLV,gameScene,grBoard,grTimer,grCombo);
+            });
           });
         } else {
 //          gr.clear();
@@ -389,7 +479,8 @@ public class EndGame {
     }
   }
 
-  private void createPopAds(Board board,int lv, JsonValue[] jsLV,GameScene gameScene,Group grTimer,GLayerGroup grCombo) {
+  private void createPopAds(Board board,int lv, JsonValue[] jsLV,GameScene gameScene,Group grTimer,GLayerGroup grCombo,Runnable runnable) {
+    grTouch = disabledTouch();
     SoundEffect.Play(SoundEffect.unlock);
     Group grAds = new Group();
     GStage.addToLayer(GLayer.top, grAds);
@@ -405,7 +496,7 @@ public class EndGame {
     grAds.addActor(popup);
 
     Label lbTitle = new Label(GMain.locale.get("lbTitle"), new Label.LabelStyle(BitmapFontC.Font_Button, null));
-    lbTitle.setFontScale(1.5f);
+    lbTitle.setFontScale(1.1f);
     lbTitle.setAlignment(Align.center);
     GlyphLayout Gltitle = new GlyphLayout(BitmapFontC.Font_Button, lbTitle.getText());
     lbTitle.setSize(Gltitle.width * lbTitle.getFontScaleX(), Gltitle.height * lbTitle.getFontScaleY());
@@ -461,14 +552,7 @@ public class EndGame {
         SoundEffect.Play(SoundEffect.click);
         grAds.clear();
         grAds.remove();
-        board.dispose();
-        group.clear();
-        group.remove();
-        gref.clear();
-        gref.remove();
-        grtop.clear();
-        grtop.remove();
-        new Board(lv+1,jsLV,gameScene,grBoard,grTimer,grCombo);
+        group.addAction(Actions.run(runnable));
         return super.touchDown(event, x, y, pointer, button);
       }
     });
@@ -496,58 +580,88 @@ public class EndGame {
     setQuanItSp("shuffle",Config.RewardShuffle);
     setQuanItSp("bomb",Config.RewardBomb);
   }
-  private void createReward(){
+  private void createReward(int Moment, int target){
+    moment=Moment;
     Image bar = GUI.createImage(TextureAtlasC.uiAtlas,"barGift");
     bar.setPosition(popup.getX(Align.center),popup.getY(Align.top)+bar.getHeight()*2,Align.center);
-    group.addActor(bar);
+    grtop.addActor(bar);
     sclBar = GUI.createImage(TextureAtlasC.uiAtlas,"barSclGift");
     sclBar.setPosition(bar.getX(Align.center),bar.getY(Align.center),Align.center);
-    group.addActor(sclBar);
-    sclBar.setScale(0,1);
-    Image gift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
-    gift.setSize(gift.getWidth()*0.3f,gift.getHeight()*0.3f);
-    gift.setOrigin(Align.center);
-    gift.setPosition(bar.getX(Align.right),bar.getY(Align.center),Align.center);
-    group.addActor(gift);
-    int target = 15;
-    int moment = 0;
+    grtop.addActor(sclBar);
+    float scl=(float) moment/Config.targetGift;
+    if(scl>1)
+      scl=1;
+    if(scl<=0)
+      scl=0;
+    sclBar.setScale(scl,1);
+    icGift = GUI.createImage(TextureAtlasC.uiAtlas,"giftClose");
+    icGift.setSize(icGift.getWidth()*0.3f,icGift.getHeight()*0.3f);
+    icGift.setOrigin(Align.center);
+    icGift.setPosition(bar.getX(Align.right),bar.getY(Align.center),Align.center);
+    grtop.addActor(icGift);
     lbProgress = new Label(moment+"/"+target,new Label.LabelStyle(BitmapFontC.Font_brown_thin,null));
     lbProgress.setFontScale(0.4f);
     lbProgress.setAlignment(Align.center);
     GlyphLayout glProgress = new GlyphLayout(BitmapFontC.Font_brown_thin,lbProgress.getText());
     lbProgress.setSize(glProgress.width*lbProgress.getFontScaleX(),glProgress.height*lbProgress.getFontScaleY());
     lbProgress.setPosition(bar.getX(Align.center),bar.getY(Align.center),Align.center);
-    group.addActor(lbProgress);
+    grtop.addActor(lbProgress);
     Image icStar = GUI.createImage(TextureAtlasC.uiAtlas,"star");
     icStar.setSize(icStar.getWidth()*0.8f,icStar.getHeight()*0.8f);
     icStar.setOrigin(Align.center);
     icStar.setPosition(lbProgress.getX(Align.right)+icStar.getWidth(),lbProgress.getY(Align.center),Align.center);
-    group.addActor(icStar);
+    grtop.addActor(icStar);
 //    updateProgress((float) moment/target);
 
   }
-  int tic=0;
-  int up= 15-0;
-  int moment=0;
-  private void updateProgress(){
-
-    float scl=(float)moment/15;
-    if(scl==0)
+  private void updateProgress(int star,Runnable runnable){
+    float scl=(float)count/Config.targetGift;
+    if(scl>1)
       scl=1;
+    if(scl<=0)
+      scl=0;
     sclBar.addAction(Actions.scaleTo(scl,1,dura));
     sclBar.addAction(GSimpleAction.simpleAction((d,a)->{
       tic++;
-      if(tic==((dura*60)/15) && up>0){
+      if(tic==((dura*60)/Config.targetGift) && up>0){
         tic=0;
         up-=1;
         moment+=1;
-        lbProgress.setText(moment+"/"+15);
+        lbProgress.setText(moment+"/"+Config.targetGift);
         System.out.println("up: "+up);
 
       }else if(up==0) {
+        group.addAction(Actions.run(runnable));
+
         return true;
       }
       return false;
     }));
   }
+  private void updateProgressDec(){
+//    moment-=Config.targetGift;
+    float scl=(float)moment/Config.targetGift;
+    if(scl>1)
+      scl=1;
+    if(scl<=0)
+      scl=0;
+    sclBar.addAction(Actions.scaleTo(scl,1,dura));
+    lbProgress.setText(moment+"/"+Config.targetGift);
+  }
+  private void updatePref(int star){
+    count=moment+star;
+    up=star;
+    GMain.prefs.putInteger("momentGift",count);
+    GMain.prefs.flush();
+  }
+  private Group disabledTouch(){
+    Group gr = new Group();
+    GStage.addToLayer(GLayer.top,gr);
+    GShapeSprite bg = new GShapeSprite();
+    bg.createRectangle(true,0,0,GStage.getWorldWidth(),GStage.getWorldHeight());
+    bg.setColor(0,0,0,0);
+    gr.addActor(bg);
+    return gr;
+  }
 }
+

@@ -37,7 +37,7 @@ public class Notice extends Group {
     this.addAction(Actions.scaleTo(1,1,0.5f, Interpolation.swingOut));
 
     Label notice = new Label(GMain.locale.get("lbTitle"),new Label.LabelStyle(BitmapFontC.Font_Button,null));
-    notice.setFontScale(1.3f);
+    notice.setFontScale(1.1f);
     notice.setAlignment(Align.center);
     notice.setPosition(0,-popup.getHeight()/2+notice.getHeight()*1.7f,Align.center);
     this.addActor(notice);

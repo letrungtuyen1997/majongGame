@@ -36,14 +36,22 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 public class GAssetsManager {
-   private static AssetManager assetManager = new AssetManager();
-   private static boolean isFinished;
-   public static Array tempResLog;
-
-   static {
+   private  AssetManager assetManager;
+   private  boolean isFinished;
+   public  Array tempResLog;
+   public GAssetsManager(){
+      assetManager = new AssetManager();
       assetManager.setLoader(Object.class, new GDataLoader(new InternalFileHandleResolver()));
       assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new InternalFileHandleResolver()));
       tempResLog = new Array();
+
+
+   }
+
+    {
+//      assetManager.setLoader(Object.class, new GDataLoader(new InternalFileHandleResolver()));
+//      assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new InternalFileHandleResolver()));
+//      tempResLog = new Array();
 
 
 //      DecodeTexture("textureAtlas/ui/360gift.png");
@@ -51,42 +59,42 @@ public class GAssetsManager {
 
    }
 
-   public static void addToLog(String var0) {
+   public  void addToLog(String var0) {
       GMain.platform.log("addToLog : " + var0);
       tempResLog.add(var0);
    }
 
-   public static void clear() {
+   public  void clear() {
       assetManager.clear();
       isFinished = false;
    }
 
-   public static void clearTempResLog() {
+   public  void clearTempResLog() {
       tempResLog.clear();
    }
 
-   public static boolean containsAsset(Object var0) {
+   public  boolean containsAsset(Object var0) {
       return assetManager.containsAsset(var0);
    }
 
-   public static void finishLoading() {
+   public  void finishLoading() {
       assetManager.finishLoading();
       isFinished = true;
    }
 
-   public static String getAssetKey(Object var0) {
+   public  String getAssetKey(Object var0) {
       return assetManager.getAssetFileName(var0);
    }
 
-   public static AssetManager getAssetManager() {
+   public  AssetManager getAssetManager() {
       return assetManager;
    }
 
-   public static Array getAssetNameList() {
+   public  Array getAssetNameList() {
       return assetManager.getAssetNames();
    }
 
-   public static TextureAtlas.AtlasRegion getAtlasRegion(String var0, String var1) {
+   public  TextureAtlas.AtlasRegion getAtlasRegion(String var0, String var1) {
 
       TextureAtlas var2 = getTextureAtlas(var0);
       if(var2 == null) {
@@ -97,7 +105,7 @@ public class GAssetsManager {
       }
    }
 
-   public static BitmapFont getBitmapFont(String var0) {
+   public  BitmapFont getBitmapFont(String var0) {
       String var3 = GRes.getFontPath(var0);
       BitmapFont var2 = (BitmapFont)getRes(var3, BitmapFont.class);
       BitmapFont var1 = var2;
@@ -117,7 +125,7 @@ public class GAssetsManager {
       return var1;
    }
 
-   public static Object getGameData(String var0, GDataAssetLoad var1) {
+   public  Object getGameData(String var0, GDataAssetLoad var1) {
       Object var3 = getRes(var0, Object.class);
       Object var2 = var3;
       if(var3 == null) {
@@ -141,7 +149,7 @@ public class GAssetsManager {
       return var2;
    }
 
-   public static Music getMusic(String var0) {
+   public  Music getMusic(String var0) {
 
       String var3 = GRes.getSoundPath(var0);
       Music var2 = (Music)getRes(var3, Music.class);
@@ -162,7 +170,7 @@ public class GAssetsManager {
       return var1;
    }
 
-   public static ParticleEffect getParticleEffect(String var0) {
+   public  ParticleEffect getParticleEffect(String var0) {
       String var3 = GRes.getParticlePath(var0);
       ParticleEffect var2 = (ParticleEffect)getRes(var3, ParticleEffect.class);
       ParticleEffect var1 = var2;
@@ -184,7 +192,7 @@ public class GAssetsManager {
       return var1;
    }
 
-   public static Pixmap getPixmap(String var0) {
+   public  Pixmap getPixmap(String var0) {
       String var3 = GRes.getTexturePath(var0);
       Pixmap var2 = (Pixmap)getRes(var3, Pixmap.class);
       Pixmap var1 = var2;
@@ -205,27 +213,27 @@ public class GAssetsManager {
    }
 
 
-   public static float getProgress() {
+   public  float getProgress() {
       return 100.0F * assetManager.getProgress();
    }
 
-   public static int getReferenceCount(Object var0) {
+   public  int getReferenceCount(Object var0) {
       return assetManager.getReferenceCount(getAssetKey(var0));
    }
 
-   public static int getReferenceCount(String var0) {
+   public  int getReferenceCount(String var0) {
       return assetManager.getReferenceCount(var0);
    }
 
-   public static Object getRes(String var0) {
+   public  Object getRes(String var0) {
       return assetManager.get(var0);
    }
 
-   public static Object getRes(String var0, Class var1) {
+   public  Object getRes(String var0, Class var1) {
       return !assetManager.isLoaded(var0, var1)?null:assetManager.get(var0, var1);
    }
 
-   public static Sound getSound(String var0) {
+   public  Sound getSound(String var0) {
       String var3 = GRes.getSoundPath(var0);
       Sound var2 = (Sound)getRes(var3, Sound.class);
       Sound var1 = var2;
@@ -245,11 +253,11 @@ public class GAssetsManager {
       return var1;
    }
 
-   public static Array getTempResLoadLog() {
+   public  Array getTempResLoadLog() {
       return tempResLog;
    }
 
-   public static TextureAtlas getTextureAtlas(String var0) {
+   public  TextureAtlas getTextureAtlas(String var0) {
       String var3 = GRes.getTextureAtlasPath(var0);
       TextureAtlas var2 = (TextureAtlas)getRes(var3, TextureAtlas.class);
       TextureAtlas var1 = var2;
@@ -276,7 +284,7 @@ public class GAssetsManager {
       return var1;
    }
 
-   public static TextureRegion getTextureRegion(String var0) {
+   public  TextureRegion getTextureRegion(String var0) {
       String var3 = GRes.getTexturePath(var0);
       Texture var2 = (Texture)getRes(var3, Texture.class);
       Texture var1 = var2;
@@ -298,7 +306,7 @@ public class GAssetsManager {
       return var4;
    }
 
-   public static void initParticle(ParticleEffect var0) {
+   public  void initParticle(ParticleEffect var0) {
       Iterator var2 = var0.getEmitters().iterator();
 
       /*while(var2.hasNext()) {
@@ -321,15 +329,15 @@ public class GAssetsManager {
 
    }
 
-   public static boolean isFinished() {
+   public  boolean isFinished() {
       return isFinished;
    }
 
-   public static boolean isLoaded(String var0) {
+   public  boolean isLoaded(String var0) {
       return assetManager.isLoaded(var0);
    }
 
-   private static void load(String var0, Class var1, AssetLoaderParameters var2) {
+   private  void load(String var0, Class var1, AssetLoaderParameters var2) {
 
 
       //GMain.platform.log( "load " + var1.toString() + " " + var0 );
@@ -342,7 +350,7 @@ public class GAssetsManager {
 
    }
 
-   public static String loadBitmapFont(String var0) {
+   public  String loadBitmapFont(String var0) {
       var0 = GRes.getFontPath(var0);
       BitmapFontLoader.BitmapFontParameter var1 = new BitmapFontLoader.BitmapFontParameter();
       var1.flip = true;
@@ -352,14 +360,14 @@ public class GAssetsManager {
       return var0;
    }
 
-   public static String loadGameData(String var0, GDataAssetLoad var1) {
+   public  String loadGameData(String var0, GDataAssetLoad var1) {
       GameDataParameter var2 = new GameDataParameter((GameDataParameter)null);
       var2.dataLoad = var1;
       load(var0, Object.class, var2);
       return var0;
    }
 
-   public static String loadMusic(String var0) {
+   public  String loadMusic(String var0) {
       if(Gdx.graphics.getType() == Graphics.GraphicsType.WebGL)
       {
          NSound.loadSound(var0);
@@ -372,13 +380,13 @@ public class GAssetsManager {
       }
    }
 
-	public static String loadParticleEffect(String var0) {
+	public  String loadParticleEffect(String var0) {
       var0 = GRes.getParticlePath(var0);
       load(var0, ParticleEffect.class, (AssetLoaderParameters)null);
       return var0;
    }
 
-   public static String loadParticleEffectAsImageDir(String var0, FileHandle var1) {
+   public  String loadParticleEffectAsImageDir(String var0, FileHandle var1) {
       var0 = GRes.getParticlePath(var0);
       ParticleEffectLoader.ParticleEffectParameter var2 = new ParticleEffectLoader.ParticleEffectParameter();
       var2.imagesDir = var1;
@@ -386,7 +394,7 @@ public class GAssetsManager {
       return var0;
    }
 
-   public static String loadParticleEffectAsTextureAtlas(String var0) {
+   public  String loadParticleEffectAsTextureAtlas(String var0) {
       var0 = GRes.getParticlePath(var0);
       ParticleEffectLoader.ParticleEffectParameter var1 = new ParticleEffectLoader.ParticleEffectParameter();
       var1.atlasFile = var0 + "ack";
@@ -394,7 +402,7 @@ public class GAssetsManager {
       return var0;
    }
 
-   public static String loadParticleEffectAsTextureAtlas(String var0, String var1) {
+   public  String loadParticleEffectAsTextureAtlas(String var0, String var1) {
       var0 = GRes.getParticlePath(var0);
       ParticleEffectLoader.ParticleEffectParameter var2 = new ParticleEffectLoader.ParticleEffectParameter();
       var2.atlasFile = GRes.getTextureAtlasPath(var1);
@@ -402,13 +410,13 @@ public class GAssetsManager {
       return var0;
    }
 
-   public static String loadPixmap(String var0) {
+   public  String loadPixmap(String var0) {
       var0 = GRes.getTexturePath(var0);
       load(var0, Pixmap.class, (AssetLoaderParameters)null);
       return var0;
    }
 
-   public static String loadSound(String var0) {
+   public  String loadSound(String var0) {
       if(Gdx.graphics.getType() == Graphics.GraphicsType.WebGL)
       {
          NSound.loadSound(var0);
@@ -421,7 +429,7 @@ public class GAssetsManager {
       }
    }
 
-   public static String loadTexture(String var0) {
+   public  String loadTexture(String var0) {
       var0 = GRes.getTexturePath(var0);
 
       DecodeTexture(var0);
@@ -433,7 +441,7 @@ public class GAssetsManager {
       return var0;
    }
 
-   public static String loadTextureAtlas(String var0) {
+   public  String loadTextureAtlas(String var0) {
 
 
       var0 = GRes.getTextureAtlasPath(var0);
@@ -451,7 +459,7 @@ public class GAssetsManager {
       return var0;
    }
 
-   public static void paintAssetReferenceList() {
+   public  void paintAssetReferenceList() {
       Iterator var0 = assetManager.getAssetNames().iterator();
 
       while(var0.hasNext()) {
@@ -461,7 +469,7 @@ public class GAssetsManager {
 
    }
 
-   public static void paintAssetReferenceList(String var0) {
+   public  void paintAssetReferenceList(String var0) {
       Iterator var1 = assetManager.getAssetNames().iterator();
 
       while(var1.hasNext()) {
@@ -473,14 +481,14 @@ public class GAssetsManager {
 
    }
 
-   public static void unload(Object var0) {
+   public  void unload(Object var0) {
       String var1 = getAssetKey(var0);
       if(var1 != null) {
          unload(var1);
       }
    }
 
-   public static void unload(String var0) {
+   public  void unload(String var0) {
       try {
          assetManager.unload(var0);
       }
@@ -489,32 +497,32 @@ public class GAssetsManager {
       }
    }
 
-   public static void unloadFont(String var0) {
+   public  void unloadFont(String var0) {
       unload(GRes.getFontPath(var0));
    }
 
-   public static void unloadParticleEffect(String var0) {
+   public  void unloadParticleEffect(String var0) {
       unload(GRes.getParticlePath(var0));
    }
 
-   public static void unloadPixmap(String var0) {
+   public  void unloadPixmap(String var0) {
       unload(GRes.getTexturePath(var0));
    }
 
-   public static void unloadSound(String var0) {
+   public  void unloadSound(String var0) {
       if(Gdx.graphics.getType() != Graphics.GraphicsType.WebGL)
          unload(GRes.getSoundPath(var0));
    }
 
-   public static void unloadTexture(String var0) {
+   public  void unloadTexture(String var0) {
       unload(GRes.getTexturePath(var0));
    }
 
-   public static void unloadTextureAtlas(String var0) {
+   public  void unloadTextureAtlas(String var0) {
       unload(GRes.getTextureAtlasPath(var0));
    }
 
-   public static void update() {
+   public  void update() {
       isFinished = assetManager.update();
    }
 
@@ -522,7 +530,7 @@ public class GAssetsManager {
       Object load(String var1, FileHandle var2);
    }
 
-   public static class GDataLoader extends AsynchronousAssetLoader<Object, GameDataParameter> {
+   public  class GDataLoader extends AsynchronousAssetLoader<Object, GameDataParameter> {
       private Object dat;
 
       public GDataLoader(FileHandleResolver var1) {
@@ -542,7 +550,7 @@ public class GAssetsManager {
       }
    }
 
-   private static class GameDataParameter extends AssetLoaderParameters<Object> {
+   private  class GameDataParameter extends AssetLoaderParameters<Object> {
       GDataAssetLoad dataLoad;
 
       private GameDataParameter() {
@@ -555,7 +563,7 @@ public class GAssetsManager {
    }
 
 
-   public static void DecodeTexture(String fname) {
+   public  void DecodeTexture(String fname) {
 //      try {
 //
 //         Gdx.app.log("DECODE", fname);
@@ -592,7 +600,7 @@ public class GAssetsManager {
    }
 
 
-   private static byte[] readBytes(InputStream inputStream, int[] arrn) throws Exception {
+   private  byte[] readBytes(InputStream inputStream, int[] arrn) throws Exception {
       int n = inputStream.available();
       byte[] arrby = new byte[n];
       int n2 = n / arrn.length;

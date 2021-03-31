@@ -11,8 +11,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.ss.GMain;
-import com.ss.core.util.GAssetsManager;
-
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -93,7 +91,7 @@ public class NParticleEffect extends ParticleEffect {
             String string = emitter.getImagePath();
             if (string != null) {
                 String fileName = string.replace('\\', '/');
-                GAssetsManager.DecodeTexture("particle/" + imagesDir.name() + "/"+fileName);
+                GMain.getAssetManager().DecodeTexture("particle/" + imagesDir.name() + "/"+fileName);
                 sprites.add(new Sprite(this.loadTexture(imagesDir.child(new File(fileName).getName()))));
             }
             emitter.setSprites(sprites);

@@ -20,9 +20,9 @@ public class Effect {
 
   public void initEff(){
     for (int i=0;i<20;i++){
-      effectWin ef = new effectWin(effectWin.Match,0,0,group);
+      effectWin ef = new effectWin(effectWin.Match,0,0,1,group);
       arrEffMatch.add(ef);
-      effectWin ef2 = new effectWin(effectWin.Select,0,0,group);
+      effectWin ef2 = new effectWin(effectWin.Select,0,0,0.85f,group);
       arrEffSelect.add(ef2);
     }
   }

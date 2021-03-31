@@ -13,13 +13,14 @@
   "Time": 500,
   "PercentTime": 1000,
   "MaxLvTime": 400,
-  "ItSpHint": 20,
-  "ItSpShuffle": 20,
-  "ItSpBomb": 1000,
+  "ItSpHint": 1,
+  "ItSpShuffle": 1,
+  "ItSpBomb": 1,
   "RewardHint": 1,
   "RewardShuffle": 1,
   "RewardBomb": 1,
   "TimeCombo": 1.5,
   "countShowAds": 5,
-  "sort_group_level": 5
+  "sort_group_level": 5,
+  "targetGift": 20
 }

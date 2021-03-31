@@ -37,7 +37,7 @@ public class effectWin extends Actor{
     private Array<Sprite> arrSprite= new Array<>();
     public boolean isAlive = false;
 
-    public effectWin(int id, float f, float f2, Group group) {
+    public effectWin(int id, float f, float f2,float scl, Group group) {
 
         this.group = group;
         this.effect = new ParticleEffect();
@@ -52,6 +52,7 @@ public class effectWin extends Actor{
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
                 this.effect.scaleEffect(1f);
+                this.effect.scaleEffect(scl);
             }else if(id==Select) {
                 this.effect.load(select, TextureAtlasC.EffectAtlas);
                 for (int i = 0; i < this.effect.getEmitters().size; i++) {
@@ -59,20 +60,23 @@ public class effectWin extends Actor{
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
                 this.effect.scaleEffect(0.85f);
+                this.effect.scaleEffect(scl);
             }else if(id==Light) {
                 this.effect.load(light, TextureAtlasC.EffectAtlas);
                 for (int i = 0; i < this.effect.getEmitters().size; i++) {
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
-                this.effect.scaleEffect(3);
+//                this.effect.scaleEffect(3);
+                this.effect.scaleEffect(scl);
             }else if(id==FireWork) {
                 this.effect.load(firework, TextureAtlasC.EffectAtlas);
                 for (int i = 0; i < this.effect.getEmitters().size; i++) {
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).flipY();
                     ((ParticleEmitter) this.effect.getEmitters().get(i)).setFlip(true, false);
                 }
-                this.effect.scaleEffect(2);
+//                this.effect.scaleEffect(2);
+                this.effect.scaleEffect(scl);
             }
         this.effect.setPosition(f, f2);
     }

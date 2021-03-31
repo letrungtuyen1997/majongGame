@@ -8,6 +8,7 @@ import com.platform.IPlatform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.ss.core.exSprite.particle.GParticleSystem;
+import com.ss.core.util.GAssetsManager;
 import com.ss.core.util.GDirectedGame;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
@@ -30,7 +31,7 @@ public class GMain extends GDirectedGame {
 
   public static Preferences prefs;
   public static IPlatform platform;
-  public static AssetManager assetManager;
+  private GAssetsManager assetManager;
   public static I18NBundle locale;
 
   public GMain(IPlatform plat){
@@ -93,29 +94,25 @@ public class GMain extends GDirectedGame {
     return new LoadingScene();
   }
 
-  private void exportlv(){
 
-  }
 
   public void create()
   {
+    assetManager = new GAssetsManager();
 
     initLocalNotification();
-//    SoundEffect.initSound();
-//    TextureAtlasC.initAtlas();
-//    BitmapFontC.initBitmapFont();
     this.init();
     this.initPrefs();
-//    C.init();
-    prefs.clear();
+    GMain.prefs.putInteger("hint", 1000);
+    GMain.prefs.putInteger("shuffle",1000);
+    GMain.prefs.putInteger("bomb",1000);
+    GMain.prefs.flush();
+//    prefs.clear();
 //    prefs.putInteger("LvPre",500);
-//    GMain.prefs.putInteger("hint", 1000);
-//    GMain.prefs.putInteger("shuffle",1000);
-//    GMain.prefs.putInteger("bomb",1000);
-//    GMain.prefs.flush();
-    prefs.flush();
+//    prefs.flush();
     String deviceLang = GMain.platform.GetDefaultLanguage();
     Gdx.app.log("language code", deviceLang);
+//    deviceLang="in";
     //localization
     FileHandle specFilehandle = Gdx.files.internal("i18n/lang_" + deviceLang);
     FileHandle baseFileHandle = Gdx.files.internal("i18n/lang");
@@ -149,6 +146,10 @@ public class GMain extends GDirectedGame {
     } else if(noId == 1){
       //thuong
     }
+  }
+  public static GAssetsManager getAssetManager(){
+
+    return ((GMain) Gdx.app.getApplicationListener()).assetManager;
   }
 
 

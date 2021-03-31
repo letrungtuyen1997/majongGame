@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
+import com.ss.GMain;
 import com.ss.core.exSprite.particle.GParticleSprite;
 import com.ss.core.util.GAssetsManager;
 import com.ss.core.util.GLayer;
@@ -46,10 +47,10 @@ public class GParticleSystem extends Pool implements Disposable {
       this.isLoop = false;
       this.autoFree = true;
       this.isAdditiveGroup = false;
-      if(!GAssetsManager.isLoaded(GRes.getParticlePath(name))) {
-         GAssetsManager.addToLog(GAssetsManager.loadParticleEffectAsImageDir(name, var2) + "---------" + "ParticleEffect.class");
-         GAssetsManager.finishLoading();
-         GAssetsManager.initParticle(GAssetsManager.getParticleEffect(name));
+      if(!GMain.getAssetManager().isLoaded(GRes.getParticlePath(name))) {
+         GMain.getAssetManager().addToLog(GMain.getAssetManager().loadParticleEffectAsImageDir(name, var2) + "---------" + "ParticleEffect.class");
+         GMain.getAssetManager().finishLoading();
+         GMain.getAssetManager().initParticle(GMain.getAssetManager().getParticleEffect(name));
       }
 
       this.init(name, max);
@@ -61,10 +62,10 @@ public class GParticleSystem extends Pool implements Disposable {
       this.isLoop = false;
       this.autoFree = true;
       this.isAdditiveGroup = false;
-      if(!GAssetsManager.isLoaded(GRes.getParticlePath(name))) {
-         GAssetsManager.addToLog(GAssetsManager.loadParticleEffectAsTextureAtlas(name, atlasname) + "---------" + "ParticleEffect.class");
-         GAssetsManager.finishLoading();
-         GAssetsManager.initParticle(GAssetsManager.getParticleEffect(name));
+      if(!GMain.getAssetManager().isLoaded(GRes.getParticlePath(name))) {
+         GMain.getAssetManager().addToLog(GMain.getAssetManager().loadParticleEffectAsTextureAtlas(name, atlasname) + "---------" + "ParticleEffect.class");
+         GMain.getAssetManager().finishLoading();
+         GMain.getAssetManager().initParticle(GMain.getAssetManager().getParticleEffect(name));
       }
 
       this.init(name, max);
@@ -76,10 +77,10 @@ public class GParticleSystem extends Pool implements Disposable {
       this.isLoop = false;
       this.autoFree = true;
       this.isAdditiveGroup = false;
-      if(!GAssetsManager.isLoaded(GRes.getParticlePath(name)) && var2) {
-         GAssetsManager.addToLog(GAssetsManager.loadParticleEffectAsTextureAtlas(name) + "---------" + "ParticleEffect.class");
-         GAssetsManager.finishLoading();
-         GAssetsManager.initParticle(GAssetsManager.getParticleEffect(name));
+      if(!GMain.getAssetManager().isLoaded(GRes.getParticlePath(name)) && var2) {
+         GMain.getAssetManager().addToLog(GMain.getAssetManager().loadParticleEffectAsTextureAtlas(name) + "---------" + "ParticleEffect.class");
+         GMain.getAssetManager().finishLoading();
+         GMain.getAssetManager().initParticle(GMain.getAssetManager().getParticleEffect(name));
       }
 
       this.init(name, max);
@@ -114,7 +115,7 @@ public class GParticleSystem extends Pool implements Disposable {
 
    private void init(String var1, int var2) {
       this.particleName = var1;
-      this.effectSample = GAssetsManager.getParticleEffect(var1);
+      this.effectSample = GMain.getAssetManager().getParticleEffect(var1);
       particleManagerTable.put(var1, this);
       this.freeMin = var2;
 

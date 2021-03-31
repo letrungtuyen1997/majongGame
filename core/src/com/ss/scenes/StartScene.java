@@ -1,5 +1,6 @@
 package com.ss.scenes;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -104,7 +105,7 @@ public class StartScene extends GScreen {
     table.setFillParent(true);
 
     Image btnRank = GUI.createImage(TextureAtlasC.uiNotiny,"btnRank");
-    Image btnGameOther = GUI.createImage(TextureAtlasC.uiNotiny,"btnGameOther");
+//    Image btnGameOther = GUI.createImage(TextureAtlasC.uiNotiny,"btnGameOther");
 
     Button btnMusic = GUI.creatButton(TextureAtlasC.uiNotiny.findRegion("onMusic"));
     btnMusic.getStyle().checked = new TextureRegionDrawable(TextureAtlasC.uiNotiny.findRegion("offMusic"));
@@ -116,7 +117,7 @@ public class StartScene extends GScreen {
 
 
     table.add(btnRank).width(btnRank.getWidth()).height(btnRank.getHeight());
-    table.add(btnGameOther).width(btnGameOther.getWidth()).height(btnGameOther.getHeight());
+//    table.add(btnGameOther).width(btnGameOther.getWidth()).height(btnGameOther.getHeight());
     table.add(btnMusic).width(btnMusic.getWidth()).height(btnMusic.getHeight());
     table.add(btnSound).width(btnSound.getWidth()).height(btnSound.getHeight());
     group.addActor(table);
@@ -127,10 +128,10 @@ public class StartScene extends GScreen {
 
 
     });
-    eventBtn(btnGameOther,()->{
-      new CrossPanel();
-
-    });
+//    eventBtn(btnGameOther,()->{
+//      new CrossPanel();
+//
+//    });
     btnMusic.setChecked(SoundEffect.music);
     btnMusic.addListener(new ClickListener(){
       @Override
@@ -204,6 +205,7 @@ public class StartScene extends GScreen {
             })
     ));
   }
+
 
 
 }

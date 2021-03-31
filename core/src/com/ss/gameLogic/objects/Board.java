@@ -67,7 +67,7 @@ public class Board {
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
           grNotice.clear();
           grNotice.remove();
-          new EndGame(false,timer.getStar(),jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
+          new EndGame(false,0,jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
           TrackingEventLv(Config.NameEvent.FAIL);
           return super.touchDown(event, x, y, pointer, button);
         }
@@ -117,8 +117,10 @@ public class Board {
   }
 
   private boolean setLock(Tile tile){
-    if(checkLayer(tile)==1 || checkLock(tile)==1)
-      return true;
+    if(tile!=null){
+      if(checkLayer(tile)==1 || checkLock(tile)==1)
+        return true;
+    }
     return false;
   }
   private int checkLock(Tile t){
@@ -609,7 +611,7 @@ public class Board {
     t2.ActionMoveArc(arrVecT2,Config.DurMoveTile,false,()->{
       t2.dispose();
     });
-
+    checkUseSkills();
 
     hintBoard("check before match");
     if(arrTileHint.size<2 ){
@@ -626,7 +628,7 @@ public class Board {
               public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 grNotice.clear();
                 grNotice.remove();
-                new EndGame(false,timer.getStar(),jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
+                new EndGame(false,0,jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
                 TrackingEventLv(Config.NameEvent.FAIL);
                 return super.touchDown(event, x, y, pointer, button);
               }
@@ -743,7 +745,9 @@ public class Board {
     arrTileShuffle.shuffle();
     if(arrTileShuffle.size==arrTileBoard.size){
       for (Tile t : arrTileBoard){
-        t.changeId(arrTileShuffle.get(arrTileBoard.indexOf(t,true)));
+        if(t!=null){
+          t.changeId(arrTileShuffle.get(arrTileBoard.indexOf(t,true)));
+        }
       }
       setLockTile();
     }
@@ -823,8 +827,15 @@ public class Board {
 
 //    System.out.println("tracking : "+name);
     GMain.platform.TrackCustomEvent(name);
-
   }
+  public void checkUseSkills(){
+    if(arrTileBoard.size!=0)
+      isUseItem=true;
+    else
+      isUseItem=false;
+  }
+
+
 
 
 }

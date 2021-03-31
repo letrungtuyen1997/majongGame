@@ -35,7 +35,6 @@ public class Tile extends Actor {
   public  int             id;
   public  int             kind;
   private TextureRegion   IdAni;
-  private Array<Integer>  arrActionShark = new Array<>();
   private Group           group;
   private int             idEff   =0;
   private boolean         islock  =false;
@@ -47,9 +46,6 @@ public class Tile extends Actor {
   public Tile(Group group, Board board){
     this.board  = board;
     this.group  = group;
-
-    arrActionShark.add(1);
-    arrActionShark.add(-1);
   }
   public void createID(int Id){
     this.id = Id;
@@ -143,10 +139,14 @@ public class Tile extends Actor {
       }
     }
   }
-  public void ActionSelectLock(int s){
-    this.addAction(Actions.sequence(
-            GScreenShakeAction.screenShake1(Config.DuraShake,5,this)
-    ));
+  public void ActionSelectLock(){
+    if(Tile.this!=null){
+      this.addAction(Actions.sequence(
+              GScreenShakeAction.screenShake1(Config.DuraShake,5,this)
+      ));
+    }
+
+
   }
   private void ActionSelect(){
     this.addAction(Actions.sequence(
@@ -162,6 +162,7 @@ public class Tile extends Actor {
   }
   private Vector2 effPos(){
     return new Vector2(this.getParent().localToStageCoordinates(new Vector2(this.getX(Align.center),this.getY(Align.center))));
+//    System.out.println("parent: "+this.getParent());
   }
   public void dispose(){
     if(GameScene.effect!=null){
@@ -194,7 +195,9 @@ public class Tile extends Actor {
         if(arrTile!=null && arrTile.size!=0){
           select(false);
           for (Tile t : arrTile){
-              t.ActionSelectLock(arrActionShark.get((int)(Math.random()*arrActionShark.size)));
+            if(t!=null){
+              t.ActionSelectLock();
+            }
           }
 
         }else if(board.checkLayer(Tile.this)==1) {
@@ -212,7 +215,10 @@ public class Tile extends Actor {
           if(arr.size>=2){
             for (Tile t : arr){
 //              System.out.println("tile orthe layer: "+t.getRowCol().x+"_"+t.getRowCol().y+"_"+t.getKind()+"_"+t.getLayer());
-                t.ActionSelectLock(arrActionShark.get((int)(Math.random()*arrActionShark.size)));
+//                t.ActionSelectLock(arrActionShark.get((int)(Math.random()*arrActionShark.size)));
+//              int index = arrActionShark.get((int)(Math.random()*arrActionShark.size));
+//              if(index<arrActionShark.size && index>=0)
+                t.ActionSelectLock();
             }
           }
         }else {

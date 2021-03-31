@@ -20,20 +20,61 @@ android {
         applicationId "jk.mahjong"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.4"
         multiDexEnabled true
 
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    signingConfigs {
+        config  {
+            storeFile file(project.file("../" + RELEASE_STORE_FILE).absolutePath)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
         }
     }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+            externalNativeBuild {
+                ndkBuild {
+                    arguments 'NDK_DEBUG=0'
+                }
+            }
+            applicationVariants.all { variant ->
+                renameAPK(variant, defaultConfig)
+            }
+        }
+        debug {
+            signingConfig signingConfigs.config
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
+            externalNativeBuild {
+                ndkBuild {
+                    arguments 'NDK_DEBUG=1'
+                }
+            }
+            applicationVariants.all { variant ->
+                renameAPK(variant, defaultConfig)
+            }
+        }
+    }
+
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+def renameAPK(variant, defaultConfig) {
+    variant.outputs.all {
+        def formattedDate = new Date().format('yyMMdd')
+        outputFileName = applicationName + "_V" + defaultConfig.versionCode + "_" + defaultConfig.versionName + "_" + formattedDate + ".apk"
     }
 }
 //configurations.all {

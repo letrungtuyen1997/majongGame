@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import com.ss.GMain;
 import com.ss.core.action.exAction.GSimpleAction;
 import com.ss.core.exSprite.particle.GParticleSystem;
 import com.ss.core.util.GAssetsManager;
@@ -131,12 +132,12 @@ public class GParticleSprite extends Group implements Pool.Poolable, Disposable 
       }
 
       private GParticle(String var2) {
-         this.effect = GAssetsManager.getParticleEffect(var2);
+         this.effect = GMain.getAssetManager().getParticleEffect(var2);
       }
 
       // $FF: synthetic method
       GParticle(String var2, GParticle var3) {
-    	  this.effect = GAssetsManager.getParticleEffect(var2);
+    	  this.effect = GMain.getAssetManager().getParticleEffect(var2);
       }
 
       private BoundingBox getBoundingBox() {
@@ -157,7 +158,7 @@ public class GParticleSprite extends Group implements Pool.Poolable, Disposable 
 
       public void dispose() {
          this.effect.dispose();
-         GAssetsManager.unload((Object)this.effect);
+         GMain.getAssetManager().unload((Object)this.effect);
       }
 
 

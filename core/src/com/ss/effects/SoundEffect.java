@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.ss.GMain;
 import com.ss.core.util.GAssetsManager;
 import com.ss.core.util.GSound;
 import com.ss.gdx.NSound;
@@ -41,25 +42,25 @@ public class SoundEffect {
   public static void initSound() {
     explode = new Sound[6];
     commons = new Sound[MAX_COMMON];
-    commons[click] = GAssetsManager.getSound("click.mp3");
-    commons[clickTile] = GAssetsManager.getSound("clickTile.mp3");
-    commons[match] = GAssetsManager.getSound("match.mp3");
-    commons[unmatch] = GAssetsManager.getSound("unmatch.mp3");
-    commons[win] = GAssetsManager.getSound("finishwindow.mp3");
-    commons[getStar1] = GAssetsManager.getSound("getstar1.mp3");
-    commons[getStar2] = GAssetsManager.getSound("getstar2.mp3");
-    commons[getStar3] = GAssetsManager.getSound("getstar3.mp3");
-    commons[lose] = GAssetsManager.getSound("lose.mp3");
-    commons[drop] = GAssetsManager.getSound("drop.mp3");
-    commons[hint] = GAssetsManager.getSound("hint.mp3");
-    commons[shuffle] = GAssetsManager.getSound("shuffle.mp3");
-    commons[unlock] = GAssetsManager.getSound("unlock2.mp3");
-    commons[open] = GAssetsManager.getSound("openGift.mp3");
-////        commons[coins] = GAssetsManager.getSound("Coin.mp3");
+    commons[click] = GMain.getAssetManager().getSound("click.mp3");
+    commons[clickTile] = GMain.getAssetManager().getSound("clickTile.mp3");
+    commons[match] = GMain.getAssetManager().getSound("match.mp3");
+    commons[unmatch] = GMain.getAssetManager().getSound("unmatch.mp3");
+    commons[win] = GMain.getAssetManager().getSound("finishwindow.mp3");
+    commons[getStar1] = GMain.getAssetManager().getSound("getstar1.mp3");
+    commons[getStar2] = GMain.getAssetManager().getSound("getstar2.mp3");
+    commons[getStar3] = GMain.getAssetManager().getSound("getstar3.mp3");
+    commons[lose] = GMain.getAssetManager().getSound("lose.mp3");
+    commons[drop] = GMain.getAssetManager().getSound("drop.mp3");
+    commons[hint] = GMain.getAssetManager().getSound("hint.mp3");
+    commons[shuffle] = GMain.getAssetManager().getSound("shuffle.mp3");
+    commons[unlock] = GMain.getAssetManager().getSound("unlock2.mp3");
+    commons[open] = GMain.getAssetManager().getSound("openGift.mp3");
+////        commons[coins] = GMain.getAssetManager().getSound("Coin.mp3");
 ////        commons[coins].setVolume(2,5);
-    bgSound = GAssetsManager.getMusic("bg.mp3");
+    bgSound = GMain.getAssetManager().getMusic("bg.mp3");
     for (int i = 0; i < explode.length; i++)
-      explode[i] = GAssetsManager.getSound("e" + (i+1) + ".mp3");
+      explode[i] = GMain.getAssetManager().getSound("e" + (i+1) + ".mp3");
 
   }
 

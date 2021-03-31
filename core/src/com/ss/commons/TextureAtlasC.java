@@ -1,7 +1,7 @@
 package com.ss.commons;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.ss.core.util.GAssetsManager;
+import com.ss.GMain;
 
 public class TextureAtlasC {
   public static TextureAtlas uiAtlas;
@@ -15,35 +15,35 @@ public class TextureAtlasC {
   public static TextureAtlas Food;
   public static TextureAtlas Bird;
   public static TextureAtlas uiNotiny;
+  public static TextureAtlas whell;
 
   public static void LoadAtlas(){
 
-    GAssetsManager.loadTextureAtlas("ui.atlas");
-    GAssetsManager.loadTextureAtlas("animals.atlas");
-    GAssetsManager.loadTextureAtlas("effect.atlas");
-    GAssetsManager.loadTextureAtlas("leaderboard.atlas");
-    GAssetsManager.loadTextureAtlas("bg.atlas");
-    GAssetsManager.loadTextureAtlas("number.atlas");
-    GAssetsManager.loadTextureAtlas("matchuoc.atlas");
-    GAssetsManager.loadTextureAtlas("vegetable.atlas");
-    GAssetsManager.loadTextureAtlas("bird.atlas");
-    GAssetsManager.loadTextureAtlas("food.atlas");
-    GAssetsManager.loadTextureAtlas("uiNotiny.atlas");
+    GMain.getAssetManager().loadTextureAtlas("ui.atlas");
+    GMain.getAssetManager().loadTextureAtlas("animals.atlas");
+    GMain.getAssetManager().loadTextureAtlas("effect.atlas");
+    GMain.getAssetManager().loadTextureAtlas("leaderboard.atlas");
+    GMain.getAssetManager().loadTextureAtlas("bg.atlas");
+    GMain.getAssetManager().loadTextureAtlas("number.atlas");
+    GMain.getAssetManager().loadTextureAtlas("matchuoc.atlas");
+    GMain.getAssetManager().loadTextureAtlas("vegetable.atlas");
+    GMain.getAssetManager().loadTextureAtlas("bird.atlas");
+    GMain.getAssetManager().loadTextureAtlas("food.atlas");
+    GMain.getAssetManager().loadTextureAtlas("uiNotiny.atlas");
   }
 
   public static void InitAtlas(){
 
-    uiAtlas         = GAssetsManager.getTextureAtlas("ui.atlas");
-    AnimalsAtlas    = GAssetsManager.getTextureAtlas("animals.atlas");
-    EffectAtlas     = GAssetsManager.getTextureAtlas("effect.atlas");
-    LeaderAtlas     = GAssetsManager.getTextureAtlas("leaderboard.atlas");
-    BgAtlas         = GAssetsManager.getTextureAtlas("bg.atlas");
-    NumberAtlas     = GAssetsManager.getTextureAtlas("number.atlas");
-    MatchuocAtlas   = GAssetsManager.getTextureAtlas("matchuoc.atlas");
-    Vegetable       = GAssetsManager.getTextureAtlas("vegetable.atlas");
-    Bird            = GAssetsManager.getTextureAtlas("bird.atlas");
-    Food            = GAssetsManager.getTextureAtlas("food.atlas");
-    uiNotiny        = GAssetsManager.getTextureAtlas("uiNotiny.atlas");
-
+    uiAtlas         = GMain.getAssetManager().getTextureAtlas("ui.atlas");
+    AnimalsAtlas    = GMain.getAssetManager().getTextureAtlas("animals.atlas");
+    EffectAtlas     = GMain.getAssetManager().getTextureAtlas("effect.atlas");
+    LeaderAtlas     = GMain.getAssetManager().getTextureAtlas("leaderboard.atlas");
+    BgAtlas         = GMain.getAssetManager().getTextureAtlas("bg.atlas");
+    NumberAtlas     = GMain.getAssetManager().getTextureAtlas("number.atlas");
+    MatchuocAtlas   = GMain.getAssetManager().getTextureAtlas("matchuoc.atlas");
+    Vegetable       = GMain.getAssetManager().getTextureAtlas("vegetable.atlas");
+    Bird            = GMain.getAssetManager().getTextureAtlas("bird.atlas");
+    Food            = GMain.getAssetManager().getTextureAtlas("food.atlas");
+    uiNotiny        = GMain.getAssetManager().getTextureAtlas("uiNotiny.atlas");
   }
 }

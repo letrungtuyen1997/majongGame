@@ -12,6 +12,7 @@ public class HttpLeaderBoard {
     private HttpLeaderBoard.GetLeaderBoard  getData;
     private Utils                           utils;
     private String                          UriLeaderboard       = "http://f901a710-default-defaultin-56c2-2091124869.ap-southeast-1.elb.amazonaws.com/mahj-ldb/";
+//    private String                          UriLeaderboard       = "https://event.vongxoaytulinh.tk/mahj-ldb/";
 
 
     public interface GetLeaderBoard {
@@ -31,11 +32,11 @@ public class HttpLeaderBoard {
     public void GetLeaderBoard(long id, String name, long star ){
         String reqUrl = UriLeaderboard + "record?userId=" + id + "&name=" + name + "&score=" + star;
         System.out.println("log uri: "+reqUrl);
-        Net.HttpRequest httpPost = new Net.HttpRequest(Net.HttpMethods.GET);
-        httpPost.setUrl(reqUrl);
-        httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-        httpPost.setTimeOut(15000);
-        Gdx.net.sendHttpRequest(httpPost, new Net.HttpResponseListener() {
+        Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
+        httpGet.setUrl(reqUrl);
+        httpGet.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        httpGet.setTimeOut(15000);
+        Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
 
@@ -45,7 +46,7 @@ public class HttpLeaderBoard {
                // if(status==200){
                     String data = httpResponse.getResultAsString();
                     GMain.platform.log("check get token: "+data);
-
+                    System.out.println("check data: "+data);
                     JsonValue jv = utils.GetJsV(data);
                     getData.getLeaderBoard(jv);
                 //}else {
