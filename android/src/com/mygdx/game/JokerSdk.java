@@ -85,7 +85,14 @@ public class JokerSdk implements IPlatform {
   private static final String ADMOB_BANNER_ID = "ca-app-pub-1015023790649631/2556247474";
   private static final String ADMOB_FULLSCREEN_ID = "ca-app-pub-1015023790649631/5161680777";
   private static final String ADMOB_VIDEO_ID = "ca-app-pub-1015023790649631/4507607486";
-//
+
+
+
+
+
+
+
+  //
   private OnVideoRewardClosed videoRewardCallback = null;
   boolean bannerVisible = false;
 

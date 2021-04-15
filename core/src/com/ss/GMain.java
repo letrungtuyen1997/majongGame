@@ -103,10 +103,10 @@ public class GMain extends GDirectedGame {
     initLocalNotification();
     this.init();
     this.initPrefs();
-    GMain.prefs.putInteger("hint", 1000);
-    GMain.prefs.putInteger("shuffle",1000);
-    GMain.prefs.putInteger("bomb",1000);
-    GMain.prefs.flush();
+//    GMain.prefs.putInteger("hint", 1000);
+//    GMain.prefs.putInteger("shuffle",1000);
+//    GMain.prefs.putInteger("bomb",1000);
+//    GMain.prefs.flush();
 //    prefs.clear();
 //    prefs.putInteger("LvPre",500);
 //    prefs.flush();
