@@ -53,12 +53,12 @@ public class C {
             try {
                 locale = I18NBundle.createBundle(specFilehandle, new Locale(""));
                 idcontry = locale.get("idcontry");
-                System.out.println("tryyyyyyyyy");
+//                System.out.println("tryyyyyyyyy");
             }
             catch (MissingResourceException e) {
                 locale = I18NBundle.createBundle(baseFileHandle, new Locale(""));
 //                idcontry = locale.get("icontry");
-                System.out.println("cuuuuuuuu");
+//                System.out.println("cuuuuuuuu");
             }
 
             title = locale.get("title");

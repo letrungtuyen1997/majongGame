@@ -49,7 +49,7 @@ public class EndGame {
   private int      moment=0;
   private int      up=0;
   private int      count=0;
-  public EndGame(boolean isWin, int star, JsonValue jsLV[], int lv, GameScene gameScene, Board board, Group grBoard, Group grTimer, GLayerGroup grCombo){
+  public EndGame(boolean isWin, int star, int lv, GameScene gameScene, Board board, Group grBoard, Group grTimer, GLayerGroup grCombo){
     this.grBoard = grBoard;
     GStage.addToLayer(GLayer.top,group);
     GStage.addToLayer(GLayer.top,gref);
@@ -62,7 +62,7 @@ public class EndGame {
       title = "victory"+id;
       pop   = "popup";
       SoundEffect.Play(SoundEffect.win);
-      saveData(star,lv+1);
+      saveData(star,lv);
 
     }else {
       SoundEffect.Play(SoundEffect.lose);
@@ -83,8 +83,6 @@ public class EndGame {
     Gshape.addListener(new ClickListener(){
       @Override
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-//        group.clear();
-//        group.remove();
         return super.touchDown(event, x, y, pointer, button);
       }
     });
@@ -139,7 +137,7 @@ public class EndGame {
                   moment =  moment - Config.targetGift;
                   GMain.prefs.putInteger("momentGift",moment);
                   GMain.prefs.flush();
-                  createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo,()->{
+                  createPopAds(board,lv,gameScene,grTimer,grCombo,()->{
                     board.dispose();
                     group.clear();
                     group.remove();
@@ -151,7 +149,7 @@ public class EndGame {
                     grTouch.remove();
                     setReward();
                     Config.setSkin(lv+1);
-                    new Board(lv+1,jsLV,gameScene,grBoard,grTimer,grCombo);
+                    new Board(lv+1,gameScene,grBoard,grTimer,grCombo);
                   });
                   setReward();
                   return super.touchDown(event, x, y, pointer, button);
@@ -175,7 +173,7 @@ public class EndGame {
             gref.remove();
             grtop.clear();
             grtop.remove();
-            if(jsLV.length<=lv+1){
+            if(Config.MaxLevel<=lv+1){
               grNotice = new Notice(GMain.locale.get("noticeMaxLv"),0.6f,new ClickListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -188,7 +186,7 @@ public class EndGame {
               });
             }else {
               Config.setSkin(lv+1);
-              new Board(lv+1,jsLV,gameScene,grBoard,grTimer,grCombo);
+              new Board(lv+1,gameScene,grBoard,grTimer,grCombo);
             }
             return super.touchDown(event, x, y, pointer, button);
           }
@@ -198,7 +196,7 @@ public class EndGame {
           @Override
           public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             SoundEffect.Play(SoundEffect.click);
-            showAdsReward(board,lv+1,jsLV,gameScene,grTimer,grCombo);
+            showAdsReward(board,lv+1,gameScene,grTimer,grCombo);
             return super.touchDown(event, x, y, pointer, button);
           }
         });
@@ -231,7 +229,7 @@ public class EndGame {
                 moment =  moment - Config.targetGift;
                 GMain.prefs.putInteger("momentGift",moment);
                 GMain.prefs.flush();
-                createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo,()->{
+                createPopAds(board,lv,gameScene,grTimer,grCombo,()->{
                   updateProgressDec();
                   grTouch.clear();
                   grTouch.remove();
@@ -266,7 +264,7 @@ public class EndGame {
             grtop.clear();
             grtop.remove();
             Config.setSkin(lv);
-            new Board(lv,jsLV,gameScene,grBoard,grTimer,grCombo);
+            new Board(lv,gameScene,grBoard,grTimer,grCombo);
             return super.touchDown(event, x, y, pointer, button);
           }
         });
@@ -299,7 +297,7 @@ public class EndGame {
     for (int i=0;i<star;i++){
       int finalI = i;
       Tweens.setTimeout(group,0.5f*i,()->{
-        System.out.println("here!!"+finalI);
+//        System.out.println("here!!"+finalI);
         Image icStar = GUI.createImage(TextureAtlasC.uiAtlas,"star"+(finalI+1)+"On");
         icStar.setSize(icStar.getWidth()*0.6f,icStar.getHeight()*0.6f);
         icStar.setScale(5);
@@ -395,10 +393,10 @@ public class EndGame {
   private void saveData(int star,int lv){
     int oldStar = GMain.prefs.getInteger("starLv"+lv);
     int LvPre   = GMain.prefs.getInteger("LvPre");
-    System.out.println("lv: "+lv);
+//    System.out.println("lv: "+lv);
 
-    System.out.println("oldStar: "+oldStar);
-    System.out.println("lvPre: "+oldStar);
+//    System.out.println("oldStar: "+oldStar);
+//    System.out.println("lvPre: "+oldStar);
     if(oldStar<star){
       GMain.prefs.putInteger("starLv"+lv,star);
       GMain.prefs.flush();
@@ -434,16 +432,15 @@ public class EndGame {
     grbtn.setPosition(x, y, Align.center);
     grbtn.addListener(event);
   }
-
-  private void showAdsReward(Board board,int lv, JsonValue[] jsLV,GameScene gameScene,Group grTimer,GLayerGroup grCombo) {
+  private void showAdsReward(Board board,int lv,GameScene gameScene,Group grTimer,GLayerGroup grCombo) {
     if (GMain.platform.isVideoRewardReady()) {
       GMain.platform.ShowVideoReward((succes) -> {
         if (succes) {
 //          gr.clear();
 //          gr.remove();
           aniOpenGift(gift,()->{
-            System.out.println("mo qua");
-            createPopAds(board,lv,jsLV,gameScene,grTimer,grCombo,()->{
+//            System.out.println("mo qua");
+            createPopAds(board,lv,gameScene,grTimer,grCombo,()->{
               board.dispose();
               group.clear();
               group.remove();
@@ -455,7 +452,7 @@ public class EndGame {
               grTouch.remove();
               setReward();
               Config.setSkin(lv);
-              new Board(lv,jsLV,gameScene,grBoard,grTimer,grCombo);
+              new Board(lv,gameScene,grBoard,grTimer,grCombo);
             });
           });
         } else {
@@ -479,7 +476,7 @@ public class EndGame {
     }
   }
 
-  private void createPopAds(Board board,int lv, JsonValue[] jsLV,GameScene gameScene,Group grTimer,GLayerGroup grCombo,Runnable runnable) {
+  private void createPopAds(Board board,int lv,GameScene gameScene,Group grTimer,GLayerGroup grCombo,Runnable runnable) {
     grTouch = disabledTouch();
     SoundEffect.Play(SoundEffect.unlock);
     Group grAds = new Group();
@@ -628,7 +625,7 @@ public class EndGame {
         up-=1;
         moment+=1;
         lbProgress.setText(moment+"/"+Config.targetGift);
-        System.out.println("up: "+up);
+//        System.out.println("up: "+up);
 
       }else if(up==0) {
         group.addAction(Actions.run(runnable));

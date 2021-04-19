@@ -21,9 +21,11 @@ import com.ss.effects.SoundEffect;
 import com.ss.gameLogic.config.Config;
 import com.ss.gameLogic.objects.LevelData.LevelData;
 import com.ss.scenes.GameScene;
+import com.ss.scenes.LoadingScene;
+import com.ss.utils.Level;
+import com.ss.utils.LevelJson;
 
 public class Board {
-  private Array<Tile> arrTile;
   private Array<Tile>                 arrTileBoard       = new Array<>();
   private Group                       group;
   private Group                       grTimer;
@@ -37,7 +39,6 @@ public class Board {
   private GameScene gameScene;
   private int                         count              = 0;
   private int level = 0;
-  private JsonValue                   jsLV[];
   private Group                       grNotice;
   private Timer                       timer;
   private int                         NumEnd             = 4;
@@ -45,14 +46,14 @@ public class Board {
   public  boolean                     isUseItem          = true;
   private Header                      header;
   private LevelData.LevelDto          levelDto;
+  private int                         countShuffle       =0;
 
 
-  public Board(int lv, JsonValue[] levels, GameScene gameScene, Group group, Group grTimer, GLayerGroup grCombo){
+  public Board(int lv, GameScene gameScene, Group group, Group grTimer, GLayerGroup grCombo){
     Config.countTimePlay++;
     GMain.platform.ShowBanner(true);
     this.gameScene = gameScene;
     this.level = lv;
-    this.jsLV      = levels;
     this.group     = group;
     this.grTimer   = grTimer;
     this.grCombo   = grCombo;
@@ -67,7 +68,7 @@ public class Board {
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
           grNotice.clear();
           grNotice.remove();
-          new EndGame(false,0,jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
+          new EndGame(false,0, level,gameScene,Board.this,group,grTimer,grCombo);
           TrackingEventLv(Config.NameEvent.FAIL);
           return super.touchDown(event, x, y, pointer, button);
         }
@@ -76,10 +77,10 @@ public class Board {
 
     combo = new Combo(GStage.getWorldWidth()/2,60,Config.TimeCombo,grCombo);
 
-    header = new Header(this,lv,gameScene,levels,group,grTimer,grCombo);
+    header = new Header(this,lv,gameScene,group,grTimer,grCombo);
 
-    levelDto = LevelData.getLevel(lv+1);
-    createBoard(levels[levelDto.getFile()-1]);
+    levelDto = LevelData.getLevel(lv);
+    createBoard(Level.getLevelData(lv));
     setLockTile();
     shuffleBoard("begin",()->{
 //      System.out.println("begin done!");
@@ -87,13 +88,14 @@ public class Board {
     //Todo: tracking event start
     TrackingEventLv(Config.NameEvent.START);
   }
-  private void createBoard(JsonValue Arrjv ){
+  private void createBoard(Level levelData ){
     int index=0;
-    for (JsonValue jv : Arrjv){
+    for (int i=0;i<levelData.LevelData.size;i++){
+      LevelJson jv = levelData.LevelData.get(i);
       Tile t = new Tile(group,this);
-      t.setRowCol(jv.get("row").asInt(),jv.get("col").asInt());
-      t.setLayer2(jv.get("layer").asInt());
-      t.setPos(jv.get("x").asFloat(),jv.get("y").asFloat(),jv.get("kind").asInt(),true,index,jv.get("id").asInt());
+      t.setRowCol(jv.row,jv.col);
+      t.setLayer2(jv.layer);
+      t.setPos(jv.x,jv.y,jv.kind,true,index,jv.id);
 //      t.createID(jv.get("id").asInt());
       arrTileBoard.add(t);
       index++;
@@ -506,8 +508,8 @@ public class Board {
       int id    = (int)arrCompare.get(0).getId();
       int kind  = (int)arrCompare.get(0).getKind();
       if(row==(int)t.getRowCol().x && col == (int)t.getRowCol().y && id == t.getId() && kind== t.getKind()){
-        System.out.println("trùng ");
-        if(GameScene.effect!=null)
+//        System.out.println("trùng ");
+        if(LoadingScene.effect!=null)
 //          GameScene.effect.FreeAllEfSelect();
         arrCompare.get(0).select(false);
         arrCompare.clear();
@@ -628,7 +630,7 @@ public class Board {
               public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 grNotice.clear();
                 grNotice.remove();
-                new EndGame(false,0,jsLV, level,gameScene,Board.this,group,grTimer,grCombo);
+                new EndGame(false,0, level,gameScene,Board.this,group,grTimer,grCombo);
                 TrackingEventLv(Config.NameEvent.FAIL);
                 return super.touchDown(event, x, y, pointer, button);
               }
@@ -638,7 +640,7 @@ public class Board {
         pauseTime(true);
 //        System.out.println("win game!!");
         Tweens.setTimeout(group,1,()->{
-          new EndGame(true,timer.getStar(),jsLV, level,gameScene,this,group,grTimer,grCombo);
+          new EndGame(true,timer.getStar(), level,gameScene,this,group,grTimer,grCombo);
           TrackingEventLv(Config.NameEvent.COMPLETE);
         });
       }
@@ -738,6 +740,7 @@ public class Board {
   }
 
   public void shuffleBoard(String type,Runnable runnable){
+    countShuffle++;
     arrTileShuffle.clear();
     for (Tile t : arrTileBoard){
       arrTileShuffle.add(t.getId());
@@ -753,10 +756,16 @@ public class Board {
     }
     hintBoard(type);
     if(arrTileHint.size>=2){
+      countShuffle=0;
       group.addAction(Actions.run(runnable));
       return;
     }else {
-      shuffleBoard(type,runnable);
+      if(countShuffle== Config.maxShuffle){
+        new EndGame(false,0, level,gameScene,Board.this,group,grTimer,grCombo);
+        return;
+      }else {
+        shuffleBoard(type,runnable);
+      }
     }
 
   }
@@ -819,11 +828,11 @@ public class Board {
 //    System.out.println("check name : "+ select);
     String name = "";
     if(select==Config.NameEvent.START)
-      name ="level_start_"+(level +1)+"_"+levelDto.getFile();
+      name ="level_start_"+level+"_"+levelDto.getFile();
     if(select==Config.NameEvent.COMPLETE)
-      name ="level_complete_"+(level +1)+"_"+levelDto.getFile();
+      name ="level_complete_"+level+"_"+levelDto.getFile();
     if(select==Config.NameEvent.FAIL)
-      name ="level_fail_"+(level +1)+"_"+levelDto.getFile();
+      name ="level_fail_"+level+"_"+levelDto.getFile();
 
 //    System.out.println("tracking : "+name);
     GMain.platform.TrackCustomEvent(name);

@@ -217,7 +217,7 @@ public class LeaderBoard implements HttpLeaderBoard.GetLeaderBoard {
         Loadding.setPosition(GStage.getWorldWidth()/2,GStage.getWorldHeight()/2,Align.center);
         group.addActor(Loadding);
         aniload(Loadding);
-        System.out.println("here!!!");
+//        System.out.println("here!!!");
     }
 
     void aniload(Image img){

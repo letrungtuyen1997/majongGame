@@ -25,8 +25,6 @@ public class Utils {
         return data;
       return null;
     }
-
-
     private Utils(){
 
     }

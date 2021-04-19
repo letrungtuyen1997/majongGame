@@ -117,7 +117,6 @@ public class LevelData { //dùng để render level list, query level (theo scor
       sortedLevels.put(entry.key, sortLevels);
     }
   }
-
   public static LevelDto getLevel(int curLevel) {
 //    curLevel+=1;
     int chapterId = (curLevel - 1) / levelPerChapter + 1;

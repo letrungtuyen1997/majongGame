@@ -25,6 +25,7 @@ import com.ss.core.util.GStage;
 import com.ss.effects.SoundEffect;
 import com.ss.gameLogic.config.Config;
 import com.ss.scenes.GameScene;
+import com.ss.scenes.LoadingScene;
 
 public class Tile extends Actor {
   public TextureRegion    block;
@@ -165,8 +166,8 @@ public class Tile extends Actor {
 //    System.out.println("parent: "+this.getParent());
   }
   public void dispose(){
-    if(GameScene.effect!=null){
-      GameScene.effect.StartEff(effPos().x,effPos().y);
+    if(LoadingScene.effect!=null){
+      LoadingScene.effect.StartEff(effPos().x,effPos().y);
     }
     this.addAction(Actions.sequence(
 //            Actions.delay(0.2f),

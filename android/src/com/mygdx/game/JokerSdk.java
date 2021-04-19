@@ -96,7 +96,6 @@ public class JokerSdk implements IPlatform {
   private OnVideoRewardClosed videoRewardCallback = null;
   boolean bannerVisible = false;
 
-
   private AndroidLauncher androidLauncher;
 
   public JokerSdk(AndroidLauncher android) {

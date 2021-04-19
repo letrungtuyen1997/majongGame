@@ -89,13 +89,17 @@ public class Combo {
     ActionScaleTime();
   }
   public void upTime(int combo){
-    System.out.println("combo: " + combo);
+//    System.out.println("combo: " + combo);
 
     if(combo==1){
       resetTime();
     }else if(combo>1){
       //label bug hrere null
-      this.action.restart();
+      if(this.action!=null){
+        this.action.restart();
+      }else {
+        actionUpCombo(combo);
+      }
     }
     actionUpCombo(combo);
 

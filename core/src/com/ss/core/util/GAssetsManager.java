@@ -30,22 +30,25 @@ import com.badlogic.gdx.utils.StreamUtils;
 import com.ss.GMain;
 import com.ss.core.util.GRes;
 import com.ss.gdx.NSound;
+import com.ss.interfaces.LoaderHook;
 
 import java.io.Closeable;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class GAssetsManager {
    private  AssetManager assetManager;
    private  boolean isFinished;
    public  Array tempResLog;
+   private HashMap<Class<?>, LoaderHook<?>>   extensions;
+
    public GAssetsManager(){
       assetManager = new AssetManager();
       assetManager.setLoader(Object.class, new GDataLoader(new InternalFileHandleResolver()));
       assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new InternalFileHandleResolver()));
-      tempResLog = new Array();
-
-
+      tempResLog          = new Array();
+      extensions          = new HashMap<>();
    }
 
     {
@@ -480,7 +483,24 @@ public class GAssetsManager {
       }
 
    }
+   public void loadExtention(){
+      for (LoaderHook<?> extension : extensions.values())
+         extension.load(assetManager);
+   }
+   public void cache(){
+      for (LoaderHook<?> extension : extensions.values())
+         extension.finish(assetManager);
+   }
+   public<T> void addHook(Class<T> type, LoaderHook<T> hook) {
+      extensions.put(type, hook);
+   }
 
+   public<T> T get(Class<T> type, String key) {
+      return (T)extensions.get(type).get(key);
+   }
+   public<T> Array<T> getList(Class<T> type, String key) {
+      return  (Array<T>)extensions.get(type).getList(key);
+   }
    public  void unload(Object var0) {
       String var1 = getAssetKey(var0);
       if(var1 != null) {

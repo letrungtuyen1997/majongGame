@@ -1,8 +1,8 @@
 package com.ss;
 
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.platform.IPlatform;
 import com.badlogic.gdx.Gdx;
@@ -13,8 +13,6 @@ import com.ss.core.util.GDirectedGame;
 import com.ss.core.util.GScreen;
 import com.ss.core.util.GStage;
 import com.ss.core.util.GStage.StageBorder;
-import com.ss.gameLogic.config.Config;
-import com.ss.gameLogic.objects.LevelData.LevelData;
 import com.ss.scenes.LoadingScene;
 
 import java.util.Locale;
@@ -33,6 +31,7 @@ public class GMain extends GDirectedGame {
   public static IPlatform platform;
   private GAssetsManager assetManager;
   public static I18NBundle locale;
+  public Group grEff;
 
   public GMain(IPlatform plat){
     platform = plat;
@@ -99,6 +98,7 @@ public class GMain extends GDirectedGame {
   public void create()
   {
     assetManager = new GAssetsManager();
+    grEff = new Group();
 
     initLocalNotification();
     this.init();
@@ -106,9 +106,9 @@ public class GMain extends GDirectedGame {
 //    GMain.prefs.putInteger("hint", 1000);
 //    GMain.prefs.putInteger("shuffle",1000);
 //    GMain.prefs.putInteger("bomb",1000);
+//    prefs.putInteger("LvPre",500);
 //    GMain.prefs.flush();
 //    prefs.clear();
-//    prefs.putInteger("LvPre",500);
 //    prefs.flush();
     String deviceLang = GMain.platform.GetDefaultLanguage();
     Gdx.app.log("language code", deviceLang);
@@ -116,7 +116,6 @@ public class GMain extends GDirectedGame {
     //localization
     FileHandle specFilehandle = Gdx.files.internal("i18n/lang_" + deviceLang);
     FileHandle baseFileHandle = Gdx.files.internal("i18n/lang");
-
     try {
       locale = I18NBundle.createBundle(specFilehandle, new Locale(""));
     }
@@ -150,6 +149,10 @@ public class GMain extends GDirectedGame {
   public static GAssetsManager getAssetManager(){
 
     return ((GMain) Gdx.app.getApplicationListener()).assetManager;
+  }
+  public static Group getGrEff(){
+
+    return ((GMain) Gdx.app.getApplicationListener()).grEff;
   }
 
 

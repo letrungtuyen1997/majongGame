@@ -24,6 +24,7 @@ public class Config {
     public static int           condi_merge         = Integer.parseInt(Gdx.files.internal("uri/condi_merge.txt").readString());
     public static int           row                 = 10;
     public static int           col                 = 10;
+    public static int           maxShuffle          = 20;
     public static float         paddingX            = 0;
     public static float         paddingY            = 3;
     public static float         DuraMove            = 0.5f;
@@ -57,6 +58,7 @@ public class Config {
     public static int           rowLv               = 4;
     public static int           colLv               = 3;
     public static int           SORT_GROUP_LEVEL    = 5;
+    public static int           MaxLevel            = 500;
     public static int           numTileLv           = rowLv*colLv;
     public static TextureAtlas  atlasSKin           = TextureAtlasC.MatchuocAtlas;
     public static String        Cxl                 = "cucxilau1";
@@ -78,6 +80,7 @@ public class Config {
     public static String        bgchapter3          =GMain.platform.GetConfigStringValue("bgchapter3","bg3");
     public static String        bgchapter4          =GMain.platform.GetConfigStringValue("bgchapter4","bg4");
     public static String        bgchapter5          =GMain.platform.GetConfigStringValue("bgchapter5","bg5");
+
     public static TextureAtlas  atlasChapter(int atlas){
         if(atlas==1)
             return TextureAtlasC.NumberAtlas;
@@ -98,7 +101,7 @@ public class Config {
     }
     public static void setSkin(int level){
         level+=1;
-        System.out.println("check skin here lv: "+level+"----"+(level/500));
+//        System.out.println("check skin here lv: "+level+"----"+(level/500));
         if(level>0 &&level<100){
             Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter1);
             Config.Cxl          = Config.cxlchapter1;
@@ -109,7 +112,7 @@ public class Config {
             Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter2);
             Config.Cxl          = Config.cxlchapter2;
             Config.Bg           = Config.bgchapter2;
-            System.out.println("chuyen skin 2");
+//            System.out.println("chuyen skin 2");
 
         }
         if(level>=200 &&level<300){
@@ -124,7 +127,7 @@ public class Config {
             Config.Bg           = Config.bgchapter4;
 
         }
-        if(level>=400 &&level<Utils.getLv().length){
+        if(level>=400 &&level<Config.MaxLevel){
             Config.atlasSKin    = Config.atlasChapter(Config.atlasChapter5);
             Config.Cxl          = Config.cxlchapter5;
             Config.Bg           = Config.bgchapter5;
@@ -147,7 +150,7 @@ public class Config {
         JsonValue jv = null;
         try {
             jv = json.parse(jv2);
-            System.out.println("log:"+jv.get("paddingX").asInt());
+//            System.out.println("log:"+jv.get("paddingX").asInt());
         }catch (Exception e){
             jv = json.parse(jsonStr);
         }

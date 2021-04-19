@@ -59,7 +59,7 @@ public class Timer extends GLayerGroup {
       ef.free();
       this.clearActions();
     }
-    System.out.println("let go!");
+//    System.out.println("let go!");
     this.onComplete     = callback;
     Effect();
     ActionScaleTime();

@@ -39,6 +39,7 @@ import com.ss.gameLogic.config.Config;
 import com.ss.gameLogic.objects.CrossPanel;
 import com.ss.gameLogic.objects.EndGame;
 import com.ss.gameLogic.objects.LeaderBoard;
+import com.ss.utils.Level;
 import com.ss.utils.Utils;
 import com.sun.nio.sctp.HandlerResult;
 import com.sun.nio.sctp.Notification;
@@ -93,7 +94,7 @@ public class StartScene extends GScreen {
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         SoundEffect.Play(SoundEffect.click);
         Config.isContinues = false;
-        setScreen(new GameScene(), GTransitionRotationScale.init(0.5f,1));
+        setScreen(new GameScene(), GTransitionFade.init(1));
 //        new EndGame(true,3,null,1,null,null,null,null,null);
 
         return super.touchDown(event, x, y, pointer, button);
@@ -156,6 +157,8 @@ public class StartScene extends GScreen {
         return super.touchDown(event, x, y, pointer, button);
       }
     });
+
+//    System.out.println("check level: "+ Level.getLevelData(1).LevelData.size);
 
 
   }

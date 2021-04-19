@@ -8,24 +8,11 @@
 -dontwarn com.badlogic.gdx.jnigen.BuildTarget*
 -dontwarn com.badlogic.gdx.graphics.g2d.freetype.FreetypeBuild
 
--keep class com.badlogic.gdx.controllers.android.AndroidControllers
-
--keep class com.ss.core.util.GSaveAsFile
--keep class com.ss.core.util.GFileManager
 
 -keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
    <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);
 }
 
--keepclassmembers class com.badlogic.gdx.physics.box2d.World {
-   boolean contactFilter(long, long);
-   void    beginContact(long);
-   void    endContact(long);
-   void    preSolve(long, long);
-   void    postSolve(long, long);
-   boolean reportFixture(long);
-   float   reportRayFixture(long, float, float, float, float, float);
-}
 
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
@@ -59,10 +46,7 @@
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgent
 -keep public class * extends android.preference.Preference
--keep public class * extends android.support.v4.app.Fragment
--keep public class * extends android.support.v4.app.DialogFragment
 -keep public class * extends android.app.Fragment
--keep public class com.android.vending.licensing.ILicensingService
 
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
@@ -147,4 +131,5 @@
 -keep public class com.dropnumber.model.* { *; }
 
 -keepclassmembers enum * {*;}
+-keep public class com.ss.utils.* {*;}
 

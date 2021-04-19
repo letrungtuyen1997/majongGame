@@ -83,7 +83,7 @@ public class Setting {
         Board.dispose();
         group.clear();
         group.remove();
-        new Board(Level,listLv,gameScene,grBoard,grTimer,grCombo);
+        new Board(Level,gameScene,grBoard,grTimer,grCombo);
         return super.touchDown(event, x, y, pointer, button);
       }
     });

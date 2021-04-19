@@ -23,6 +23,7 @@ import com.ss.core.util.GUI;
 import com.ss.effects.SoundEffect;
 import com.ss.gameLogic.config.Config;
 import com.ss.scenes.GameScene;
+import com.ss.utils.Level;
 import com.ss.utils.Utils;
 
 public class SelectLevel {
@@ -30,7 +31,6 @@ public class SelectLevel {
   private Group       grNotice;
   private ScrollPane  scroll;
   private Table       table,tableScroll;
-  private JsonValue   arrStrLv[];
   private Label       title;
   private GameScene   gameScene;
   private Group       group;
@@ -92,38 +92,32 @@ public class SelectLevel {
         return super.touchDown(event, x, y, pointer, button);
       }
     });
-//    readData();
-//    loadData();
-    arrStrLv = Utils.getLv();
-
-//    System.out.println("check arrStrLv: "+arrStrLv[0]);
     createFrmStar();
     if(isContinues){
       Config.isContinues=false;
-      if(Utils.getLv().length<=Config.LvPer){
+      if(Config.MaxLevel<=Config.LvPer){
         grNotice = new Notice(GMain.locale.get("noticeMaxLv"),0.6f,new ClickListener(){
           @Override
           public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             SoundEffect.Play(SoundEffect.click);
             grNotice.clear();
             grNotice.remove();
-//            gameScene.setScreen(new StartScene());
-            renderListLv(arrStrLv);
+            renderListLv();
             return super.touchDown(event, x, y, pointer, button);
           }
         });
       }else {
         dispose();
-        new Board(lvPer-1, arrStrLv,gameScene,grBoard,grTimer,grCombo);
+        new Board(lvPer,gameScene,grBoard,grTimer,grCombo);
       }
     }else
-      renderListLv(arrStrLv);
+      renderListLv();
 
   }
 
   private void createFrmStar(){
     int starPre   = 0;
-    int starTaget = Utils.getLv().length*3;
+    int starTaget = Config.MaxLevel*3;
     frmStar = GUI.createImage(TextureAtlasC.uiAtlas,"frmStar");
     frmStar.setPosition(GStage.getWorldWidth()/2,grTable.getY(Align.top),Align.bottom);
     group.addActor(frmStar);
@@ -139,30 +133,6 @@ public class SelectLevel {
     lbStar.setAlignment(Align.right);
     lbStar.setPosition(frmStar.getX(Align.center)-lbStar.getWidth()*0.2f,frmStar.getY(Align.center),Align.center);
     group.addActor(lbStar);
-  }
-
-  private void readData(){
-//    String StrLv = Gdx.files.internal("data/data.txt").readString();
-//    arrStrLv = StrLv.split("\n");
-//    InterchangeSort(arrStrLv, arrStrLv.length);
-//    for (int i=0;i<ArrStrLv.length;i++){
-//      String lv = ArrStrLv[i];
-//      FileHandle fileLv = new FileHandle("level/"+(i+1));
-//      fileLv.writeString(lv,false);
-//    }
-  }
-
-  public static void Swap(int  a, int b,String Str[]){
-    String temp = Str[a];
-    Str[a] = Str[b];
-    Str[b] = temp;
-  }
-
-  public static void InterchangeSort(String a[], int n){
-    for (int i = 0; i < n - 1; i++)
-      for (int j = i + 1; j < n; j++)
-        if(a[i].length() > a[j].length())  //nếu có nghịch thế thì đổi chỗ
-          Swap(i, j,a);
   }
   private void setSkin(){
   if(chapter==0){
@@ -197,7 +167,7 @@ public class SelectLevel {
   }
 //  System.out.println("check cucxilau: "+Config.Cxl);
 }
-  private void renderListLv(JsonValue listLv[]){
+  private void renderListLv(){
     int begin=0;
     int end =0;
     if(chapter==0){
@@ -218,7 +188,7 @@ public class SelectLevel {
     }
     if(chapter==4){
       begin=399;
-      end=listLv.length;
+      end=Config.MaxLevel;
     }
 
     table = new Table();
@@ -278,7 +248,7 @@ public class SelectLevel {
             if(iconLock.isVisible()==false){
               SoundEffect.Play(SoundEffect.click);
               dispose();
-               new Board(finalI,listLv,gameScene,grBoard,grTimer,grCombo);
+               new Board((finalI+1),gameScene,grBoard,grTimer,grCombo);
             }
           }
         }

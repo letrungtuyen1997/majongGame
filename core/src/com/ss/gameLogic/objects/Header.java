@@ -40,17 +40,16 @@ public class Header {
   private Group           grTouch;
   private Array<Integer>  arrItSp         = new Array<>();
   private Array<Label>    arrLbSp         = new Array<>();
-  public Header(Board board, int Level, GameScene gameScene, JsonValue listLv[], Group grBoard, Group grTimer, GLayerGroup grCombo){
+  public Header(Board board, int Level, GameScene gameScene, Group grBoard, Group grTimer, GLayerGroup grCombo){
     this.board      = board;
     this.Level      = Level;
     this.gameScene  = gameScene;
-    this.jvBoard    = listLv;
     this.grBoard    = grBoard;
     this.grTimer    = grTimer;
     this.grCombo    = grCombo;
     GStage.addToLayer(GLayer.top,group);
     createBtnPause();
-    createFrmLevel(Level+1);
+    createFrmLevel(Level);
     createbtnSuport(board);
     board.setPosTimer(GStage.getWorldWidth()/2,btnPause.getY(Align.center));
     board.setPosCombo(GStage.getWorldWidth()/2,btnPause.getY(Align.top));

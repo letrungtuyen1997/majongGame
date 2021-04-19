@@ -23,7 +23,6 @@ public class GameScene extends GScreen {
 
   private        Group                       group              = new Group();
   private        Board                       board;
-  public  static Effect                       effect;
 
 
   @Override
@@ -33,8 +32,8 @@ public class GameScene extends GScreen {
 
   @Override
   public void init() {
+    GStage.addToLayer(GLayer.top,GMain.getGrEff());
     GMain.platform.ShowBanner(false);
-    effect = new Effect();
     GStage.addToLayer(GLayer.map,group);
     Image bg = GUI.createImage(TextureAtlasC.uiAtlas,"bg");
     bg.setSize(GStage.getWorldWidth(),GStage.getWorldHeight());

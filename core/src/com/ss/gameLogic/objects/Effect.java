@@ -2,27 +2,28 @@ package com.ss.gameLogic.objects;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
+import com.ss.GMain;
 import com.ss.core.util.GLayer;
 import com.ss.core.util.GStage;
 import com.ss.effects.effectWin;
 
 public class Effect {
-  private Group group = new Group();
+//  private Group group = new Group();
   private Array<effectWin> arrEffMatch           = new Array<>();
   private Array<effectWin> arrEffSelect          = new Array<>();
   private int              idTemp                = 0;
 
 
   public Effect(){
-    GStage.addToLayer(GLayer.top,group);
+//    GStage.addToLayer(GLayer.top,group);
     initEff();
   }
 
   public void initEff(){
     for (int i=0;i<20;i++){
-      effectWin ef = new effectWin(effectWin.Match,0,0,1,group);
+      effectWin ef = new effectWin(effectWin.Match,0,0,1, GMain.getGrEff());
       arrEffMatch.add(ef);
-      effectWin ef2 = new effectWin(effectWin.Select,0,0,0.85f,group);
+      effectWin ef2 = new effectWin(effectWin.Select,0,0,0.85f,GMain.getGrEff());
       arrEffSelect.add(ef2);
     }
   }

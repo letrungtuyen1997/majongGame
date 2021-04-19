@@ -34,7 +34,7 @@ public class TileLv {
         grT.setTransform(false);
         this.selectLevel = selectLevel;
         this.Level = Level;
-        if(Level<= Utils.getLv().length){
+        if(Level<= Config.MaxLevel){
              frmStar = GUI.createImage(TextureAtlasC.uiAtlas,"starOff");
             grT.addActor(frmStar);
 
@@ -127,7 +127,7 @@ public class TileLv {
                arrStar.get(star-1).setVisible(true);
             }
         }
-        if(Level%Config.numTileLv==0||Level==Utils.getLv().length){
+        if(Level%Config.numTileLv==0||Level==Config.MaxLevel){
 //            selectLevel.SetVisibleBtn(true);
         }
     }
